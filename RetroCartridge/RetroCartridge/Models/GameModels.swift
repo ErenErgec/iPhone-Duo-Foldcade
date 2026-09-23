@@ -152,3 +152,46 @@ enum HapticEventType {
     case hingeClick           // Hinge close mechanical click
     case gameEvent            // In-game collision, line clear, etc.
 }
+
+// MARK: - Game Sound
+
+/// Sound effects a game can raise. Games queue these with
+/// `PixelGameProtocol.emit(_:)`; the frame loop plays them through `AudioManager`.
+enum GameSound: Equatable, Sendable {
+    // Shared
+    case roundStart
+    case levelUp
+    case gameOver
+    case powerUp
+    case collision
+
+    // Brick Breaker
+    case paddleBounce
+    case wallBounce
+    case brickBreak
+    case lifeLost
+
+    // Snake
+    case eat
+
+    // Retro Racer
+    case laneChange
+    case crash
+
+    // Falling Blocks
+    case moveTick
+    case rotate
+    case pieceLock
+    case hardDrop
+    case lineClear(lines: Int)
+
+    /// Whether the event is big enough to also fire the `.gameEvent` haptic.
+    var isImpactful: Bool {
+        switch self {
+        case .collision, .crash, .lifeLost, .lineClear, .gameOver:
+            return true
+        default:
+            return false
+        }
+    }
+}

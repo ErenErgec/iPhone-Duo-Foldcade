@@ -29,7 +29,14 @@ protocol PixelGameProtocol: AnyObject {
     
     /// High score for this game (persisted).
     var highScore: Int { get set }
-    
+
+    // MARK: - Sound
+
+    /// Sound effects raised since the last frame. Games add to it with
+    /// `emit(_:)`; the frame loop empties it with `drainSounds()` and plays
+    /// them, so games never depend on the audio system.
+    var pendingSounds: [GameSound] { get set }
+
     // MARK: - Game Loop
     
     /// Called every frame by the game engine.
@@ -74,6 +81,21 @@ extension PixelGameProtocol {
         if case .paused = gameState {
             gameState = .playing
         }
+    }
+
+    /// Queues a sound effect for the next frame. Duplicates within a frame
+    /// are dropped (e.g. several bricks breaking at once play one sound).
+    func emit(_ sound: GameSound) {
+        guard !pendingSounds.contains(sound), pendingSounds.count < 8 else { return }
+        pendingSounds.append(sound)
+    }
+
+    /// Returns and clears the queued sound effects.
+    func drainSounds() -> [GameSound] {
+        guard !pendingSounds.isEmpty else { return [] }
+        let sounds = pendingSounds
+        pendingSounds = []
+        return sounds
     }
 }
 

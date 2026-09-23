@@ -10,6 +10,7 @@ final class SnakeGame: PixelGameProtocol {
     var score: Int = 0
     var level: Int = 1
     var highScore: Int = 0
+    var pendingSounds: [GameSound] = []
     
     struct SnakeSegment {
         var x: Int
@@ -73,8 +74,10 @@ final class SnakeGame: PixelGameProtocol {
         if head.x == food.x && head.y == food.y {
             score += 10 * level
             foodEaten += 1
+            emit(.eat)
             if foodEaten % 5 == 0 {
                 level += 1
+                emit(.levelUp)
                 moveInterval = max(0.060, moveInterval - 0.005)
             }
             spawnFood()
@@ -98,6 +101,8 @@ final class SnakeGame: PixelGameProtocol {
     func die() {
         if score > highScore { highScore = score }
         gameState = .gameOver(score: score)
+        emit(.collision)
+        emit(.gameOver)
     }
     
     func render(context: inout GraphicsContext, size: CGSize) {
@@ -149,6 +154,7 @@ final class SnakeGame: PixelGameProtocol {
             case .menu, .gameOver:
                 reset()
                 gameState = .playing
+                emit(.roundStart)
             default: break
             }
         case .buttonStartPressed:
@@ -168,6 +174,7 @@ final class SnakeGame: PixelGameProtocol {
     
     func reset() {
         gameState = .menu
+        pendingSounds.removeAll()
         score = 0
         level = 1
         snake = [
