@@ -14,6 +14,7 @@ public struct FullScreenLayout: View {
     @Environment(AppState.self) private var appState
     @Environment(HapticManager.self) private var hapticManager
     @Environment(AudioManager.self) private var audioManager
+    @Environment(\.fixedSafeAreaInsets) private var insets
 
     public init() {}
 
@@ -40,7 +41,6 @@ public struct FullScreenLayout: View {
         let theme = SkinManager.theme(for: appState.selectedSkin)
         
         return GeometryReader { geo in
-            let insets = geo.safeAreaInsets
             let half = geo.size.height / 2
             
             ZStack {
@@ -100,6 +100,7 @@ public struct FullScreenLayout: View {
             }
         }
         .padding(32)
+        .padding(insets)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(ConsoleBackdrop(glowColor: Color(hex: appState.selectedGameType.cartridgeColorHex)))
     }

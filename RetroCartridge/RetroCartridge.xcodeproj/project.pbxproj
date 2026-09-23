@@ -14,6 +14,7 @@
 		2061C3D92333D50207BB2984 /* BrickBreakerGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDF6EF6156337C895B39F3BF /* BrickBreakerGame.swift */; };
 		299F8F38045EC936D167BDC5 /* CyberpunkNeonSkin.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AD9D1084CD725675BB20D9 /* CyberpunkNeonSkin.swift */; };
 		317FDB0AE36753EDB8ED23CE /* AdaptiveConsoleLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA27B4C7888D630FC1CB6A14 /* AdaptiveConsoleLayout.swift */; };
+		A1C0DE0000000000000000C1 /* FixedOrientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0DE0000000000000000C2 /* FixedOrientation.swift */; };
 		349DA3AFA1F86A358B2BA421 /* PostureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99CD56444E0BB80576F0C69C /* PostureManager.swift */; };
 		40CFAA3D64F6C7F99611C3F5 /* FallingBlocksGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C771A7C9DA44D0724C6BE05 /* FallingBlocksGame.swift */; };
 		42E2B78F3434B46054A26EE6 /* CRTEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = B785C2862CE1B74D356292D5 /* CRTEffect.swift */; };
@@ -85,6 +86,7 @@
 		F2352D04E27E375DD1A10880 /* AtomicPurpleSkin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtomicPurpleSkin.swift; sourceTree = "<group>"; };
 		F716FE5C00231F2C95DD1132 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FA27B4C7888D630FC1CB6A14 /* AdaptiveConsoleLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveConsoleLayout.swift; sourceTree = "<group>"; };
+		A1C0DE0000000000000000C2 /* FixedOrientation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixedOrientation.swift; sourceTree = "<group>"; };
 		FDF6EF6156337C895B39F3BF /* BrickBreakerGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrickBreakerGame.swift; sourceTree = "<group>"; };
 		FFDC1F90D883742F4094239E /* ArcadeCabinetSkin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArcadeCabinetSkin.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -147,6 +149,7 @@
 			isa = PBXGroup;
 			children = (
 				FA27B4C7888D630FC1CB6A14 /* AdaptiveConsoleLayout.swift */,
+				A1C0DE0000000000000000C2 /* FixedOrientation.swift */,
 				D9472082A726EB2301BA9DAE /* CoverScreenLayout.swift */,
 				B23F57A66C8E9E0E092556C0 /* FullScreenLayout.swift */,
 				330D5787E9BDD9DC543D33BE /* ReservedRegionManager.swift */,
@@ -357,6 +360,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				317FDB0AE36753EDB8ED23CE /* AdaptiveConsoleLayout.swift in Sources */,
+				A1C0DE0000000000000000C1 /* FixedOrientation.swift in Sources */,
 				822ECC45A4F7783AD19720A1 /* AppState.swift in Sources */,
 				98718E16D8A934DE36C9A9D3 /* ArcadeCabinetSkin.swift in Sources */,
 				DCABA366CA692CE42077BAEC /* AtomicPurpleSkin.swift in Sources */,

@@ -5,14 +5,11 @@
 // Root router between the outer (cover) and inner displays.
 //
 // The console has one fixed pose: held closed with the hinge on top, and
-// opened like a clamshell. The app is locked to the system's portrait
-// orientation on both displays (Info.plist), so iOS never rotates it or plays
-// a rotation animation when the device folds. Each layout is drawn to match
-// that pose:
-// - Outer display: turned 90° counter-clockwise, giving a landscape layout
-//   with the hinge on top.
-// - Inner display: the locked portrait already puts the hinge horizontally
-//   across the middle, with the CRT above it and the controller below.
+// opened like a clamshell. Each display's layout is pinned to the physical
+// panel with `FixedOrientation`, so it never rotates:
+// - Outer display: landscape with the hinge on top.
+// - Inner display: portrait, with the hinge running horizontally across the
+//   middle — CRT above it, controller below.
 //
 
 import SwiftUI
@@ -31,18 +28,18 @@ public struct AdaptiveConsoleLayout: View {
             if postureManager.isCompactWidth {
                 ZStack {
                     ConsoleBackdrop(glowColor: Color(hex: appState.selectedGameType.cartridgeColorHex))
-                    FixedOrientation(turn: .counterClockwise) {
+                    FixedOrientation(design: .landscapeLeft) {
                         CoverScreenLayout()
                     }
                 }
                 .transition(.opacity)
             } else {
-                FullScreenLayout()
-                    .transition(.opacity)
+                FixedOrientation(design: .portrait, padsSafeArea: false, ignoresHalfTurns: true) {
+                    FullScreenLayout()
+                }
+                .transition(.opacity)
             }
         }
-        .statusBarHidden()
-        .persistentSystemOverlays(.hidden)
         .animation(.easeInOut(duration: 0.3), value: postureManager.isCompactWidth)
         .background {
             // Measure the whole display (not the safe area) to tell which one we're on
@@ -63,41 +60,5 @@ public struct AdaptiveConsoleLayout: View {
                 appState.pauseActiveGame()
             }
         }
-    }
-}
-
-/// Lays content out for a display turned a quarter turn from the (locked)
-/// interface orientation and rotates it into place. Safe area insets are
-/// remapped to the turned edges, since the rotation itself is render-only.
-private struct FixedOrientation<Content: View>: View {
-    enum Turn {
-        /// Content's top edge lies along the display's left edge.
-        case counterClockwise
-    }
-
-    let turn: Turn
-    @ViewBuilder var content: Content
-
-    var body: some View {
-        GeometryReader { geo in
-            let size = geo.size
-            let insets = geo.safeAreaInsets
-
-            switch turn {
-            case .counterClockwise:
-                content
-                    .ignoresSafeArea()
-                    .padding(EdgeInsets(
-                        top: insets.leading,
-                        leading: insets.bottom,
-                        bottom: insets.trailing,
-                        trailing: insets.top
-                    ))
-                    .frame(width: size.height, height: size.width)
-                    .rotationEffect(.degrees(-90))
-                    .frame(width: size.width, height: size.height)
-            }
-        }
-        .ignoresSafeArea()
     }
 }

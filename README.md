@@ -37,7 +37,7 @@ The app strictly adheres to Apple’s official **Designing for iPhone Duo** guid
 
 1. **One Fixed Pose, No Rotation (HIG: games may lock orientation):**
    - The console is held closed with the hinge on top and opened like a clamshell handheld. The inner display splits exactly at the hinge: CRT above, controller below.
-   - The app is locked to the system's portrait orientation on both displays, so iOS never rotates it or animates a rotation when folding. The outer display's layout is drawn turned 90° to sit landscape with the hinge on top (`AdaptiveConsoleLayout`).
+   - The root view controller locks the scene's interface orientation (`prefersInterfaceOrientationLocked`, iOS 26+), so iOS never rotates the app or animates a rotation while folding or turning the device. `FixedOrientation` then pins each display's layout to the panel — landscape with the hinge on top on the outer display, portrait with the hinge across the middle on the inner display — whatever orientation the scene was locked in.
    - Which display is active is determined from the display's size (`PostureManager` / `DuoDisplay`); the hinge angle is **never** used to drive layout.
 2. **Hinge Angle for Continuous Visual Effects Only:**
    - `HingeEngine` supplies real-time, normalized hinge rotation (`0.0°` to `180.0°`) directly to the Metal CRT shader's arguments to modulate CRT curvature, glass barrel distortion, and scanline depth continuously as the user folds or unfolds the device.
@@ -104,7 +104,7 @@ Integrated with modern Swift async/await StoreKit 2:
 ```
 RetroCartridge/
 ├── App/
-│   ├── RetroCartridgeApp.swift       # @main entry point, Scene & Environment injection
+│   ├── RetroCartridgeApp.swift       # @main UIKit entry, orientation-locked SwiftUI host
 │   └── AppState.swift                # @Observable central app state & persistent high scores
 ├── Core/
 │   ├── HingeEngine.swift             # Continuous hinge angle pipeline for shaders
@@ -115,6 +115,7 @@ RetroCartridge/
 │   ├── AdaptiveConsoleLayout.swift   # Root adaptive router (Cover vs FullScreen)
 │   ├── CoverScreenLayout.swift       # 5.4" Outer display cartridge selector
 │   ├── FullScreenLayout.swift        # 7.6" Inner dual-panel split console
+│   ├── FixedOrientation.swift        # Pins each layout to its physical display
 │   └── ReservedRegionManager.swift   # Hinge division & occlusion safety manager
 ├── Rendering/
 │   ├── CRTView.metal                 # Stitchable CRT shader (Curvature, Scanline, Bloom, Power-On)
