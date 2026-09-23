@@ -22,3 +22,7 @@ xcuserdata/
 # Metal / Temporary artifacts
 *.dia
 *.tmp
+
+# Claude Code local state
+.claude/worktrees/
+.claude/settings.local.json
