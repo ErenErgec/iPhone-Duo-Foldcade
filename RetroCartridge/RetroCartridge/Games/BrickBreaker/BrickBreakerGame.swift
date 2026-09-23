@@ -10,6 +10,7 @@ final class BrickBreakerGame: PixelGameProtocol {
     var score: Int = 0
     var level: Int = 1
     var highScore: Int = 0
+    var pendingSounds: [GameSound] = []
     
     struct Paddle {
         var x: Double = 0.5
@@ -94,6 +95,7 @@ final class BrickBreakerGame: PixelGameProtocol {
             // Check paddle collision
             if powerUps[i].y >= 0.9 && powerUps[i].y <= 0.95 {
                 if abs(powerUps[i].x - paddle.x) <= paddle.width / 2 {
+                    emit(.powerUp)
                     applyPowerUp(powerUps[i].type)
                     powerUps.remove(at: i)
                 }
@@ -118,10 +120,12 @@ final class BrickBreakerGame: PixelGameProtocol {
             if ball.x <= 0 || ball.x >= 1.0 {
                 ball.vx *= -1
                 ball.x = ball.x <= 0 ? 0 : 1.0
+                emit(.wallBounce)
             }
             if ball.y <= 0 {
                 ball.vy *= -1
                 ball.y = 0
+                emit(.wallBounce)
             }
             
             // Paddle collision (swept: catches the ball even when a slow frame
@@ -131,6 +135,7 @@ final class BrickBreakerGame: PixelGameProtocol {
                 if abs(ball.x - paddle.x) <= paddle.width / 2 {
                     ball.y = paddleTop
                     ball.vy *= -1
+                    emit(.paddleBounce)
                     // Adjust angle based on hit position
                     let hitFactor = (ball.x - paddle.x) / (paddle.width / 2)
                     ball.vx = hitFactor * 0.8
@@ -154,6 +159,7 @@ final class BrickBreakerGame: PixelGameProtocol {
                     if ball.x >= bx && ball.x <= bx + brickWidth && ball.y >= by && ball.y <= by + brickHeight {
                         bricks[j].isDestroyed = true
                         score += 10
+                        emit(.brickBreak)
                         
                         // Spawn powerup?
                         if Double.random(in: 0...1) < 0.20 {
@@ -184,7 +190,9 @@ final class BrickBreakerGame: PixelGameProtocol {
             if lives <= 0 {
                 if score > highScore { highScore = score }
                 gameState = .gameOver(score: score)
+                emit(.gameOver)
             } else {
+                emit(.lifeLost)
                 spawnBall()
             }
         }
@@ -193,6 +201,7 @@ final class BrickBreakerGame: PixelGameProtocol {
         if bricks.allSatisfy({ $0.isDestroyed }) {
             level += 1
             score += 100 * level
+            emit(.levelUp)
             setupLevel()
         }
     }
@@ -286,6 +295,7 @@ final class BrickBreakerGame: PixelGameProtocol {
             case .menu, .gameOver:
                 reset()
                 gameState = .playing
+                emit(.roundStart)
             default: break
             }
         case .buttonStartPressed:
@@ -305,6 +315,7 @@ final class BrickBreakerGame: PixelGameProtocol {
     
     func reset() {
         gameState = .menu
+        pendingSounds.removeAll()
         score = 0
         level = 1
         lives = 3

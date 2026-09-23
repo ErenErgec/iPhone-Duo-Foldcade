@@ -12,6 +12,8 @@ import SwiftUI
 struct GameCanvasView: View {
     @Environment(AppState.self) private var appState
     @Environment(HingeEngine.self) private var hingeEngine
+    @Environment(AudioManager.self) private var audioManager
+    @Environment(HapticManager.self) private var hapticManager
 
     /// When the CRT power-on animation started. This view is created fresh
     /// for each game session, so every cartridge gets its own power-on.
@@ -67,6 +69,16 @@ struct GameCanvasView: View {
                             .onChange(of: timeline.date) { oldDate, newDate in
                                 let delta = newDate.timeIntervalSince(oldDate)
                                 activeGame.update(deltaTime: min(max(delta, 0), 0.05))
+
+                                // Play the sound effects raised by this frame's update and by
+                                // any input since the last frame, with one haptic for big events.
+                                let sounds = activeGame.drainSounds()
+                                for sound in sounds {
+                                    audioManager.playGameSound(sound)
+                                }
+                                if sounds.contains(where: \.isImpactful) {
+                                    hapticManager.playHaptic(.gameEvent)
+                                }
 
                                 // Persist the score as soon as a round ends, since pressing A
                                 // restarts the game and resets its score.
