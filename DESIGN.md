@@ -93,15 +93,11 @@ From the HIG (Best practices): "**Make your game playable in every device pose.*
 - `prefersInterfaceOrientationLocked = true` on the root controller reports `effectiveGeometry.isInterfaceOrientationLocked == false`, even though the scene is centered, screen-sized and not occluded. It was `true` only with the 27.0 SDK, in legacy mode.
 - A per-display `supportedInterfaceOrientations` of `.portrait` on the inner display was ignored: the scene came up `.portraitUpsideDown`. This matches the talk.
 - The outer display rotated between `.landscapeLeft` and `.landscapeRight` with an all-orientations mask. A single-orientation mask should hold there, per the talk.
-- We have never measured the inner display in a landscape interface.
+- The user verified the inner display in landscape (book pose) in Device Hub: the adaptive split puts the CRT and the controls side by side.
 
-**What this means for our fixed hinge-on-top pose:**
-- **Outer display:** we can restrict it to one landscape orientation. Which one, `.landscapeLeft` or `.landscapeRight`, must be confirmed in Device Hub.
-- **Inner display:** the system chooses the orientation. The layout has two options:
-  - (a) adapt to the orientation, as Apple recommends: always split at the hinge, top/bottom in portrait and left/right in landscape; or
-  - (b) counter-rotate to stay pinned to the panel (`FixedOrientation`), accepting the system's rotation animation.
-
-  This is the open design decision in §10.
+**Resolution (see §10):**
+- **Outer display:** locked to `.landscapeLeft` (hinge on top). Verified in Device Hub.
+- **Inner display:** the layout adapts to the system orientation and always splits at the fold (option A). Counter-rotating to pin the layout (option B) was rejected, and `FixedOrientation` was removed.
 
 ---
 
@@ -142,8 +138,9 @@ From the HIG (Best practices): "**Make your game playable in every device pose.*
 - **Text-only titles** stay in a horizontal bar. "Keep text-based buttons to a minimum. Labels that include text stay in a horizontal bar."
 
 **Measured:**
-- Built with 27.1 and wrapped in `NavigationStack`, the outer display showed `.bottomBar` `Label` items (Skins, Store) **vertically in the side column**.
-- A custom `Text("RETRO CARTRIDGE")` item stayed horizontal and floated over the content.
+- Built with 27.1 and wrapped in `NavigationStack`, the outer display showed `Label` items (Skins, Store) **vertically in the side column**.
+- A custom `Text("RETRO CARTRIDGE")` item stayed horizontal and floated over the content, so the app name became a `navigationTitle` instead. It shows as a small title at the top-leading corner.
+- The shipped setup is a `ToolbarItemGroup(placement: .topBarTrailing)` with the two labels.
 - Built with 27.0, every item floated horizontally inside the window.
 
 ---

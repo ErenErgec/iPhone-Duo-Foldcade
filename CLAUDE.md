@@ -2,7 +2,7 @@
 
 A SwiftUI + Metal game console app for **iPhone Duo only** (deployment target and SDK iOS 27.1, Swift 6 strict concurrency). The README covers features and structure. This file lists the rules that aren't obvious from the code.
 
-**Read `DESIGN.md` first for any layout, orientation, toolbar or hinge work.** It collects Apple's iPhone Duo guidance and our simulator measurements. Its §10 lists the decisions that are still open.
+**Read `DESIGN.md` first for any layout, orientation, toolbar or hinge work.** It collects Apple's iPhone Duo guidance and our simulator measurements. Its §10 records the decisions made and what the user verified.
 
 **Build with Xcode 27.1 or later.** With the 27.0 SDK the app runs in a legacy-like mode on iPhone Duo: no full screen, no vertical bars, and no Duo APIs.
 
@@ -46,6 +46,22 @@ xcodebuild -project RetroCartridge/RetroCartridge.xcodeproj -scheme RetroCartrid
   - The toolbar is hidden over a running console (immersive, no bars).
   - Text-only or custom-view items stay horizontal.
 - **Appearance:** the window forces the dark style so system bars and titles read on the dark console.
+
+## Project status (2026-09-23)
+
+- **Git:** all work is on branch `gameplay-fixes`, open as PR #1 against `main` (`main` still holds only the initial scaffold). Commit and push only when the user asks; they usually test in Device Hub first.
+- **Done and verified by the user on the simulator:**
+  - games running at 60 FPS;
+  - CRT shader;
+  - Game Boy–style console, cartridge library, cover carousel;
+  - Duo-native layout (outer display locked landscape, inner display adaptive fold split);
+  - vertical toolbar;
+  - real hinge angle and 90° chime.
+- **Not yet verified:**
+  - sound effects by ear (only rendered offline);
+  - StoreKit purchases end to end (run from Xcode with `Products.storekit` selected in the scheme);
+  - anything on real iPhone Duo hardware (ships 2026-10-23).
+- **Possible next steps:** check sound and volume, test purchases, and consider Apple's recommendations not yet adopted, such as `ArrangementView`, the occlusion reserved region for the outer camera, and `visibilityPriority` for toolbar overflow.
 
 ## Conventions
 

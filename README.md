@@ -79,13 +79,13 @@ All four games implement `PixelGameProtocol` and render at 60 FPS in a SwiftUI `
   - Select/Start pills;
   - a speaker grille.
 - **Input timing:** buttons fire on touch-down for low latency, and D-Pad releases are sent to the games.
-- **Skins:** Classic Grey (free), Atomic Purple, Cyberpunk Neon and 90's Arcade Cabinet. Pick one from **SKINS** in the cartridge library; the console restyles immediately and the choice is saved.
+- **Skins:** Classic Grey (free), Atomic Purple, Cyberpunk Neon and 90's Arcade Cabinet. Pick one with **Skins** in the system toolbar (on either display); the console restyles immediately and the choice is saved.
 
 ---
 
 ## 💎 In-app purchases (StoreKit 2)
 
-The **STORE** in the cartridge library sells two non-consumables:
+**Store** in the system toolbar (on either display) sells two non-consumables:
 
 | Product | ID | Price | Unlocks |
 | :--- | :--- | :--- | :--- |
@@ -104,17 +104,17 @@ RetroCartridge/
 ├── Products.storekit                  # StoreKit test configuration
 ├── RetroCartridge/
 │   ├── App/
-│   │   ├── RetroCartridgeApp.swift    # @main UIKit entry, orientation-locked SwiftUI host, RootView
+│   │   ├── RetroCartridgeApp.swift    # @main UIKit entry, per-display orientation, RootView (NavigationStack)
 │   │   └── AppState.swift             # @Observable app state: active game, skin, overlays, high scores
 │   ├── Core/
 │   │   ├── AudioManager.swift         # Sequenced 3-channel chiptune synth (AVAudioEngine)
 │   │   ├── HapticManager.swift        # CoreHaptics transient feedback
-│   │   ├── HingeEngine.swift          # Hinge angle estimate + 90° unfold chime
+│   │   ├── HingeEngine.swift          # Smoothed hinge angle (onHingeChange) + 90° unfold chime
 │   │   └── PostureManager.swift       # Outer / inner display detection (DuoDisplay)
 │   ├── Layout/
-│   │   ├── AdaptiveConsoleLayout.swift # Routes to the cover or inner layout, fold/unfold behavior
+│   │   ├── AdaptiveConsoleLayout.swift # Cover vs inner routing, system toolbar, fold/unfold, hinge
 │   │   ├── CoverScreenLayout.swift    # Outer display: cartridge carousel
-│   │   └── FullScreenLayout.swift     # Inner display: library, console, store/skin overlays
+│   │   └── FullScreenLayout.swift     # Inner display: library, console split at the fold (FoldSplit)
 │   ├── Rendering/
 │   │   ├── CRTView.metal              # CRT layer-effect shader
 │   │   └── CRTEffect.swift            # SwiftUI bridge for the shader
@@ -124,7 +124,7 @@ RetroCartridge/
 │   │   ├── CartridgeView.swift        # Cartridge artwork, backdrop
 │   │   ├── SkinPickerView.swift       # Skin picker overlay
 │   │   ├── StoreView.swift            # Store overlay
-│   │   ├── OverlayPanel.swift         # Shared overlay panel chrome
+│   │   ├── OverlayPanel.swift         # Overlay panel chrome + LibraryOverlays (skin picker, store host)
 │   │   └── Skins/                     # SkinTheme definitions + console previews
 │   ├── Games/                         # PixelGameProtocol, factory, and the four games
 │   ├── Models/GameModels.swift        # Game, input, posture, skin and sound types
