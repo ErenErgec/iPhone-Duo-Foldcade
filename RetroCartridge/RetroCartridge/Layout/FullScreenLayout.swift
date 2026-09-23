@@ -28,11 +28,62 @@ public struct FullScreenLayout: View {
                     .transition(.opacity)
             }
 
+            // Skin picker and store are in-hierarchy overlays, never sheets:
+            // sheets would follow the scene's locked orientation instead of
+            // this display's counter-rotated one (see FixedOrientation).
+            if showsSkinPicker {
+                OverlayBackdrop { closeOverlay(\.isSkinSelectorVisible) }
+                    .transition(.opacity)
+                    .zIndex(10)
+                SkinPickerView()
+                    .transition(.overlayPanel)
+                    .zIndex(11)
+            }
+
+            if showsStore {
+                OverlayBackdrop { closeOverlay(\.isStoreVisible) }
+                    .transition(.opacity)
+                    .zIndex(12)
+                StoreView()
+                    .transition(.overlayPanel)
+                    .zIndex(13)
+            }
+
             if appState.isInsertingCartridge {
                 CartridgeInsertView()
+                    .zIndex(20)
             }
         }
         .animation(.easeInOut(duration: 0.3), value: appState.isGameActive)
+        .animation(Self.overlayAnimation, value: showsSkinPicker)
+        .animation(Self.overlayAnimation, value: showsStore)
+    }
+
+    // MARK: - Overlays
+
+    private static let overlayAnimation = Animation.spring(response: 0.38, dampingFraction: 0.86)
+
+    /// Overlays belong to the library, so they never cover a running console.
+    private var showsSkinPicker: Bool {
+        appState.isSkinSelectorVisible && !appState.isGameActive
+    }
+
+    private var showsStore: Bool {
+        appState.isStoreVisible && !appState.isGameActive
+    }
+
+    private func openOverlay(_ flag: ReferenceWritableKeyPath<AppState, Bool>) {
+        audioManager.playCartridgeClick()
+        hapticManager.playHaptic(.buttonPress)
+        withAnimation(Self.overlayAnimation) {
+            appState[keyPath: flag] = true
+        }
+    }
+
+    private func closeOverlay(_ flag: ReferenceWritableKeyPath<AppState, Bool>) {
+        withAnimation(Self.overlayAnimation) {
+            appState[keyPath: flag] = false
+        }
     }
 
     // MARK: - Console
@@ -70,6 +121,54 @@ public struct FullScreenLayout: View {
     // MARK: - Library
 
     private var library: some View {
+        ZStack(alignment: .top) {
+            libraryContent
+                .padding(32)
+                .padding(insets)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+            libraryHeader
+                .padding(.horizontal, 24)
+                .padding(.top, 20)
+                .padding(.top, insets.top)
+                .padding(.leading, insets.leading)
+                .padding(.trailing, insets.trailing)
+        }
+        .background(ConsoleBackdrop(glowColor: Color(hex: appState.selectedGameType.cartridgeColorHex)))
+    }
+
+    /// Top bar with the Skins and Store entry points.
+    private var libraryHeader: some View {
+        HStack(spacing: 10) {
+            Spacer(minLength: 0)
+
+            Button {
+                openOverlay(\.isSkinSelectorVisible)
+            } label: {
+                LibraryHeaderLabel(title: "SKINS", systemImage: "paintpalette.fill") {
+                    Circle()
+                        .fill(SkinManager.theme(for: appState.selectedSkin).bodyColor)
+                        .overlay(Circle().stroke(Color.white.opacity(0.5), lineWidth: 1))
+                        .frame(width: 10, height: 10)
+                }
+            }
+            .buttonStyle(CartridgePressStyle())
+            .accessibilityLabel("Skins")
+            .accessibilityValue(appState.selectedSkin.rawValue)
+
+            Button {
+                openOverlay(\.isStoreVisible)
+            } label: {
+                LibraryHeaderLabel(title: "STORE", systemImage: "bag.fill") {
+                    EmptyView()
+                }
+            }
+            .buttonStyle(CartridgePressStyle())
+            .accessibilityLabel("Store")
+        }
+    }
+
+    private var libraryContent: some View {
         VStack(spacing: 36) {
             VStack(spacing: 10) {
                 Text("RETRO CARTRIDGE")
@@ -99,10 +198,6 @@ public struct FullScreenLayout: View {
                 }
             }
         }
-        .padding(32)
-        .padding(insets)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(ConsoleBackdrop(glowColor: Color(hex: appState.selectedGameType.cartridgeColorHex)))
     }
     
     private func cartridgeButton(_ game: GameType) -> some View {
@@ -126,6 +221,33 @@ public struct FullScreenLayout: View {
             .frame(width: 170)
         }
         .buttonStyle(CartridgePressStyle())
+    }
+}
+
+// MARK: - Library header
+
+/// Capsule button label for the library's top bar.
+private struct LibraryHeaderLabel<Badge: View>: View {
+    let title: String
+    let systemImage: String
+    @ViewBuilder let badge: Badge
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: systemImage)
+                .font(.system(size: 13, weight: .bold))
+                .foregroundStyle(RetroPalette.phosphor)
+            Text(title)
+                .font(.system(size: 13, weight: .heavy, design: .monospaced))
+                .tracking(3)
+                .foregroundStyle(.white.opacity(0.85))
+            badge
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
+        .background(Capsule().fill(Color.white.opacity(0.06)))
+        .overlay(Capsule().stroke(Color.white.opacity(0.12), lineWidth: 1))
+        .contentShape(Capsule())
     }
 }
 
