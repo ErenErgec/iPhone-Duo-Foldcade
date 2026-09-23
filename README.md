@@ -29,15 +29,16 @@ The app strictly adheres to Apple’s official **Designing for iPhone Duo** guid
 ├──────────────────────────────┬──────────────────────────────┤
 │    5.4" Outer Display        │      7.6" Inner Display      │
 │     (Cover Screen)           │      (Full Dual Panel)       │
-│   • Compact Width            │   • Regular Width            │
-│   • Cartridge Selection      │   • 55% Upper: CRT Canvas    │
-│   • "Unfold to Play" prompt  │   • 45% Lower: Gamepad D-Pad │
+│   • Landscape, hinge on top  │   • Portrait, hinge centered │
+│   • Cartridge Selection      │   • Upper half: CRT Canvas   │
+│   • "Unfold to Play" prompt  │   • Lower half: Gamepad      │
 └──────────────────────────────┴──────────────────────────────┘
 ```
 
-1. **Size Classes as Layout Drivers (HIG Strict Requirement):**
-   - The hinge angle is **never** used to drive layout structures, navigation flows, or view switching.
-   - All spatial adaptation is governed by SwiftUI Environment Size Classes (`horizontalSizeClass` & `verticalSizeClass`) through `PostureManager`.
+1. **One Fixed Pose, No Rotation (HIG: games may lock orientation):**
+   - The console is held closed with the hinge on top and opened like a clamshell handheld. The inner display splits exactly at the hinge: CRT above, controller below.
+   - The app is locked to the system's portrait orientation on both displays, so iOS never rotates it or animates a rotation when folding. The outer display's layout is drawn turned 90° to sit landscape with the hinge on top (`AdaptiveConsoleLayout`).
+   - Which display is active is determined from the display's size (`PostureManager` / `DuoDisplay`); the hinge angle is **never** used to drive layout.
 2. **Hinge Angle for Continuous Visual Effects Only:**
    - `HingeEngine` supplies real-time, normalized hinge rotation (`0.0°` to `180.0°`) directly to the Metal CRT shader's arguments to modulate CRT curvature, glass barrel distortion, and scanline depth continuously as the user folds or unfolds the device.
 3. **Reserved Regions API Adaptation:**
@@ -107,7 +108,7 @@ RetroCartridge/
 │   └── AppState.swift                # @Observable central app state & persistent high scores
 ├── Core/
 │   ├── HingeEngine.swift             # Continuous hinge angle pipeline for shaders
-│   ├── PostureManager.swift          # HIG Size-Class posture tracking
+│   ├── PostureManager.swift          # Outer / inner display detection
 │   ├── HapticManager.swift           # CoreHaptics transient feedback engine
 │   └── AudioManager.swift            # 8-bit procedural tone synthesizer (AVAudioEngine)
 ├── Layout/

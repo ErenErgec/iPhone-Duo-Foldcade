@@ -66,6 +66,12 @@ final class AppState {
     
     // MARK: - Game Lifecycle
     
+    /// Insert a cartridge: create a fresh game of the given type and power on.
+    func startGame(type: GameType) {
+        selectedGameType = type
+        startGame(PixelGameEngine().createGame(type: type))
+    }
+    
     /// Start a new game session with the selected game type.
     func startGame(_ game: any PixelGameProtocol) {
         activeGame = game

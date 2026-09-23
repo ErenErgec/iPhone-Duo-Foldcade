@@ -14,6 +14,7 @@ extension SkinTheme {
         accentColor: Color(red: 255/255, green: 0, blue: 255/255), // #FF00FF
         textColor: .white,
         screenBorderColor: Color(red: 42/255, green: 8/255, blue: 69/255), // #2A0845
+        actionButtonColor: Color(hex: "#E040FB"), // bright orchid
         isTranslucent: true
     )
 }

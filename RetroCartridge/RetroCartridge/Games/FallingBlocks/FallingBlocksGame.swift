@@ -214,6 +214,10 @@ final class FallingBlocksGame: PixelGameProtocol {
     
     func handleInput(action: GameInputAction) {
         guard gameState == .playing else {
+            if action == .buttonStartPressed {
+                resume()
+                return
+            }
             if action == .buttonAPressed {
                 switch gameState {
                 case .menu, .gameOver:

@@ -26,7 +26,7 @@ final class RetroRacerGame: PixelGameProtocol {
     var spawnTimer: TimeInterval = 0
     var currentSpawnInterval: TimeInterval = 1.5
     
-    var framesSurvived: Int = 0
+    var survivalTime: TimeInterval = 0
     
     init() {
         reset()
@@ -35,8 +35,10 @@ final class RetroRacerGame: PixelGameProtocol {
     func update(deltaTime: TimeInterval) {
         guard gameState == .playing else { return }
         
-        framesSurvived += 1
-        if framesSurvived % 60 == 0 {
+        // One point per second survived, independent of frame rate
+        survivalTime += deltaTime
+        while survivalTime >= 1.0 {
+            survivalTime -= 1.0
             score += 1
         }
         
@@ -154,7 +156,7 @@ final class RetroRacerGame: PixelGameProtocol {
         playerLane = 1.0
         targetLane = 1
         obstacles.removeAll()
-        framesSurvived = 0
+        survivalTime = 0
         roadOffset = 0
     }
 }

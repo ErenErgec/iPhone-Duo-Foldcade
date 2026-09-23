@@ -110,6 +110,7 @@ final class BrickBreakerGame: PixelGameProtocol {
                 ball.history.removeFirst()
             }
             
+            let previousY = ball.y
             ball.x += ball.vx * deltaTime
             ball.y += ball.vy * deltaTime
             
@@ -123,9 +124,12 @@ final class BrickBreakerGame: PixelGameProtocol {
                 ball.y = 0
             }
             
-            // Paddle collision
-            if ball.y >= 0.9 && ball.y <= 0.92 && ball.vy > 0 {
+            // Paddle collision (swept: catches the ball even when a slow frame
+            // moves it past the paddle's top edge in a single step)
+            let paddleTop = 0.9
+            if ball.vy > 0 && previousY <= paddleTop && ball.y >= paddleTop {
                 if abs(ball.x - paddle.x) <= paddle.width / 2 {
+                    ball.y = paddleTop
                     ball.vy *= -1
                     // Adjust angle based on hit position
                     let hitFactor = (ball.x - paddle.x) / (paddle.width / 2)

@@ -13,6 +13,8 @@ struct SkinTheme: Equatable, Sendable {
     var accentColor: Color
     var textColor: Color
     var screenBorderColor: Color
+    /// Fill color of the A / B action buttons.
+    var actionButtonColor: Color
     var isTranslucent: Bool
 }
 

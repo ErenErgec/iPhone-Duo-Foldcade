@@ -121,6 +121,16 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
         }
     }
     
+    /// SF Symbol artwork printed on the cartridge label.
+    var symbolName: String {
+        switch self {
+        case .brickBreaker: return "square.grid.3x2.fill"
+        case .retroRacer: return "car.fill"
+        case .snake: return "scribble.variable"
+        case .fallingBlocks: return "square.stack.3d.down.right.fill"
+        }
+    }
+    
     /// Cartridge label color for the cover screen carousel.
     var cartridgeColorHex: String {
         switch self {

@@ -34,6 +34,7 @@
 		B6AD0B14BB189F075875626E /* AudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41630EE2C8E23B2EBA047508 /* AudioManager.swift */; };
 		BF9619FE16D8D74E9C083144 /* SnakeGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7452ACC5FA74499AC4196F9 /* SnakeGame.swift */; };
 		CDE684EEB5EAB5D02FA1609C /* CartridgeInsertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16EFF409B439157BB41C77AE /* CartridgeInsertView.swift */; };
+		A1C0DE0000000000000000A1 /* CartridgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0DE0000000000000000A2 /* CartridgeView.swift */; };
 		D2DDD4CE661F117CAF47450B /* HapticManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EC463497578DFADD618FA7 /* HapticManager.swift */; };
 		DCABA366CA692CE42077BAEC /* AtomicPurpleSkin.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2352D04E27E375DD1A10880 /* AtomicPurpleSkin.swift */; };
 		FC184BF79E8C70A9A2D41B64 /* PixelGameEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E3D648292B168D294C0233 /* PixelGameEngine.swift */; };
@@ -54,6 +55,7 @@
 		057CF93884D57447C526BAAB /* HingeEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HingeEngine.swift; sourceTree = "<group>"; };
 		10FBB5F77ED593D2B7C8320B /* CRTView.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = CRTView.metal; sourceTree = "<group>"; };
 		16EFF409B439157BB41C77AE /* CartridgeInsertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartridgeInsertView.swift; sourceTree = "<group>"; };
+		A1C0DE0000000000000000A2 /* CartridgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartridgeView.swift; sourceTree = "<group>"; };
 		17441286342C035B63E9C511 /* ControllerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControllerView.swift; sourceTree = "<group>"; };
 		2B489FE16F532DDEFE3D8D5D /* RetroCartridgeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RetroCartridgeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		330D5787E9BDD9DC543D33BE /* ReservedRegionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReservedRegionManager.swift; sourceTree = "<group>"; };
@@ -110,6 +112,7 @@
 			children = (
 				D64F4B44DC2A3D30C7CBE63D /* Skins */,
 				16EFF409B439157BB41C77AE /* CartridgeInsertView.swift */,
+				A1C0DE0000000000000000A2 /* CartridgeView.swift */,
 				17441286342C035B63E9C511 /* ControllerView.swift */,
 				87FEA080C926760FB3C162F5 /* GameCanvasView.swift */,
 			);
@@ -362,6 +365,7 @@
 				42E2B78F3434B46054A26EE6 /* CRTEffect.swift in Sources */,
 				7A7D41FBA09DA948C8CAA7C9 /* CRTView.metal in Sources */,
 				CDE684EEB5EAB5D02FA1609C /* CartridgeInsertView.swift in Sources */,
+				A1C0DE0000000000000000A1 /* CartridgeView.swift in Sources */,
 				194F0E4D015A7188FC1A0C00 /* ClassicGreySkin.swift in Sources */,
 				720656CE84DDB80C10FD63A2 /* ControllerView.swift in Sources */,
 				6227BA44799E531A7B669A2D /* CoverScreenLayout.swift in Sources */,

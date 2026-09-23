@@ -14,6 +14,7 @@ extension SkinTheme {
         accentColor: Color(red: 107/255, green: 123/255, blue: 141/255), // #6B7B8D
         textColor: Color(red: 44/255, green: 44/255, blue: 44/255), // #2C2C2C
         screenBorderColor: Color(red: 28/255, green: 28/255, blue: 28/255), // #1C1C1C
+        actionButtonColor: Color(hex: "#A8325E"), // deep magenta, like classic handheld A/B
         isTranslucent: false
     )
 }

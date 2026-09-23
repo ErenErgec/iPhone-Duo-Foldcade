@@ -105,19 +105,24 @@ final class SnakeGame: PixelGameProtocol {
         
         if gameState == .menu { return }
         
-        let cellW = size.width / Double(gridSize)
-        let cellH = size.height / Double(gridSize)
+        // Square cells, board centered on the screen
+        let cellSize = min(size.width, size.height) / Double(gridSize)
+        let cellW = cellSize
+        let cellH = cellSize
+        let boardX = (size.width - cellSize * Double(gridSize)) / 2
+        let boardY = (size.height - cellSize * Double(gridSize)) / 2
+        context.translateBy(x: boardX, y: boardY)
         
         // Grid
         for i in 0...gridSize {
             var path = Path()
             path.move(to: CGPoint(x: Double(i) * cellW, y: 0))
-            path.addLine(to: CGPoint(x: Double(i) * cellW, y: size.height))
+            path.addLine(to: CGPoint(x: Double(i) * cellW, y: cellH * Double(gridSize)))
             context.stroke(path, with: .color(Color(white: 0.1)), lineWidth: 1)
             
             var path2 = Path()
             path2.move(to: CGPoint(x: 0, y: Double(i) * cellH))
-            path2.addLine(to: CGPoint(x: size.width, y: Double(i) * cellH))
+            path2.addLine(to: CGPoint(x: cellW * Double(gridSize), y: Double(i) * cellH))
             context.stroke(path2, with: .color(Color(white: 0.1)), lineWidth: 1)
         }
         
