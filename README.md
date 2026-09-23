@@ -39,7 +39,7 @@ The app strictly adheres to Apple’s official **Designing for iPhone Duo** guid
    - The hinge angle is **never** used to drive layout structures, navigation flows, or view switching.
    - All spatial adaptation is governed by SwiftUI Environment Size Classes (`horizontalSizeClass` & `verticalSizeClass`) through `PostureManager`.
 2. **Hinge Angle for Continuous Visual Effects Only:**
-   - `HingeEngine` supplies real-time, normalized hinge rotation (`0.0°` to `180.0°`) directly to Metal fragment shader uniforms to modulate CRT curvature, glass barrel distortion, and scanline depth continuously as the user folds or unfolds the device.
+   - `HingeEngine` supplies real-time, normalized hinge rotation (`0.0°` to `180.0°`) directly to the Metal CRT shader's arguments to modulate CRT curvature, glass barrel distortion, and scanline depth continuously as the user folds or unfolds the device.
 3. **Reserved Regions API Adaptation:**
    - Wrapped by `ReservedRegionManager` to ensure zero critical game elements or controls collide with the physical hinge division and front camera occlusion boundaries.
 4. **Swift 6 Strict Concurrency & Modern Lifecycle:**
@@ -63,7 +63,7 @@ All four mini-games are built directly on top of `PixelGameProtocol` and rendere
 
 ## 📺 Metal CRT Nostalgia Engine
 
-A dedicated Metal 3 fragment shader (`CRTView.metal`) runs over the game canvas to reproduce the warmth and artifacts of 1990s Trinitron cathode-ray tubes:
+A dedicated Metal shader (`CRTView.metal`) is applied to the game canvas as a SwiftUI `layerEffect` to reproduce the warmth and artifacts of 1990s Trinitron cathode-ray tubes:
 
 * **Curvature / Barrel Distortion:** Radial UV warping dynamically modulated by hinge angle.
 * **Scanlines:** Parametric sinusoidal luminosity modulation matching target DPI.
@@ -116,9 +116,8 @@ RetroCartridge/
 │   ├── FullScreenLayout.swift        # 7.6" Inner dual-panel split console
 │   └── ReservedRegionManager.swift   # Hinge division & occlusion safety manager
 ├── Rendering/
-│   ├── CRTView.metal                 # Metal fragment shader (Curvature, Scanline, Bloom)
-│   ├── CRTShaderEngine.swift         # MTKView delegate & Metal pipeline manager
-│   └── CRTOverlayView.swift          # UIViewRepresentable SwiftUI bridge
+│   ├── CRTView.metal                 # Stitchable CRT shader (Curvature, Scanline, Bloom, Power-On)
+│   └── CRTEffect.swift               # SwiftUI .layerEffect bridge driven by the hinge angle
 ├── UI/
 │   ├── GameCanvasView.swift          # 60 FPS Canvas rendering loop
 │   ├── ControllerView.swift          # D-Pad, A/B buttons, and haptic triggers

@@ -9,6 +9,14 @@ import SwiftUI
 
 struct GameCanvasView: View {
     @Environment(AppState.self) private var appState
+    @Environment(HingeEngine.self) private var hingeEngine
+    
+    /// When the CRT power-on animation started. This view is created fresh
+    /// for each game session, so every cartridge gets its own power-on.
+    @State private var powerOnStart = Date()
+    
+    /// Duration of the CRT power-on animation, in seconds.
+    private let powerOnDuration: TimeInterval = 0.9
     
     init() {}
     
@@ -29,6 +37,10 @@ struct GameCanvasView: View {
                     Canvas { context, size in
                         activeGame.render(context: &context, size: size)
                     }
+                    .crtEffect(
+                        hingeAngle: hingeEngine.hingeAngle,
+                        powerOnProgress: timeline.date.timeIntervalSince(powerOnStart) / powerOnDuration
+                    )
                     .onChange(of: timeline.date) { oldDate, newDate in
                         let delta = newDate.timeIntervalSince(oldDate)
                         activeGame.update(deltaTime: min(max(delta, 0), 0.05))

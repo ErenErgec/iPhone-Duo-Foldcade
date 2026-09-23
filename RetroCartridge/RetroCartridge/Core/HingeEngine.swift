@@ -12,7 +12,8 @@ final class HingeEngine {
     /// The current hinge angle (0.0 = closed, 180.0 = fully flat).
     /// Used ONLY for visual effects (CRT shader uniforms, parallax).
     /// MUST NOT be used for layout decisions.
-    private(set) var hingeAngle: Float = 0.0 {
+    /// Defaults to flat until a hinge data source reports otherwise.
+    private(set) var hingeAngle: Float = 180.0 {
         didSet {
             normalizedAngle = hingeAngle / 180.0
             isPast90Degrees = hingeAngle >= 90.0
@@ -21,10 +22,10 @@ final class HingeEngine {
     }
     
     /// Normalized angle from 0.0 to 1.0 for easy shader interpolation.
-    private(set) var normalizedAngle: Float = 0.0
+    private(set) var normalizedAngle: Float = 1.0
     
     /// Indicates if the angle crossed the 90 degree threshold (useful for audio triggers).
-    private(set) var isPast90Degrees: Bool = false
+    private(set) var isPast90Degrees: Bool = true
     
     /// Indicates if the device is currently unfolding.
     private(set) var isUnfolding: Bool = false
@@ -33,7 +34,7 @@ final class HingeEngine {
     var isSimulated: Bool = false
     
     /// Provides a way to manually control the angle when simulated.
-    var simulatedAngle: Float = 0.0 {
+    var simulatedAngle: Float = 180.0 {
         didSet {
             if isSimulated {
                 hingeAngle = simulatedAngle

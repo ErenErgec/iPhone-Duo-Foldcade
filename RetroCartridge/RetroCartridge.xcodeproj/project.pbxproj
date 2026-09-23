@@ -16,7 +16,7 @@
 		317FDB0AE36753EDB8ED23CE /* AdaptiveConsoleLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA27B4C7888D630FC1CB6A14 /* AdaptiveConsoleLayout.swift */; };
 		349DA3AFA1F86A358B2BA421 /* PostureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99CD56444E0BB80576F0C69C /* PostureManager.swift */; };
 		40CFAA3D64F6C7F99611C3F5 /* FallingBlocksGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C771A7C9DA44D0724C6BE05 /* FallingBlocksGame.swift */; };
-		42E2B78F3434B46054A26EE6 /* CRTOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B785C2862CE1B74D356292D5 /* CRTOverlayView.swift */; };
+		42E2B78F3434B46054A26EE6 /* CRTEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = B785C2862CE1B74D356292D5 /* CRTEffect.swift */; };
 		6227BA44799E531A7B669A2D /* CoverScreenLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9472082A726EB2301BA9DAE /* CoverScreenLayout.swift */; };
 		67697161ED6B40C49A4BF984 /* RetroRacerGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2C06205181611616C320AC /* RetroRacerGame.swift */; };
 		677B8DF4217D3EED21CB1C41 /* GameModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A94F773C118BCA1DC991 /* GameModels.swift */; };
@@ -29,7 +29,6 @@
 		822ECC45A4F7783AD19720A1 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B5935D4B827FAE24E833944 /* AppState.swift */; };
 		94B5F68851B8676CD7BCF5A8 /* FullScreenLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B23F57A66C8E9E0E092556C0 /* FullScreenLayout.swift */; };
 		98718E16D8A934DE36C9A9D3 /* ArcadeCabinetSkin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFDC1F90D883742F4094239E /* ArcadeCabinetSkin.swift */; };
-		9F04A22B5E7BDDC49A834120 /* CRTShaderEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 802B4F040A7D4DB9FFAEDFF6 /* CRTShaderEngine.swift */; };
 		A3B0B18BE56C9CC15F89549C /* RetroCartridgeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358C28E72C0EEED6770E46F7 /* RetroCartridgeTests.swift */; };
 		ADB0CCD71E9D30600FBF6354 /* RetroCartridgeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ADAAB3AEB6AFE62CD5E57D /* RetroCartridgeApp.swift */; };
 		B6AD0B14BB189F075875626E /* AudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41630EE2C8E23B2EBA047508 /* AudioManager.swift */; };
@@ -66,7 +65,6 @@
 		5DB3B5EC34BF03D07581096A /* RetroCartridge.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RetroCartridge.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		74DA9A9C713F68BA96D486CC /* SkinManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkinManager.swift; sourceTree = "<group>"; };
 		7B5935D4B827FAE24E833944 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
-		802B4F040A7D4DB9FFAEDFF6 /* CRTShaderEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CRTShaderEngine.swift; sourceTree = "<group>"; };
 		84E3D648292B168D294C0233 /* PixelGameEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelGameEngine.swift; sourceTree = "<group>"; };
 		87FEA080C926760FB3C162F5 /* GameCanvasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCanvasView.swift; sourceTree = "<group>"; };
 		8C2C06205181611616C320AC /* RetroRacerGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetroRacerGame.swift; sourceTree = "<group>"; };
@@ -75,7 +73,7 @@
 		A7452ACC5FA74499AC4196F9 /* SnakeGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnakeGame.swift; sourceTree = "<group>"; };
 		A948A94F773C118BCA1DC991 /* GameModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameModels.swift; sourceTree = "<group>"; };
 		B23F57A66C8E9E0E092556C0 /* FullScreenLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullScreenLayout.swift; sourceTree = "<group>"; };
-		B785C2862CE1B74D356292D5 /* CRTOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CRTOverlayView.swift; sourceTree = "<group>"; };
+		B785C2862CE1B74D356292D5 /* CRTEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CRTEffect.swift; sourceTree = "<group>"; };
 		C2EC463497578DFADD618FA7 /* HapticManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticManager.swift; sourceTree = "<group>"; };
 		C9ADAAB3AEB6AFE62CD5E57D /* RetroCartridgeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetroCartridgeApp.swift; sourceTree = "<group>"; };
 		CEB7C8D18F05AF96EE9A28DD /* PixelGameProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelGameProtocol.swift; sourceTree = "<group>"; };
@@ -260,8 +258,7 @@
 		F0C79CF574B68702CB265F7A /* Rendering */ = {
 			isa = PBXGroup;
 			children = (
-				B785C2862CE1B74D356292D5 /* CRTOverlayView.swift */,
-				802B4F040A7D4DB9FFAEDFF6 /* CRTShaderEngine.swift */,
+				B785C2862CE1B74D356292D5 /* CRTEffect.swift */,
 				10FBB5F77ED593D2B7C8320B /* CRTView.metal */,
 			);
 			path = Rendering;
@@ -362,8 +359,7 @@
 				DCABA366CA692CE42077BAEC /* AtomicPurpleSkin.swift in Sources */,
 				B6AD0B14BB189F075875626E /* AudioManager.swift in Sources */,
 				2061C3D92333D50207BB2984 /* BrickBreakerGame.swift in Sources */,
-				42E2B78F3434B46054A26EE6 /* CRTOverlayView.swift in Sources */,
-				9F04A22B5E7BDDC49A834120 /* CRTShaderEngine.swift in Sources */,
+				42E2B78F3434B46054A26EE6 /* CRTEffect.swift in Sources */,
 				7A7D41FBA09DA948C8CAA7C9 /* CRTView.metal in Sources */,
 				CDE684EEB5EAB5D02FA1609C /* CartridgeInsertView.swift in Sources */,
 				194F0E4D015A7188FC1A0C00 /* ClassicGreySkin.swift in Sources */,

@@ -1,112 +1,72 @@
 // CRTView.metal
 // RetroCartridge
 //
-// Metal shaders for rendering realistic CRT effects.
+// SwiftUI layer-effect shader that renders the game canvas through a
+// curved CRT tube: barrel distortion, power-on beam, chromatic aberration,
+// phosphor glow, scanlines and vignette.
 
 #include <metal_stdlib>
+#include <SwiftUI/SwiftUI_Metal.h>
 using namespace metal;
 
-struct CRTUniforms {
-    float2 resolution;
-    float hingeAngle;
-    float normalizedAngle;
-    float time;
-    float scanlineDensity;
-    float curvatureStrength;
-    float chromaticAberrationOffset;
-    float glowIntensity;
-    float powerOnProgress;
-};
+/// - Parameters:
+///   - position: Current pixel position in the view's user space (points).
+///   - layer: The rasterized game canvas.
+///   - bounds: The view's bounding rect (x, y, width, height).
+///   - curvature: Barrel distortion strength (driven by the hinge angle).
+///   - powerOn: Power-on animation progress, 0 = off, 1 = fully on.
+[[ stitchable ]] half4 crtEffect(float2 position,
+                                 SwiftUI::Layer layer,
+                                 float4 bounds,
+                                 float curvature,
+                                 float powerOn) {
+    float2 size = bounds.zw;
+    float2 uv = (position - bounds.xy) / size;
 
-struct CRTVertexOut {
-    float4 position [[position]];
-    float2 texCoord;
-};
-
-vertex CRTVertexOut crtVertexShader(uint vertexID [[vertex_id]]) {
-    const float2 positions[4] = {
-        float2(-1.0, -1.0),
-        float2( 1.0, -1.0),
-        float2(-1.0,  1.0),
-        float2( 1.0,  1.0)
-    };
-    
-    const float2 texCoords[4] = {
-        float2(0.0, 1.0),
-        float2(1.0, 1.0),
-        float2(0.0, 0.0),
-        float2(1.0, 0.0)
-    };
-    
-    CRTVertexOut out;
-    out.position = float4(positions[vertexID], 0.0, 1.0);
-    out.texCoord = texCoords[vertexID];
-    return out;
-}
-
-fragment float4 crtFragmentShader(CRTVertexOut in [[stage_in]],
-                                  texture2d<float> gameTexture [[texture(0)]],
-                                  constant CRTUniforms& uniforms [[buffer(0)]]) {
-    
-    constexpr sampler textureSampler(mag_filter::linear, min_filter::linear);
-    float2 uv = in.texCoord;
-    
     // 1. Barrel Distortion (CRT Curvature)
-    float2 centeredUV = uv * 2.0 - 1.0;
-    float offset = dot(centeredUV, centeredUV);
-    float activeCurvature = mix(uniforms.curvatureStrength, 0.0, uniforms.normalizedAngle);
-    float2 curvedUV = centeredUV + centeredUV * offset * activeCurvature;
-    uv = curvedUV * 0.5 + 0.5;
-    
-    // Transparent outside the curved area so the underlying console shows
-    if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) {
-        return float4(0.0, 0.0, 0.0, 0.0);
+    float2 centered = uv * 2.0 - 1.0;
+    float2 curved = centered + centered * dot(centered, centered) * curvature;
+
+    // Transparent outside the curved tube so the bezel behind shows through
+    if (abs(curved.x) > 1.0 || abs(curved.y) > 1.0) {
+        return half4(0.0);
     }
-    
-    // 2. Power-On Flash
-    if (uniforms.powerOnProgress < 1.0) {
-        float progress = uniforms.powerOnProgress;
-        float height = mix(0.01, 1.0, progress); 
-        float width = mix(0.05, 1.0, progress);
-        
-        float distY = abs(uv.y - 0.5) * 2.0;
-        float distX = abs(uv.x - 0.5) * 2.0;
-        
-        if (distY > height || distX > width) {
-            return float4(0.0, 0.0, 0.0, 1.0);
-        }
-        
-        if (progress < 0.5) {
-            return float4(1.0, 1.0, 1.0, 1.0);
+
+    // 2. Power-On: a horizontal beam widens, then opens vertically
+    if (powerOn < 1.0) {
+        float beamWidth = max(smoothstep(0.0, 0.3, powerOn), 0.02);
+        float beamHeight = max(smoothstep(0.3, 0.7, powerOn), 0.004);
+        if (abs(curved.x) > beamWidth || abs(curved.y) > beamHeight) {
+            return half4(0.0, 0.0, 0.0, 1.0);
         }
     }
-    
-    // 4. Chromatic Aberration
-    float rOffset = uniforms.chromaticAberrationOffset * activeCurvature;
-    float bOffset = -uniforms.chromaticAberrationOffset * activeCurvature;
-    float r = gameTexture.sample(textureSampler, uv + float2(rOffset, 0.0)).r;
-    float g = gameTexture.sample(textureSampler, uv).g;
-    float b = gameTexture.sample(textureSampler, uv + float2(bOffset, 0.0)).b;
-    float3 color = float3(r, g, b);
-    
-    // 5. Phosphor Glow
-    float3 glow = float3(0.0);
-    glow += gameTexture.sample(textureSampler, uv + float2(0.002, 0.002)).rgb;
-    glow += gameTexture.sample(textureSampler, uv + float2(-0.002, -0.002)).rgb;
-    glow += gameTexture.sample(textureSampler, uv + float2(0.002, -0.002)).rgb;
-    glow += gameTexture.sample(textureSampler, uv + float2(-0.002, 0.002)).rgb;
-    glow *= 0.25;
-    color = mix(color, glow, uniforms.glowIntensity);
-    
-    // 3. Scanlines
-    float scanlineY = uv.y * uniforms.resolution.y * uniforms.scanlineDensity;
-    float scanline = sin(scanlineY * 3.14159) * 0.15;
-    color -= scanline;
-    
+
+    float2 samplePos = bounds.xy + (curved * 0.5 + 0.5) * size;
+
+    // 3. Chromatic Aberration, growing towards the tube edges
+    float2 aberration = curved * curvature * 6.0;
+    float3 color = float3(layer.sample(samplePos + aberration).r,
+                          layer.sample(samplePos).g,
+                          layer.sample(samplePos - aberration).b);
+
+    // 4. Phosphor Glow
+    float3 glow = float3(layer.sample(samplePos + float2( 1.5,  1.5)).rgb)
+                + float3(layer.sample(samplePos + float2(-1.5, -1.5)).rgb)
+                + float3(layer.sample(samplePos + float2( 1.5, -1.5)).rgb)
+                + float3(layer.sample(samplePos + float2(-1.5,  1.5)).rgb);
+    color = mix(color, glow * 0.25, 0.2);
+
+    // 5. Scanlines (one dark line every 3pt)
+    float scanline = 0.5 + 0.5 * sin(position.y * M_PI_F / 1.5);
+    color *= 1.0 - 0.18 * scanline;
+
     // 6. Vignette
-    float vignette = 1.0 - smoothstep(0.5, 1.5, length(centeredUV));
-    color *= vignette;
-    
-    // Return fully opaque screen pixels
-    return float4(color, 1.0);
+    color *= 1.0 - smoothstep(0.7, 1.45, length(curved));
+
+    // Power-on white flash fading into the picture
+    if (powerOn < 1.0) {
+        color = mix(color, float3(1.0), 1.0 - smoothstep(0.55, 1.0, powerOn));
+    }
+
+    return half4(half3(color), 1.0);
 }
