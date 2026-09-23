@@ -31,17 +31,14 @@
 
 ## 📐 How the iPhone Duo integration works
 
-1. **One fixed pose, no rotation.**
-   - The root `ConsoleHostingController` sets `prefersInterfaceOrientationLocked` (iOS 26+), so the system never rotates the app, or plays a rotation animation, when the device is folded or turned. Apple's HIG allows games to lock orientation.
-   - `FixedOrientation` then pins each display's layout to the physical panel, whatever orientation the scene was locked in.
-2. **Display detection by size.** `PostureManager` / `DuoDisplay` tell the outer display (≈466×678 pt) from the inner one (≈669×871 pt) using the full screen size. Size classes aren't used, because they change with orientation.
-3. **Hinge angle for visuals only.**
-   - iOS 27 has no public hinge-angle API. `HingeEngine` derives the angle from the display posture: outer = 0°, inner = 180°.
-   - A spring smooths the change into a sweep that bends the CRT curvature, scanlines and vignette.
-   - An 8-bit chime and haptic click play when the sweep passes 90° while unfolding.
-   - The angle never drives layout.
-4. **System side column.** iPhone Duo reserves a column on the side of each display for the camera, Dynamic Island and status bar. Apps can't draw there, so the app keeps the status bar visible there rather than leaving the column empty.
-5. **No sheets or alerts.** UIKit presents these in the scene's locked orientation, not in the pinned layout's orientation, so they would appear sideways. The store and skin picker are in-hierarchy overlays instead.
+See [DESIGN.md](DESIGN.md) for Apple's guidance and our measurements.
+
+1. **Full screen:** built with the iOS 27.1 SDK, so the app extends to every edge of both displays, including under the status bar and camera column.
+2. **Outer display:** locked to the landscape orientation that puts the hinge on top. iPhone Duo honors orientation locks on the outer display.
+3. **Inner display:** iPhone Duo doesn't honor orientation locks here, so the console adapts. It splits exactly at the fold, using the fold's reserved region: CRT above and controls below in portrait (the laptop/clamshell pose), side by side in landscape (book pose).
+4. **Vertical controls:** the app name, **Skins** and **Store** are standard toolbar items. iPhone Duo lays them out vertically in the column beside the camera and status bar, or as a top bar on the inner display in portrait. A running console hides the bars for an immersive screen.
+5. **Hinge:** `onHingeChange` (iOS 27.1) drives the CRT curvature and an 8-bit chime with a haptic click when the hinge passes 90°. It is used for visuals only; layout uses reserved regions.
+6. **Display detection by size:** `PostureManager` / `DuoDisplay` tell the outer display (≈678×466 pt) from the inner one (≈669×951 pt).
 
 ---
 
@@ -116,7 +113,6 @@ RetroCartridge/
 │   │   └── PostureManager.swift       # Outer / inner display detection (DuoDisplay)
 │   ├── Layout/
 │   │   ├── AdaptiveConsoleLayout.swift # Routes to the cover or inner layout, fold/unfold behavior
-│   │   ├── FixedOrientation.swift     # Pins a layout to its physical display
 │   │   ├── CoverScreenLayout.swift    # Outer display: cartridge carousel
 │   │   └── FullScreenLayout.swift     # Inner display: library, console, store/skin overlays
 │   ├── Rendering/
@@ -134,6 +130,7 @@ RetroCartridge/
 │   ├── Models/GameModels.swift        # Game, input, posture, skin and sound types
 │   └── Store/                         # StoreManager + product identifiers
 └── RetroCartridgeTests/               # Unit tests
+DESIGN.md                              # iPhone Duo platform reference: Apple guidance + measurements
 docs/                                  # Original planning documents (historical, not kept up to date)
 ```
 
@@ -142,7 +139,7 @@ docs/                                  # Original planning documents (historical
 ## 🚀 Building & running
 
 ### Requirements
-- Xcode 27 with the iOS 27 SDK and simulator runtime
+- **Xcode 27.1 or later** with the iOS 27.1 SDK and simulator runtime. Earlier SDKs don't get full-screen layout, vertical bars or the Duo APIs; see [DESIGN.md](DESIGN.md).
 - The **iPhone Duo** simulator
 - Metal Toolchain (`xcodebuild -downloadComponent MetalToolchain`) if Xcode asks for it
 
@@ -156,11 +153,10 @@ open iPhone-Duo-RetroCartridge/RetroCartridge/RetroCartridge.xcodeproj
 3. To test purchases, run from Xcode and make sure *Edit Scheme → Run → Options → StoreKit Configuration* is set to `Products.storekit`.
 
 ### Tests
-Unit tests run on any iOS 27 iPhone simulator, e.g.:
 ```bash
-xcodebuild -project RetroCartridge/RetroCartridge.xcodeproj -scheme RetroCartridge -destination 'platform=iOS Simulator,name=iPhone 17,OS=27.0' test
+xcodebuild -project RetroCartridge/RetroCartridge.xcodeproj -scheme RetroCartridge -destination 'platform=iOS Simulator,name=iPhone Duo,OS=27.1' test
 ```
-`xcodebuild test` currently hangs on the iPhone Duo simulator, so use another device for tests.
+The iOS 27.1 simulator runtime only supports iPhone Duo.
 
 ---
 
