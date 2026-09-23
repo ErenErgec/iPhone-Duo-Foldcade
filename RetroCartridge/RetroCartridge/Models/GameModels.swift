@@ -30,7 +30,6 @@ enum GameInputAction: Equatable {
     case dpadRightReleased
     case dpadUpReleased
     case dpadDownReleased
-    case dpadRelease
     
     // Action buttons (press)
     case buttonAPressed
@@ -43,33 +42,19 @@ enum GameInputAction: Equatable {
     // System buttons
     case buttonStartPressed
     case buttonSelectPressed
-    
-    // MARK: - Convenience aliases used by ControllerView
-    
-    static var up: GameInputAction { .dpadUpPressed }
-    static var down: GameInputAction { .dpadDownPressed }
-    static var left: GameInputAction { .dpadLeftPressed }
-    static var right: GameInputAction { .dpadRightPressed }
-    static var a: GameInputAction { .buttonAPressed }
-    static var b: GameInputAction { .buttonBPressed }
-    static var start: GameInputAction { .buttonStartPressed }
-    static var select: GameInputAction { .buttonSelectPressed }
 }
 
 // MARK: - Device Posture
 
-/// Represents the physical posture of the iPhone Duo.
-/// Used by PostureManager for layout decisions.
-/// Note: Layout decisions use Size Classes, NOT hinge angle (per Apple HIG).
+/// Represents the physical posture of the iPhone Duo, derived by
+/// PostureManager from which display the app is on (never from the hinge angle).
 enum DevicePosture: Equatable, CustomStringConvertible {
     case closed
-    case halfOpened
     case fullyOpen
     
     var description: String {
         switch self {
         case .closed: return "Closed"
-        case .halfOpened: return "Half-Opened (Tabletop)"
         case .fullyOpen: return "Fully Open"
         }
     }
@@ -147,7 +132,6 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
 /// Identifies haptic feedback patterns for different interactions.
 enum HapticEventType {
     case buttonPress          // D-Pad & action buttons
-    case buttonRelease        // Button release feedback
     case cartridgeInsert      // Cartridge slot-in moment
     case hingeClick           // Hinge close mechanical click
     case gameEvent            // In-game collision, line clear, etc.

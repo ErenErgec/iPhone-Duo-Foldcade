@@ -48,11 +48,6 @@ public struct FullScreenLayout: View {
                     .transition(.overlayPanel)
                     .zIndex(13)
             }
-
-            if appState.isInsertingCartridge {
-                CartridgeInsertView()
-                    .zIndex(20)
-            }
         }
         .animation(.easeInOut(duration: 0.3), value: appState.isGameActive)
         .animation(Self.overlayAnimation, value: showsSkinPicker)

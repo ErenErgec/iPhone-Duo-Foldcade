@@ -181,7 +181,6 @@ final class HingeEngine {
     private static func angle(for posture: DevicePosture) -> Float {
         switch posture {
         case .closed: 0
-        case .halfOpened: 110
         case .fullyOpen: 180
         }
     }

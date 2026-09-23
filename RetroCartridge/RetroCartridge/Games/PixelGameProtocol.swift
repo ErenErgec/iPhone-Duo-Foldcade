@@ -2,7 +2,7 @@
 // RetroCartridge
 //
 // Common protocol for all retro mini-games.
-// Each game conforms to this protocol and is managed by PixelGameEngine.
+// Each game conforms to this protocol and is created by PixelGameEngine.
 
 import SwiftUI
 
@@ -96,33 +96,5 @@ extension PixelGameProtocol {
         let sounds = pendingSounds
         pendingSounds = []
         return sounds
-    }
-}
-
-// MARK: - Grid Helpers
-
-/// A position on the pixel game grid.
-struct GridPosition: Equatable, Hashable {
-    var x: Int
-    var y: Int
-    
-    static func + (lhs: GridPosition, rhs: GridPosition) -> GridPosition {
-        GridPosition(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
-    }
-}
-
-/// A floating-point position for smooth movement in pixel games.
-struct GameVector: Equatable {
-    var x: CGFloat
-    var y: CGFloat
-    
-    static let zero = GameVector(x: 0, y: 0)
-    
-    static func + (lhs: GameVector, rhs: GameVector) -> GameVector {
-        GameVector(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
-    }
-    
-    static func * (lhs: GameVector, rhs: CGFloat) -> GameVector {
-        GameVector(x: lhs.x * rhs, y: lhs.y * rhs)
     }
 }

@@ -42,12 +42,6 @@ final class AppState {
     
     // MARK: - UI State
     
-    /// Whether the cartridge insertion animation is currently playing.
-    var isInsertingCartridge: Bool = false
-    
-    /// Whether the CRT power-on animation has completed.
-    var hasPoweredOn: Bool = false
-    
     /// Whether the store overlay is visible (drawn in-hierarchy by the library,
     /// never as a sheet, so it follows the pinned display orientation).
     var isStoreVisible: Bool = false
@@ -75,17 +69,15 @@ final class AppState {
     /// Insert a cartridge: create a fresh game of the given type and power on.
     func startGame(type: GameType) {
         selectedGameType = type
-        startGame(PixelGameEngine().createGame(type: type))
+        startGame(PixelGameEngine.createGame(type: type))
     }
     
     /// Start a new game session with the selected game type.
     func startGame(_ game: any PixelGameProtocol) {
         activeGame = game
-        isInsertingCartridge = false
         // Library overlays shouldn't reappear when the cartridge is ejected.
         isStoreVisible = false
         isSkinSelectorVisible = false
-        hasPoweredOn = true
     }
     
     /// End the current game session and return to menu.
@@ -94,16 +86,10 @@ final class AppState {
             updateHighScore(game.score, for: game.gameType)
         }
         activeGame = nil
-        hasPoweredOn = false
     }
     
     /// Pause the active game (e.g., on fold/background).
     func pauseActiveGame() {
         activeGame?.pause()
-    }
-    
-    /// Resume the active game.
-    func resumeActiveGame() {
-        activeGame?.resume()
     }
 }

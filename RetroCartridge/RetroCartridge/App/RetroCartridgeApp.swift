@@ -45,10 +45,14 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 /// Hosts the SwiftUI console and keeps the system from ever rotating it.
 /// `FixedOrientation` pins each layout to its display for whatever
 /// orientation the scene happens to be locked in.
+///
+/// The status bar stays visible: on iPhone Duo it lives in the system's
+/// reserved side column (with the camera and Dynamic Island), which apps
+/// can't draw into, so hiding it would only leave that column empty.
 final class ConsoleHostingController: UIHostingController<RootView> {
     override var prefersInterfaceOrientationLocked: Bool { true }
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask { .all }
-    override var prefersStatusBarHidden: Bool { true }
+    override var preferredStatusBarStyle: UIStatusBarStyle { .lightContent }
     override var prefersHomeIndicatorAutoHidden: Bool { true }
 }
 

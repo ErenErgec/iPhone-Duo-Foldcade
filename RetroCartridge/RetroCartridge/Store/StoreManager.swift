@@ -2,8 +2,6 @@
 //  StoreManager.swift
 //  RetroCartridge
 //
-//  Created by AI on 2026-09-22.
-//
 
 import Foundation
 import StoreKit

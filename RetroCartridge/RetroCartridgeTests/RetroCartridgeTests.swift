@@ -1,7 +1,7 @@
 // RetroCartridgeTests.swift
 // RetroCartridgeTests
 //
-// Placeholder test file for the RetroCartridge test target.
+// Unit tests for app state, display detection and game metadata.
 
 import XCTest
 @testable import RetroCartridge
@@ -13,8 +13,6 @@ final class RetroCartridgeTests: XCTestCase {
         XCTAssertEqual(appState.selectedGameType, .brickBreaker)
         XCTAssertNil(appState.activeGame)
         XCTAssertFalse(appState.isGameActive)
-        XCTAssertFalse(appState.isInsertingCartridge)
-        XCTAssertFalse(appState.hasPoweredOn)
     }
     
     func testPostureManagerDefaults() {
@@ -37,10 +35,8 @@ final class RetroCartridgeTests: XCTestCase {
         posture.updateDisplay(fullScreenSize: CGSize(width: 669, height: 871))
         XCTAssertFalse(posture.isCompactWidth)
         XCTAssertEqual(posture.currentPosture, .fullyOpen)
-        
-        // Regular iPhone falls back to the compact cover layout
-        posture.updateDisplay(fullScreenSize: CGSize(width: 440, height: 956))
-        XCTAssertTrue(posture.isCompactWidth)
+        posture.updateDisplay(fullScreenSize: CGSize(width: 871, height: 669))
+        XCTAssertFalse(posture.isCompactWidth)
     }
     
     func testGameTypeMetadata() {

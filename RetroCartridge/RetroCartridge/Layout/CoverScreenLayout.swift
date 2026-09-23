@@ -17,44 +17,27 @@ public struct CoverScreenLayout: View {
 
     public var body: some View {
         GeometryReader { geo in
-            if geo.size.width > geo.size.height {
-                // Hinge-on-top pose: cartridge on the left, details on the right
-                HStack(spacing: 0) {
-                    carousel(cartridgeWidth: min(geo.size.height * 0.72 * CartridgeView.aspectRatio, geo.size.width * 0.4))
-                        .frame(width: geo.size.width * 0.48)
-
-                    VStack(alignment: .leading, spacing: 0) {
-                        wordmark
-                        Spacer()
-                        details(alignment: .leading)
-                        pageIndicator
-                            .padding(.top, 16)
-                        Spacer()
-                        unfoldPrompt
-                    }
-                    .padding(.vertical, 24)
-                    .padding(.trailing, 20)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                }
-            } else {
-                // Fallback for portrait-shaped screens
-                VStack(spacing: 0) {
+            // Hinge-on-top pose: cartridge on the left, details on the right
+            HStack(spacing: 0) {
+                carousel(cartridgeWidth: min(geo.size.height * 0.72 * CartridgeView.aspectRatio, geo.size.width * 0.4))
+                    .frame(width: geo.size.width * 0.48)
+                
+                VStack(alignment: .leading, spacing: 0) {
                     wordmark
-                        .padding(.top, 12)
-                    carousel(cartridgeWidth: geo.size.width * 0.6)
-                        .frame(height: geo.size.height * 0.58)
-                    details(alignment: .center)
+                    Spacer()
+                    details(alignment: .leading)
                     pageIndicator
-                        .padding(.top, 18)
+                        .padding(.top, 16)
                     Spacer()
                     unfoldPrompt
-                        .padding(.bottom, 28)
                 }
-                .frame(maxWidth: .infinity)
+                .padding(.vertical, 24)
+                .padding(.trailing, 20)
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
     }
-
+    
     // MARK: - Pieces
 
     private var wordmark: some View {
