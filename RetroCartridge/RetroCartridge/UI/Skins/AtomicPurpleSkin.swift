@@ -1,0 +1,19 @@
+//
+//  AtomicPurpleSkin.swift
+//  RetroCartridge
+//
+//  Created by AI on 2026-09-22.
+//
+
+import SwiftUI
+
+extension SkinTheme {
+    static let atomicPurple = SkinTheme(
+        bodyColor: Color(red: 123/255, green: 47/255, blue: 190/255).opacity(0.7), // #7B2FBE, 0.7 opacity
+        buttonColor: Color(red: 74/255, green: 14/255, blue: 120/255), // #4A0E78
+        accentColor: Color(red: 255/255, green: 0, blue: 255/255), // #FF00FF
+        textColor: .white,
+        screenBorderColor: Color(red: 42/255, green: 8/255, blue: 69/255), // #2A0845
+        isTranslucent: true
+    )
+}
