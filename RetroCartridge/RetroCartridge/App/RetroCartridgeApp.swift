@@ -98,8 +98,14 @@ struct RootView: View {
         // Start haptic engine
         hapticManager.prepareEngine()
 
-        // Start listening for hinge angle changes (for shader effects)
-        hingeEngine.startListening()
+        // Chime and click when the hinge swings past 90° while unfolding
+        hingeEngine.onUnfoldPast90Degrees = { [audioManager, hapticManager] in
+            audioManager.playHingeSnap()
+            hapticManager.playHaptic(.hingeClick)
+        }
+
+        // Start deriving the hinge angle from the display posture (for shader effects)
+        hingeEngine.startListening(following: postureManager)
 
         // Load StoreKit products
         Task {

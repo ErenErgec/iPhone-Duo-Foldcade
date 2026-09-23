@@ -14,11 +14,14 @@ using namespace metal;
 ///   - layer: The rasterized game canvas.
 ///   - bounds: The view's bounding rect (x, y, width, height).
 ///   - curvature: Barrel distortion strength (driven by the hinge angle).
+///   - fold: How far the device is folded, 0 = flat, 1 = closed. Deepens the
+///     scanlines and the vignette as the device folds.
 ///   - powerOn: Power-on animation progress, 0 = off, 1 = fully on.
 [[ stitchable ]] half4 crtEffect(float2 position,
                                  SwiftUI::Layer layer,
                                  float4 bounds,
                                  float curvature,
+                                 float fold,
                                  float powerOn) {
     float2 size = bounds.zw;
     float2 uv = (position - bounds.xy) / size;
@@ -58,10 +61,10 @@ using namespace metal;
 
     // 5. Scanlines (one dark line every 3pt)
     float scanline = 0.5 + 0.5 * sin(position.y * M_PI_F / 1.5);
-    color *= 1.0 - 0.18 * scanline;
+    color *= 1.0 - (0.18 + 0.10 * fold) * scanline;
 
     // 6. Vignette
-    color *= 1.0 - smoothstep(0.7, 1.45, length(curved));
+    color *= 1.0 - smoothstep(0.7 - 0.15 * fold, 1.45, length(curved));
 
     // Power-on white flash fading into the picture
     if (powerOn < 1.0) {
