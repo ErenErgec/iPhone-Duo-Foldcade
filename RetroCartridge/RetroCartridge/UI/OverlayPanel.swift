@@ -4,11 +4,8 @@
 //
 // Chrome shared by the in-hierarchy overlays (skin picker, store).
 //
-// These are deliberately NOT sheets or popovers: UIKit presents those in the
-// scene's locked interface orientation, while the console's SwiftUI content is
-// counter-rotated by `FixedOrientation`, so a sheet would appear sideways. The
-// host (`FullScreenLayout`) stacks an `OverlayBackdrop` and the panel in its
-// own ZStack instead, so they rotate with everything else.
+// These are in-hierarchy panels rather than sheets, so they keep the console's
+// retro look and sit inside whichever display layout hosts them.
 //
 
 import SwiftUI
@@ -57,8 +54,6 @@ struct OverlayPanel<Content: View>: View {
     let onClose: () -> Void
     @ViewBuilder let content: Content
 
-    @Environment(\.fixedSafeAreaInsets) private var insets
-
     var body: some View {
         VStack(spacing: 0) {
             header
@@ -103,7 +98,6 @@ struct OverlayPanel<Content: View>: View {
         .shadow(color: .black.opacity(0.6), radius: 30, y: 16)
         .padding(.horizontal, 24)
         .padding(.vertical, 28)
-        .padding(insets)
         .accessibilityElement(children: .contain)
         .accessibilityAddTraits(.isModal)
         .accessibilityAction(.escape, onClose)
@@ -177,5 +171,51 @@ struct RetroCapsuleLabel: View {
             Capsule().fill(filled ? AnyShapeStyle(tint) : AnyShapeStyle(tint.opacity(0.08)))
         )
         .overlay(Capsule().stroke(tint.opacity(filled ? 0 : 0.45), lineWidth: 1))
+    }
+}
+
+// MARK: - Library overlays
+
+/// Hosts the skin picker and store as in-hierarchy overlays. The store stacks
+/// above the picker, and each backdrop tap closes only the top panel.
+struct LibraryOverlays: View {
+    @Environment(AppState.self) private var appState
+    
+    /// When false, both overlays stay hidden, e.g. over a running console.
+    var isEnabled: Bool = true
+    
+    static let animation = Animation.spring(response: 0.38, dampingFraction: 0.86)
+    
+    var body: some View {
+        let showsSkinPicker = isEnabled && appState.isSkinSelectorVisible
+        let showsStore = isEnabled && appState.isStoreVisible
+        
+        ZStack {
+            if showsSkinPicker {
+                OverlayBackdrop { close(\.isSkinSelectorVisible) }
+                    .transition(.opacity)
+                    .zIndex(10)
+                SkinPickerView()
+                    .transition(.overlayPanel)
+                    .zIndex(11)
+            }
+            
+            if showsStore {
+                OverlayBackdrop { close(\.isStoreVisible) }
+                    .transition(.opacity)
+                    .zIndex(12)
+                StoreView()
+                    .transition(.overlayPanel)
+                    .zIndex(13)
+            }
+        }
+        .animation(Self.animation, value: showsSkinPicker)
+        .animation(Self.animation, value: showsStore)
+    }
+    
+    private func close(_ flag: ReferenceWritableKeyPath<AppState, Bool>) {
+        withAnimation(Self.animation) {
+            appState[keyPath: flag] = false
+        }
     }
 }

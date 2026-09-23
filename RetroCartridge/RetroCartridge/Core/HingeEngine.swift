@@ -8,28 +8,16 @@
 //
 //  ## Data source
 //
-//  The iOS 27 SDK has no public hinge-angle API. UIKit, SwiftUI, SwiftUICore
-//  and CoreMotion declare nothing about hinges, fold angles or postures. The
-//  only related symbols are exported from the binaries but left out of the
-//  public headers and `.swiftinterface` files, so apps can't call them:
-//  - SwiftUICore: `GeometryProxy.reservedRegions(kind:options:layoutDirectionBehavior:)`
-//    and `ReservedRegion` (`frame`, `margins`, `isActive`, `Kind.exclusion`).
-//    This is the "folding region" from the HIG. It has no angle.
-//  - IOKit: `IOHIDEventCreateHingeAngleEvent`, a private HID event.
-//  CoreMotion doesn't help either. It reports the attitude of one body, and a
-//  single IMU can't measure the angle between the two halves.
-//  (`CMMotionManager.deviceMotionBody` is new in iOS 27, but nothing public
-//  conforms to `CMBodyIdentifiable`.)
+//  The primary source is the iOS 27.1 hinge API: `AdaptiveConsoleLayout`
+//  forwards `onHingeChange` updates to `updateFromHardware(_:)`, which gives the
+//  real angle and status. The system decides the update rate and precision, so
+//  the angle still passes through the smoothing spring.
 //
-//  So the engine uses the best public signal: which display the app is on,
-//  from `PostureManager`, which measures the display size. The outer display
-//  means the device is closed (0°), and the inner display means it's open
-//  (180°). When the posture changes, the angle springs smoothly to the new
-//  target, so unfolding plays a continuous 0° → 180° sweep. That sweep drives
-//  the CRT curvature and the 90° chime. Partial fold angles on the inner
-//  display can't be observed. Once a public API ships, feed it into
-//  `setTargetAngle(_:)`. The smoothing and the chime detection already handle
-//  a continuous stream.
+//  When no hinge is reported (the hierarchy doesn't provide hinge updates),
+//  the engine falls back to the display posture from `PostureManager`: the
+//  outer display means closed (0°), and the inner display means open (180°).
+//  Posture changes then spring from one to the other, so unfolding still
+//  plays a 0° → 180° sweep.
 //
 //  Per Apple's HIG the hinge angle drives visual effects only, never layout.
 //
@@ -96,6 +84,9 @@ final class HingeEngine {
     @ObservationIgnored private var animationTask: Task<Void, Never>?
 
     @ObservationIgnored private var postureManager: PostureManager?
+    /// True while `onHingeChange` delivers real hinge data; posture changes are
+    /// then ignored.
+    @ObservationIgnored private var hasHardwareHinge = false
     @ObservationIgnored private var isListening = false
     @ObservationIgnored private var listeningStart: ContinuousClock.Instant?
 
@@ -157,7 +148,6 @@ final class HingeEngine {
     // MARK: - Angle Input
 
     /// Sets the raw angle the smoothed `hingeAngle` springs towards.
-    /// A future hardware angle stream should feed its samples in here.
     func setTargetAngle(_ angle: Float) {
         let clamped = min(max(angle, 0), 180)
         guard abs(clamped - targetAngle) >= Self.targetDeadband else { return }
@@ -165,6 +155,30 @@ final class HingeEngine {
         startAnimatingIfNeeded()
     }
 
+    /// Feeds a hinge update from `onHingeChange`. `nil` means no hinge data is
+    /// available, so the engine falls back to the display posture.
+    func updateFromHardware(_ hinge: DeviceHinge?) {
+        #if DEBUG
+        if isSimulated || sweepTask != nil { return }
+        #endif
+        
+        guard let hinge else {
+            if hasHardwareHinge {
+                hasHardwareHinge = false
+                postureDidChange()
+            }
+            return
+        }
+        
+        hasHardwareHinge = true
+        let angle: Float = hinge.status == .closed ? 0 : Float(hinge.angle.degrees)
+        if let listeningStart, listeningStart.duration(to: .now) < Self.launchGracePeriod {
+            snap(to: angle)
+        } else {
+            setTargetAngle(angle)
+        }
+    }
+    
     /// Jumps straight to an angle without a sweep or a chime.
     private func snap(to angle: Float) {
         animationTask?.cancel()
@@ -176,8 +190,7 @@ final class HingeEngine {
         isChimeArmed = hingeAngle < Self.chimeRearmAngle
     }
 
-    /// The best angle estimate for a posture. There's no public angle API, so
-    /// these are fixed values (see the file header).
+    /// The fallback angle for a posture when no hinge data is available.
     private static func angle(for posture: DevicePosture) -> Float {
         switch posture {
         case .closed: 0
@@ -201,6 +214,10 @@ final class HingeEngine {
 
     private func postureDidChange() {
         guard isListening, let postureManager else { return }
+        guard !hasHardwareHinge else {
+            observePosture()
+            return
+        }
         let angle = Self.angle(for: postureManager.currentPosture)
 
         #if DEBUG

@@ -4,10 +4,8 @@
 // Main entry point for the Retro Cartridge & Unfold app.
 //
 // The app uses a UIKit scene with a SwiftUI root instead of a SwiftUI `App`,
-// because its root view controller must lock the interface orientation
-// (`prefersInterfaceOrientationLocked`), which SwiftUI's own root can't do.
-// With the lock the system never rotates the interface — and never plays a
-// rotation animation — while the console is on screen.
+// so the root view controller can pick the supported orientations per
+// display (see `ConsoleHostingController`).
 
 import SwiftUI
 import UIKit
@@ -37,23 +35,40 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = scene as? UIWindowScene else { return }
         let window = UIWindow(windowScene: windowScene)
         window.rootViewController = ConsoleHostingController(rootView: RootView())
+        // The console is designed dark; system bars and titles follow suit.
+        window.overrideUserInterfaceStyle = .dark
         window.makeKeyAndVisible()
         self.window = window
     }
 }
 
-/// Hosts the SwiftUI console and keeps the system from ever rotating it.
-/// `FixedOrientation` pins each layout to its display for whatever
-/// orientation the scene happens to be locked in.
+/// Hosts the SwiftUI root.
 ///
-/// The status bar stays visible: on iPhone Duo it lives in the system's
-/// reserved side column (with the camera and Dynamic Island), which apps
-/// can't draw into, so hiding it would only leave that column empty.
+/// The outer display honors supported orientations like any iPhone, so it is
+/// locked to the landscape orientation that puts the hinge on top. The inner
+/// display ignores supported orientations (Apple: "Prepare your app for
+/// iPhone Duo"), so there the layout adapts to whatever orientation the
+/// system picks and always splits at the fold. See DESIGN.md §4.
 final class ConsoleHostingController: UIHostingController<RootView> {
-    override var prefersInterfaceOrientationLocked: Bool { true }
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask { .all }
-    override var preferredStatusBarStyle: UIStatusBarStyle { .lightContent }
+    private var lastDisplay: DuoDisplay?
+    
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        guard let screen = view.window?.windowScene?.screen else { return .all }
+        return DuoDisplay(size: screen.bounds.size) == .outer ? .landscapeLeft : .all
+    }
+    
     override var prefersHomeIndicatorAutoHidden: Bool { true }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        // Re-evaluate the orientation mask when the app moves between displays.
+        guard let screen = view.window?.windowScene?.screen else { return }
+        let display = DuoDisplay(size: screen.bounds.size)
+        if display != lastDisplay {
+            lastDisplay = display
+            setNeedsUpdateOfSupportedInterfaceOrientations()
+        }
+    }
 }
 
 /// Owns the application-scoped managers and injects them into the environment.
@@ -83,7 +98,11 @@ struct RootView: View {
     // MARK: - Body
 
     var body: some View {
-        AdaptiveConsoleLayout()
+        // The navigation stack only provides the system toolbar: on iPhone Duo
+        // its items move into the display's reserved side column.
+        NavigationStack {
+            AdaptiveConsoleLayout()
+        }
             .environment(appState)
             .environment(postureManager)
             .environment(hingeEngine)

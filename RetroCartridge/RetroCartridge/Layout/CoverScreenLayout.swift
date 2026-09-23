@@ -2,8 +2,9 @@
 // CoverScreenLayout.swift
 // RetroCartridge
 //
-// 5.4" outer display: a swipeable cartridge case. The device is held closed
-// with the hinge on top, so this display is landscape (see AdaptiveConsoleLayout).
+// 5.4" outer display: a swipeable cartridge case. The display is locked to the
+// landscape orientation that puts the hinge on top (ConsoleHostingController).
+// The app name and the Skins / Store buttons live in the system toolbar.
 // The chosen cartridge is inserted automatically when the device is unfolded.
 //
 
@@ -23,7 +24,6 @@ public struct CoverScreenLayout: View {
                     .frame(width: geo.size.width * 0.48)
                 
                 VStack(alignment: .leading, spacing: 0) {
-                    wordmark
                     Spacer()
                     details(alignment: .leading)
                     pageIndicator
@@ -39,13 +39,6 @@ public struct CoverScreenLayout: View {
     }
     
     // MARK: - Pieces
-
-    private var wordmark: some View {
-        Text("RETRO CARTRIDGE")
-            .font(.system(size: 13, weight: .heavy, design: .monospaced))
-            .tracking(4)
-            .foregroundStyle(.white.opacity(0.55))
-    }
 
     private func carousel(cartridgeWidth: CGFloat) -> some View {
         @Bindable var appState = appState
