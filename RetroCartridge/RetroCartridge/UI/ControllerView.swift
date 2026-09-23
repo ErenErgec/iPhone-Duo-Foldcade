@@ -89,6 +89,7 @@ public struct ControllerView: View {
                     }
                     
                     if newAction != activeDirection {
+                        releaseActiveDirection()
                         activeDirection = newAction
                         if let act = newAction {
                             appState.activeGame?.handleInput(action: act)
@@ -97,9 +98,26 @@ public struct ControllerView: View {
                     }
                 }
                 .onEnded { _ in
+                    releaseActiveDirection()
                     activeDirection = nil
                 }
         )
+    }
+
+    /// Sends the matching release event for the currently held D-Pad direction,
+    /// so games that track held state (e.g. Brick Breaker paddle) stop moving.
+    private func releaseActiveDirection() {
+        let release: GameInputAction?
+        switch activeDirection {
+        case .dpadUpPressed: release = .dpadUpReleased
+        case .dpadDownPressed: release = .dpadDownReleased
+        case .dpadLeftPressed: release = .dpadLeftReleased
+        case .dpadRightPressed: release = .dpadRightReleased
+        default: release = nil
+        }
+        if let release {
+            appState.activeGame?.handleInput(action: release)
+        }
     }
     
     private var actionButtons: some View {
@@ -134,10 +152,11 @@ public struct ControllerView: View {
     
     private var startSelectButtons: some View {
         HStack(spacing: 30) {
-            // Select
+            // Select — ejects the cartridge and returns to the game menu
             Button {
                 appState.activeGame?.handleInput(action: .select)
                 hapticManager.playHaptic(.buttonPress)
+                appState.endGame()
             } label: {
                 Capsule()
                     .fill(Color.gray)

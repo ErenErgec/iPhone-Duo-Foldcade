@@ -32,6 +32,12 @@ struct GameCanvasView: View {
                     .onChange(of: timeline.date) { oldDate, newDate in
                         let delta = newDate.timeIntervalSince(oldDate)
                         activeGame.update(deltaTime: min(max(delta, 0), 0.05))
+
+                        // Persist the score as soon as a round ends, since pressing A
+                        // restarts the game and resets its score.
+                        if case .gameOver(let score) = activeGame.gameState {
+                            appState.updateHighScore(score, for: activeGame.gameType)
+                        }
                     }
                 }
                 .padding(16)
