@@ -24,15 +24,20 @@ final class AppState {
     
     // MARK: - Skin & Customization
     
-    /// The currently applied console skin.
-    var selectedSkin: ConsoleSkinType {
-        get {
-            let raw = UserDefaults.standard.string(forKey: "selectedSkin") ?? ConsoleSkinType.classicGrey.rawValue
-            return ConsoleSkinType(rawValue: raw) ?? .classicGrey
+    /// The currently applied console skin. A stored property so `@Observable`
+    /// tracks it and every view reading it refreshes; persisted on change.
+    var selectedSkin: ConsoleSkinType = AppState.persistedSkin() {
+        didSet {
+            guard selectedSkin != oldValue else { return }
+            UserDefaults.standard.set(selectedSkin.rawValue, forKey: Self.selectedSkinKey)
         }
-        set {
-            UserDefaults.standard.set(newValue.rawValue, forKey: "selectedSkin")
-        }
+    }
+
+    private static let selectedSkinKey = "selectedSkin"
+
+    private static func persistedSkin() -> ConsoleSkinType {
+        UserDefaults.standard.string(forKey: selectedSkinKey)
+            .flatMap(ConsoleSkinType.init(rawValue:)) ?? .classicGrey
     }
     
     // MARK: - UI State
@@ -43,10 +48,11 @@ final class AppState {
     /// Whether the CRT power-on animation has completed.
     var hasPoweredOn: Bool = false
     
-    /// Whether the store/shop overlay is visible.
+    /// Whether the store overlay is visible (drawn in-hierarchy by the library,
+    /// never as a sheet, so it follows the pinned display orientation).
     var isStoreVisible: Bool = false
-    
-    /// Whether the skin selector is visible.
+
+    /// Whether the skin picker overlay is visible. The store stacks above it.
     var isSkinSelectorVisible: Bool = false
     
     // MARK: - High Scores (Persisted)
@@ -76,6 +82,9 @@ final class AppState {
     func startGame(_ game: any PixelGameProtocol) {
         activeGame = game
         isInsertingCartridge = false
+        // Library overlays shouldn't reappear when the cartridge is ejected.
+        isStoreVisible = false
+        isSkinSelectorVisible = false
         hasPoweredOn = true
     }
     

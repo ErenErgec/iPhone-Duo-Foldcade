@@ -40,6 +40,10 @@
 		DCABA366CA692CE42077BAEC /* AtomicPurpleSkin.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2352D04E27E375DD1A10880 /* AtomicPurpleSkin.swift */; };
 		FC184BF79E8C70A9A2D41B64 /* PixelGameEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E3D648292B168D294C0233 /* PixelGameEngine.swift */; };
 		FC25B1F7B1101CB92E34E387 /* SkinManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74DA9A9C713F68BA96D486CC /* SkinManager.swift */; };
+		57E0BB0000000000000000B1 /* OverlayPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E0BB0000000000000000F1 /* OverlayPanel.swift */; };
+		57E0BB0000000000000000B2 /* SkinPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E0BB0000000000000000F2 /* SkinPickerView.swift */; };
+		57E0BB0000000000000000B3 /* StoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E0BB0000000000000000F3 /* StoreView.swift */; };
+		57E0BB0000000000000000B4 /* ConsoleSkinPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E0BB0000000000000000F4 /* ConsoleSkinPreview.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,6 +93,11 @@
 		A1C0DE0000000000000000C2 /* FixedOrientation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixedOrientation.swift; sourceTree = "<group>"; };
 		FDF6EF6156337C895B39F3BF /* BrickBreakerGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrickBreakerGame.swift; sourceTree = "<group>"; };
 		FFDC1F90D883742F4094239E /* ArcadeCabinetSkin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArcadeCabinetSkin.swift; sourceTree = "<group>"; };
+		57E0BB0000000000000000F1 /* OverlayPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayPanel.swift; sourceTree = "<group>"; };
+		57E0BB0000000000000000F2 /* SkinPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkinPickerView.swift; sourceTree = "<group>"; };
+		57E0BB0000000000000000F3 /* StoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreView.swift; sourceTree = "<group>"; };
+		57E0BB0000000000000000F4 /* ConsoleSkinPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleSkinPreview.swift; sourceTree = "<group>"; };
+		57E0BB0000000000000000F5 /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Products.storekit; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -97,6 +106,7 @@
 			children = (
 				80ECBB1F44AF0BDC09E008FE /* RetroCartridge */,
 				BBE4FB3C6DF1309097CCF20D /* RetroCartridgeTests */,
+				57E0BB0000000000000000F5 /* Products.storekit */,
 				A797436D7C41D2A36E38BF8D /* Products */,
 			);
 			sourceTree = "<group>";
@@ -117,6 +127,9 @@
 				A1C0DE0000000000000000A2 /* CartridgeView.swift */,
 				17441286342C035B63E9C511 /* ControllerView.swift */,
 				87FEA080C926760FB3C162F5 /* GameCanvasView.swift */,
+				57E0BB0000000000000000F3 /* StoreView.swift */,
+				57E0BB0000000000000000F2 /* SkinPickerView.swift */,
+				57E0BB0000000000000000F1 /* OverlayPanel.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -249,6 +262,7 @@
 				3628B66C3CD93516B7909369 /* ClassicGreySkin.swift */,
 				D1AD9D1084CD725675BB20D9 /* CyberpunkNeonSkin.swift */,
 				74DA9A9C713F68BA96D486CC /* SkinManager.swift */,
+				57E0BB0000000000000000F4 /* ConsoleSkinPreview.swift */,
 			);
 			path = Skins;
 			sourceTree = "<group>";
@@ -377,6 +391,10 @@
 				40CFAA3D64F6C7F99611C3F5 /* FallingBlocksGame.swift in Sources */,
 				94B5F68851B8676CD7BCF5A8 /* FullScreenLayout.swift in Sources */,
 				070E016E17FD1A5514DD055A /* GameCanvasView.swift in Sources */,
+				57E0BB0000000000000000B4 /* ConsoleSkinPreview.swift in Sources */,
+				57E0BB0000000000000000B3 /* StoreView.swift in Sources */,
+				57E0BB0000000000000000B2 /* SkinPickerView.swift in Sources */,
+				57E0BB0000000000000000B1 /* OverlayPanel.swift in Sources */,
 				677B8DF4217D3EED21CB1C41 /* GameModels.swift in Sources */,
 				D2DDD4CE661F117CAF47450B /* HapticManager.swift in Sources */,
 				762BE0DA9936473273BDB6B0 /* HingeEngine.swift in Sources */,
