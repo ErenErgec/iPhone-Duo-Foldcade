@@ -19,8 +19,28 @@ final class RetroCartridgeTests: XCTestCase {
     
     func testPostureManagerDefaults() {
         let posture = PostureManager()
-        XCTAssertEqual(posture.currentPosture, .fullyOpen)
+        XCTAssertEqual(posture.currentPosture, .closed)
         XCTAssertFalse(posture.isCompactWidth)
+    }
+    
+    func testPostureManagerDisplayDetection() {
+        let posture = PostureManager()
+        
+        // iPhone Duo outer display, in either orientation
+        posture.updateDisplay(fullScreenSize: CGSize(width: 678, height: 466))
+        XCTAssertTrue(posture.isCompactWidth)
+        XCTAssertEqual(posture.currentPosture, .closed)
+        posture.updateDisplay(fullScreenSize: CGSize(width: 466, height: 678))
+        XCTAssertTrue(posture.isCompactWidth)
+        
+        // iPhone Duo inner display
+        posture.updateDisplay(fullScreenSize: CGSize(width: 669, height: 871))
+        XCTAssertFalse(posture.isCompactWidth)
+        XCTAssertEqual(posture.currentPosture, .fullyOpen)
+        
+        // Regular iPhone falls back to the compact cover layout
+        posture.updateDisplay(fullScreenSize: CGSize(width: 440, height: 956))
+        XCTAssertTrue(posture.isCompactWidth)
     }
     
     func testGameTypeMetadata() {
