@@ -127,7 +127,7 @@ struct RootView: View {
             hapticManager.playHaptic(.hingeClick)
         }
 
-        // Start deriving the hinge angle from the display posture (for shader effects)
+        // Start the hinge angle pipeline (onHingeChange, with a display-posture fallback)
         hingeEngine.startListening(following: postureManager)
 
         // Load StoreKit products

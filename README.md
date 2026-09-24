@@ -2,7 +2,7 @@
 
 > **Turn Apple's folding iPhone Duo into a tactile 90s handheld console.**
 
-[![Platform](https://img.shields.io/badge/Platform-iOS%2027.0%2B-black?style=for-the-badge&logo=apple)](https://developer.apple.com)
+[![Platform](https://img.shields.io/badge/Platform-iOS%2027.1%2B-black?style=for-the-badge&logo=apple)](https://developer.apple.com)
 [![Device](https://img.shields.io/badge/Target-iPhone%20Duo%20only-0071e3?style=for-the-badge)](https://developer.apple.com/design/human-interface-guidelines/designing-for-iphone-duo)
 [![Swift](https://img.shields.io/badge/Swift-6.0-F05138?style=for-the-badge&logo=swift)](https://swift.org)
 [![Framework](https://img.shields.io/badge/UI-SwiftUI-007AFF?style=for-the-badge&logo=swift)](https://developer.apple.com/xcode/swiftui/)
