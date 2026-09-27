@@ -2,7 +2,7 @@
 // RetroCartridge
 //
 // Common protocol for all retro mini-games.
-// Each game conforms to this protocol and is managed by PixelGameEngine.
+// Each game conforms to this protocol and is created by PixelGameEngine.
 
 import SwiftUI
 
@@ -29,7 +29,14 @@ protocol PixelGameProtocol: AnyObject {
     
     /// High score for this game (persisted).
     var highScore: Int { get set }
-    
+
+    // MARK: - Sound
+
+    /// Sound effects raised since the last frame. Games add to it with
+    /// `emit(_:)`; the frame loop empties it with `drainSounds()` and plays
+    /// them, so games never depend on the audio system.
+    var pendingSounds: [GameSound] { get set }
+
     // MARK: - Game Loop
     
     /// Called every frame by the game engine.
@@ -75,32 +82,19 @@ extension PixelGameProtocol {
             gameState = .playing
         }
     }
-}
 
-// MARK: - Grid Helpers
-
-/// A position on the pixel game grid.
-struct GridPosition: Equatable, Hashable {
-    var x: Int
-    var y: Int
-    
-    static func + (lhs: GridPosition, rhs: GridPosition) -> GridPosition {
-        GridPosition(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
+    /// Queues a sound effect for the next frame. Duplicates within a frame
+    /// are dropped (e.g. several bricks breaking at once play one sound).
+    func emit(_ sound: GameSound) {
+        guard !pendingSounds.contains(sound), pendingSounds.count < 8 else { return }
+        pendingSounds.append(sound)
     }
-}
 
-/// A floating-point position for smooth movement in pixel games.
-struct GameVector: Equatable {
-    var x: CGFloat
-    var y: CGFloat
-    
-    static let zero = GameVector(x: 0, y: 0)
-    
-    static func + (lhs: GameVector, rhs: GameVector) -> GameVector {
-        GameVector(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
-    }
-    
-    static func * (lhs: GameVector, rhs: CGFloat) -> GameVector {
-        GameVector(x: lhs.x * rhs, y: lhs.y * rhs)
+    /// Returns and clears the queued sound effects.
+    func drainSounds() -> [GameSound] {
+        guard !pendingSounds.isEmpty else { return [] }
+        let sounds = pendingSounds
+        pendingSounds = []
+        return sounds
     }
 }

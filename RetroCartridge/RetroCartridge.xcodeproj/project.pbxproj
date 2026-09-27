@@ -16,11 +16,10 @@
 		317FDB0AE36753EDB8ED23CE /* AdaptiveConsoleLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA27B4C7888D630FC1CB6A14 /* AdaptiveConsoleLayout.swift */; };
 		349DA3AFA1F86A358B2BA421 /* PostureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99CD56444E0BB80576F0C69C /* PostureManager.swift */; };
 		40CFAA3D64F6C7F99611C3F5 /* FallingBlocksGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C771A7C9DA44D0724C6BE05 /* FallingBlocksGame.swift */; };
-		42E2B78F3434B46054A26EE6 /* CRTOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B785C2862CE1B74D356292D5 /* CRTOverlayView.swift */; };
+		42E2B78F3434B46054A26EE6 /* CRTEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = B785C2862CE1B74D356292D5 /* CRTEffect.swift */; };
 		6227BA44799E531A7B669A2D /* CoverScreenLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9472082A726EB2301BA9DAE /* CoverScreenLayout.swift */; };
 		67697161ED6B40C49A4BF984 /* RetroRacerGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2C06205181611616C320AC /* RetroRacerGame.swift */; };
 		677B8DF4217D3EED21CB1C41 /* GameModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A94F773C118BCA1DC991 /* GameModels.swift */; };
-		6B0F3F6D6A0D66A627D51712 /* ReservedRegionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 330D5787E9BDD9DC543D33BE /* ReservedRegionManager.swift */; };
 		6BFAF0CCBF220E9DF5F208CC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F716FE5C00231F2C95DD1132 /* Assets.xcassets */; };
 		71C7D06E6A57AA69BCF61731 /* ProductIdentifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD6B0DB5815F92DDCEACB20 /* ProductIdentifiers.swift */; };
 		720656CE84DDB80C10FD63A2 /* ControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17441286342C035B63E9C511 /* ControllerView.swift */; };
@@ -29,16 +28,19 @@
 		822ECC45A4F7783AD19720A1 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B5935D4B827FAE24E833944 /* AppState.swift */; };
 		94B5F68851B8676CD7BCF5A8 /* FullScreenLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B23F57A66C8E9E0E092556C0 /* FullScreenLayout.swift */; };
 		98718E16D8A934DE36C9A9D3 /* ArcadeCabinetSkin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFDC1F90D883742F4094239E /* ArcadeCabinetSkin.swift */; };
-		9F04A22B5E7BDDC49A834120 /* CRTShaderEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 802B4F040A7D4DB9FFAEDFF6 /* CRTShaderEngine.swift */; };
 		A3B0B18BE56C9CC15F89549C /* RetroCartridgeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358C28E72C0EEED6770E46F7 /* RetroCartridgeTests.swift */; };
 		ADB0CCD71E9D30600FBF6354 /* RetroCartridgeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ADAAB3AEB6AFE62CD5E57D /* RetroCartridgeApp.swift */; };
 		B6AD0B14BB189F075875626E /* AudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41630EE2C8E23B2EBA047508 /* AudioManager.swift */; };
 		BF9619FE16D8D74E9C083144 /* SnakeGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7452ACC5FA74499AC4196F9 /* SnakeGame.swift */; };
-		CDE684EEB5EAB5D02FA1609C /* CartridgeInsertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16EFF409B439157BB41C77AE /* CartridgeInsertView.swift */; };
+		A1C0DE0000000000000000A1 /* CartridgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0DE0000000000000000A2 /* CartridgeView.swift */; };
 		D2DDD4CE661F117CAF47450B /* HapticManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EC463497578DFADD618FA7 /* HapticManager.swift */; };
 		DCABA366CA692CE42077BAEC /* AtomicPurpleSkin.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2352D04E27E375DD1A10880 /* AtomicPurpleSkin.swift */; };
 		FC184BF79E8C70A9A2D41B64 /* PixelGameEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E3D648292B168D294C0233 /* PixelGameEngine.swift */; };
 		FC25B1F7B1101CB92E34E387 /* SkinManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74DA9A9C713F68BA96D486CC /* SkinManager.swift */; };
+		57E0BB0000000000000000B1 /* OverlayPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E0BB0000000000000000F1 /* OverlayPanel.swift */; };
+		57E0BB0000000000000000B2 /* SkinPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E0BB0000000000000000F2 /* SkinPickerView.swift */; };
+		57E0BB0000000000000000B3 /* StoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E0BB0000000000000000F3 /* StoreView.swift */; };
+		57E0BB0000000000000000B4 /* ConsoleSkinPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E0BB0000000000000000F4 /* ConsoleSkinPreview.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,10 +56,9 @@
 /* Begin PBXFileReference section */
 		057CF93884D57447C526BAAB /* HingeEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HingeEngine.swift; sourceTree = "<group>"; };
 		10FBB5F77ED593D2B7C8320B /* CRTView.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = CRTView.metal; sourceTree = "<group>"; };
-		16EFF409B439157BB41C77AE /* CartridgeInsertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartridgeInsertView.swift; sourceTree = "<group>"; };
+		A1C0DE0000000000000000A2 /* CartridgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartridgeView.swift; sourceTree = "<group>"; };
 		17441286342C035B63E9C511 /* ControllerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControllerView.swift; sourceTree = "<group>"; };
 		2B489FE16F532DDEFE3D8D5D /* RetroCartridgeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RetroCartridgeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		330D5787E9BDD9DC543D33BE /* ReservedRegionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReservedRegionManager.swift; sourceTree = "<group>"; };
 		358C28E72C0EEED6770E46F7 /* RetroCartridgeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetroCartridgeTests.swift; sourceTree = "<group>"; };
 		3628B66C3CD93516B7909369 /* ClassicGreySkin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassicGreySkin.swift; sourceTree = "<group>"; };
 		3AD6B0DB5815F92DDCEACB20 /* ProductIdentifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductIdentifiers.swift; sourceTree = "<group>"; };
@@ -66,7 +67,6 @@
 		5DB3B5EC34BF03D07581096A /* RetroCartridge.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RetroCartridge.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		74DA9A9C713F68BA96D486CC /* SkinManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkinManager.swift; sourceTree = "<group>"; };
 		7B5935D4B827FAE24E833944 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
-		802B4F040A7D4DB9FFAEDFF6 /* CRTShaderEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CRTShaderEngine.swift; sourceTree = "<group>"; };
 		84E3D648292B168D294C0233 /* PixelGameEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelGameEngine.swift; sourceTree = "<group>"; };
 		87FEA080C926760FB3C162F5 /* GameCanvasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCanvasView.swift; sourceTree = "<group>"; };
 		8C2C06205181611616C320AC /* RetroRacerGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetroRacerGame.swift; sourceTree = "<group>"; };
@@ -75,7 +75,7 @@
 		A7452ACC5FA74499AC4196F9 /* SnakeGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnakeGame.swift; sourceTree = "<group>"; };
 		A948A94F773C118BCA1DC991 /* GameModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameModels.swift; sourceTree = "<group>"; };
 		B23F57A66C8E9E0E092556C0 /* FullScreenLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullScreenLayout.swift; sourceTree = "<group>"; };
-		B785C2862CE1B74D356292D5 /* CRTOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CRTOverlayView.swift; sourceTree = "<group>"; };
+		B785C2862CE1B74D356292D5 /* CRTEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CRTEffect.swift; sourceTree = "<group>"; };
 		C2EC463497578DFADD618FA7 /* HapticManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticManager.swift; sourceTree = "<group>"; };
 		C9ADAAB3AEB6AFE62CD5E57D /* RetroCartridgeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetroCartridgeApp.swift; sourceTree = "<group>"; };
 		CEB7C8D18F05AF96EE9A28DD /* PixelGameProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelGameProtocol.swift; sourceTree = "<group>"; };
@@ -87,6 +87,11 @@
 		FA27B4C7888D630FC1CB6A14 /* AdaptiveConsoleLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveConsoleLayout.swift; sourceTree = "<group>"; };
 		FDF6EF6156337C895B39F3BF /* BrickBreakerGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrickBreakerGame.swift; sourceTree = "<group>"; };
 		FFDC1F90D883742F4094239E /* ArcadeCabinetSkin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArcadeCabinetSkin.swift; sourceTree = "<group>"; };
+		57E0BB0000000000000000F1 /* OverlayPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayPanel.swift; sourceTree = "<group>"; };
+		57E0BB0000000000000000F2 /* SkinPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkinPickerView.swift; sourceTree = "<group>"; };
+		57E0BB0000000000000000F3 /* StoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreView.swift; sourceTree = "<group>"; };
+		57E0BB0000000000000000F4 /* ConsoleSkinPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleSkinPreview.swift; sourceTree = "<group>"; };
+		57E0BB0000000000000000F5 /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Products.storekit; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -95,6 +100,7 @@
 			children = (
 				80ECBB1F44AF0BDC09E008FE /* RetroCartridge */,
 				BBE4FB3C6DF1309097CCF20D /* RetroCartridgeTests */,
+				57E0BB0000000000000000F5 /* Products.storekit */,
 				A797436D7C41D2A36E38BF8D /* Products */,
 			);
 			sourceTree = "<group>";
@@ -111,9 +117,12 @@
 			isa = PBXGroup;
 			children = (
 				D64F4B44DC2A3D30C7CBE63D /* Skins */,
-				16EFF409B439157BB41C77AE /* CartridgeInsertView.swift */,
+				A1C0DE0000000000000000A2 /* CartridgeView.swift */,
 				17441286342C035B63E9C511 /* ControllerView.swift */,
 				87FEA080C926760FB3C162F5 /* GameCanvasView.swift */,
+				57E0BB0000000000000000F3 /* StoreView.swift */,
+				57E0BB0000000000000000F2 /* SkinPickerView.swift */,
+				57E0BB0000000000000000F1 /* OverlayPanel.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -148,7 +157,6 @@
 				FA27B4C7888D630FC1CB6A14 /* AdaptiveConsoleLayout.swift */,
 				D9472082A726EB2301BA9DAE /* CoverScreenLayout.swift */,
 				B23F57A66C8E9E0E092556C0 /* FullScreenLayout.swift */,
-				330D5787E9BDD9DC543D33BE /* ReservedRegionManager.swift */,
 			);
 			path = Layout;
 			sourceTree = "<group>";
@@ -245,6 +253,7 @@
 				3628B66C3CD93516B7909369 /* ClassicGreySkin.swift */,
 				D1AD9D1084CD725675BB20D9 /* CyberpunkNeonSkin.swift */,
 				74DA9A9C713F68BA96D486CC /* SkinManager.swift */,
+				57E0BB0000000000000000F4 /* ConsoleSkinPreview.swift */,
 			);
 			path = Skins;
 			sourceTree = "<group>";
@@ -260,8 +269,7 @@
 		F0C79CF574B68702CB265F7A /* Rendering */ = {
 			isa = PBXGroup;
 			children = (
-				B785C2862CE1B74D356292D5 /* CRTOverlayView.swift */,
-				802B4F040A7D4DB9FFAEDFF6 /* CRTShaderEngine.swift */,
+				B785C2862CE1B74D356292D5 /* CRTEffect.swift */,
 				10FBB5F77ED593D2B7C8320B /* CRTView.metal */,
 			);
 			path = Rendering;
@@ -362,10 +370,9 @@
 				DCABA366CA692CE42077BAEC /* AtomicPurpleSkin.swift in Sources */,
 				B6AD0B14BB189F075875626E /* AudioManager.swift in Sources */,
 				2061C3D92333D50207BB2984 /* BrickBreakerGame.swift in Sources */,
-				42E2B78F3434B46054A26EE6 /* CRTOverlayView.swift in Sources */,
-				9F04A22B5E7BDDC49A834120 /* CRTShaderEngine.swift in Sources */,
+				42E2B78F3434B46054A26EE6 /* CRTEffect.swift in Sources */,
 				7A7D41FBA09DA948C8CAA7C9 /* CRTView.metal in Sources */,
-				CDE684EEB5EAB5D02FA1609C /* CartridgeInsertView.swift in Sources */,
+				A1C0DE0000000000000000A1 /* CartridgeView.swift in Sources */,
 				194F0E4D015A7188FC1A0C00 /* ClassicGreySkin.swift in Sources */,
 				720656CE84DDB80C10FD63A2 /* ControllerView.swift in Sources */,
 				6227BA44799E531A7B669A2D /* CoverScreenLayout.swift in Sources */,
@@ -373,6 +380,10 @@
 				40CFAA3D64F6C7F99611C3F5 /* FallingBlocksGame.swift in Sources */,
 				94B5F68851B8676CD7BCF5A8 /* FullScreenLayout.swift in Sources */,
 				070E016E17FD1A5514DD055A /* GameCanvasView.swift in Sources */,
+				57E0BB0000000000000000B4 /* ConsoleSkinPreview.swift in Sources */,
+				57E0BB0000000000000000B3 /* StoreView.swift in Sources */,
+				57E0BB0000000000000000B2 /* SkinPickerView.swift in Sources */,
+				57E0BB0000000000000000B1 /* OverlayPanel.swift in Sources */,
 				677B8DF4217D3EED21CB1C41 /* GameModels.swift in Sources */,
 				D2DDD4CE661F117CAF47450B /* HapticManager.swift in Sources */,
 				762BE0DA9936473273BDB6B0 /* HingeEngine.swift in Sources */,
@@ -380,7 +391,6 @@
 				1F731E3550AFB142BAC4ADAE /* PixelGameProtocol.swift in Sources */,
 				349DA3AFA1F86A358B2BA421 /* PostureManager.swift in Sources */,
 				71C7D06E6A57AA69BCF61731 /* ProductIdentifiers.swift in Sources */,
-				6B0F3F6D6A0D66A627D51712 /* ReservedRegionManager.swift in Sources */,
 				ADB0CCD71E9D30600FBF6354 /* RetroCartridgeApp.swift in Sources */,
 				67697161ED6B40C49A4BF984 /* RetroRacerGame.swift in Sources */,
 				FC25B1F7B1101CB92E34E387 /* SkinManager.swift in Sources */,
@@ -460,7 +470,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = RetroCartridge/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.1;
 				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -582,7 +592,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = RetroCartridge/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.1;
 				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;

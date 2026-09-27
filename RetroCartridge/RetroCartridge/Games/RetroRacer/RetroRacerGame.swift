@@ -10,6 +10,7 @@ final class RetroRacerGame: PixelGameProtocol {
     var score: Int = 0
     var level: Int = 1
     var highScore: Int = 0
+    var pendingSounds: [GameSound] = []
     
     struct Car {
         var lane: Int
@@ -26,7 +27,7 @@ final class RetroRacerGame: PixelGameProtocol {
     var spawnTimer: TimeInterval = 0
     var currentSpawnInterval: TimeInterval = 1.5
     
-    var framesSurvived: Int = 0
+    var survivalTime: TimeInterval = 0
     
     init() {
         reset()
@@ -35,13 +36,19 @@ final class RetroRacerGame: PixelGameProtocol {
     func update(deltaTime: TimeInterval) {
         guard gameState == .playing else { return }
         
-        framesSurvived += 1
-        if framesSurvived % 60 == 0 {
+        // One point per second survived, independent of frame rate
+        survivalTime += deltaTime
+        while survivalTime >= 1.0 {
+            survivalTime -= 1.0
             score += 1
         }
         
         // Level up over time
-        level = 1 + score / 100
+        let newLevel = 1 + score / 100
+        if newLevel > level {
+            emit(.levelUp)
+        }
+        level = newLevel
         speed = 0.5 + Double(level) * 0.05
         currentSpawnInterval = max(0.4, 1.5 - Double(level - 1) * 0.1)
         
@@ -87,6 +94,8 @@ final class RetroRacerGame: PixelGameProtocol {
     func die() {
         if score > highScore { highScore = score }
         gameState = .gameOver(score: score)
+        emit(.crash)
+        emit(.gameOver)
     }
     
     func render(context: inout GraphicsContext, size: CGSize) {
@@ -122,14 +131,21 @@ final class RetroRacerGame: PixelGameProtocol {
     func handleInput(action: GameInputAction) {
         switch action {
         case .dpadLeftPressed:
-            if targetLane > 0 { targetLane -= 1 }
+            if targetLane > 0 {
+                targetLane -= 1
+                if gameState == .playing { emit(.laneChange) }
+            }
         case .dpadRightPressed:
-            if targetLane < 2 { targetLane += 1 }
+            if targetLane < 2 {
+                targetLane += 1
+                if gameState == .playing { emit(.laneChange) }
+            }
         case .buttonAPressed:
             switch gameState {
             case .menu, .gameOver:
                 reset()
                 gameState = .playing
+                emit(.roundStart)
             default: break
             }
         case .buttonStartPressed:
@@ -149,12 +165,13 @@ final class RetroRacerGame: PixelGameProtocol {
     
     func reset() {
         gameState = .menu
+        pendingSounds.removeAll()
         score = 0
         level = 1
         playerLane = 1.0
         targetLane = 1
         obstacles.removeAll()
-        framesSurvived = 0
+        survivalTime = 0
         roadOffset = 0
     }
 }

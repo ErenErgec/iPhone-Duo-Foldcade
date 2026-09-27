@@ -2,8 +2,6 @@
 //  ArcadeCabinetSkin.swift
 //  RetroCartridge
 //
-//  Created by AI on 2026-09-22.
-//
 
 import SwiftUI
 
@@ -14,6 +12,7 @@ extension SkinTheme {
         accentColor: Color(red: 255/255, green: 215/255, blue: 0), // #FFD700
         textColor: Color(red: 255/255, green: 215/255, blue: 0), // #FFD700
         screenBorderColor: Color(red: 59/255, green: 35/255, blue: 22/255), // #3B2316
+        actionButtonColor: Color(hex: "#E53935"), // arcade red
         isTranslucent: false
     )
 }

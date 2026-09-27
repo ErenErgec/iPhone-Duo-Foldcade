@@ -10,6 +10,7 @@ final class FallingBlocksGame: PixelGameProtocol {
     var score: Int = 0
     var level: Int = 1
     var highScore: Int = 0
+    var pendingSounds: [GameSound] = []
     
     let cols = 10
     let rows = 20
@@ -94,7 +95,10 @@ final class FallingBlocksGame: PixelGameProtocol {
         }
     }
     
-    func lockPiece() {
+    /// Merges the current piece into the grid, clears lines and spawns the next piece.
+    /// - Parameter sound: The landing sound; a hard drop plays its own slam.
+    func lockPiece(sound: GameSound = .pieceLock) {
+        emit(sound)
         for i in 0..<currentPiece.shape.count {
             for j in 0..<currentPiece.shape[i].count {
                 if currentPiece.shape[i][j] == 1 {
@@ -123,7 +127,12 @@ final class FallingBlocksGame: PixelGameProtocol {
         
         if linesCleared > 0 {
             linesClearedTotal += linesCleared
-            level = 1 + linesClearedTotal / 10
+            emit(.lineClear(lines: linesCleared))
+            let newLevel = 1 + linesClearedTotal / 10
+            if newLevel > level {
+                emit(.levelUp)
+            }
+            level = newLevel
             dropInterval = max(0.1, 0.8 - Double(level - 1) * 0.05)
             
             switch linesCleared {
@@ -162,6 +171,7 @@ final class FallingBlocksGame: PixelGameProtocol {
     func die() {
         if score > highScore { highScore = score }
         gameState = .gameOver(score: score)
+        emit(.gameOver)
     }
     
     func render(context: inout GraphicsContext, size: CGSize) {
@@ -214,11 +224,16 @@ final class FallingBlocksGame: PixelGameProtocol {
     
     func handleInput(action: GameInputAction) {
         guard gameState == .playing else {
+            if action == .buttonStartPressed {
+                resume()
+                return
+            }
             if action == .buttonAPressed {
                 switch gameState {
                 case .menu, .gameOver:
                     reset()
                     gameState = .playing
+                    emit(.roundStart)
                 default: break
                 }
             }
@@ -227,9 +242,15 @@ final class FallingBlocksGame: PixelGameProtocol {
         
         switch action {
         case .dpadLeftPressed:
-            if !checkCollision(piece: currentPiece, dx: -1, dy: 0) { currentPiece.x -= 1 }
+            if !checkCollision(piece: currentPiece, dx: -1, dy: 0) {
+                currentPiece.x -= 1
+                emit(.moveTick)
+            }
         case .dpadRightPressed:
-            if !checkCollision(piece: currentPiece, dx: 1, dy: 0) { currentPiece.x += 1 }
+            if !checkCollision(piece: currentPiece, dx: 1, dy: 0) {
+                currentPiece.x += 1
+                emit(.moveTick)
+            }
         case .dpadDownPressed:
             if !checkCollision(piece: currentPiece, dx: 0, dy: 1) {
                 currentPiece.y += 1
@@ -240,15 +261,21 @@ final class FallingBlocksGame: PixelGameProtocol {
                 currentPiece.y += 1
                 score += 2
             }
-            lockPiece()
+            lockPiece(sound: .hardDrop)
         case .buttonAPressed:
             var temp = currentPiece!
             temp.rotateClockwise()
-            if !checkCollision(piece: temp, dx: 0, dy: 0) { currentPiece = temp }
+            if !checkCollision(piece: temp, dx: 0, dy: 0) {
+                currentPiece = temp
+                emit(.rotate)
+            }
         case .buttonBPressed:
             var temp = currentPiece!
             temp.rotateCounterClockwise()
-            if !checkCollision(piece: temp, dx: 0, dy: 0) { currentPiece = temp }
+            if !checkCollision(piece: temp, dx: 0, dy: 0) {
+                currentPiece = temp
+                emit(.rotate)
+            }
         case .buttonStartPressed:
             pause()
         default: break
@@ -265,6 +292,7 @@ final class FallingBlocksGame: PixelGameProtocol {
     
     func reset() {
         gameState = .menu
+        pendingSounds.removeAll()
         score = 0
         level = 1
         linesClearedTotal = 0

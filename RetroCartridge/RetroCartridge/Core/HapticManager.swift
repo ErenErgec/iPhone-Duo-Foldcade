@@ -54,11 +54,6 @@ final class HapticManager {
             let sharpness = CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.9)
             events.append(CHHapticEvent(eventType: .hapticTransient, parameters: [intensity, sharpness], relativeTime: 0))
             
-        case .buttonRelease:
-            let intensity = CHHapticEventParameter(parameterID: .hapticIntensity, value: 0.3)
-            let sharpness = CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.5)
-            events.append(CHHapticEvent(eventType: .hapticTransient, parameters: [intensity, sharpness], relativeTime: 0))
-            
         case .cartridgeInsert:
             let intensity = CHHapticEventParameter(parameterID: .hapticIntensity, value: 1.0)
             let sharpness = CHHapticEventParameter(parameterID: .hapticSharpness, value: 1.0)

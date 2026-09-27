@@ -30,7 +30,6 @@ enum GameInputAction: Equatable {
     case dpadRightReleased
     case dpadUpReleased
     case dpadDownReleased
-    case dpadRelease
     
     // Action buttons (press)
     case buttonAPressed
@@ -43,33 +42,19 @@ enum GameInputAction: Equatable {
     // System buttons
     case buttonStartPressed
     case buttonSelectPressed
-    
-    // MARK: - Convenience aliases used by ControllerView
-    
-    static var up: GameInputAction { .dpadUpPressed }
-    static var down: GameInputAction { .dpadDownPressed }
-    static var left: GameInputAction { .dpadLeftPressed }
-    static var right: GameInputAction { .dpadRightPressed }
-    static var a: GameInputAction { .buttonAPressed }
-    static var b: GameInputAction { .buttonBPressed }
-    static var start: GameInputAction { .buttonStartPressed }
-    static var select: GameInputAction { .buttonSelectPressed }
 }
 
 // MARK: - Device Posture
 
-/// Represents the physical posture of the iPhone Duo.
-/// Used by PostureManager for layout decisions.
-/// Note: Layout decisions use Size Classes, NOT hinge angle (per Apple HIG).
+/// Represents the physical posture of the iPhone Duo, derived by
+/// PostureManager from which display the app is on (never from the hinge angle).
 enum DevicePosture: Equatable, CustomStringConvertible {
     case closed
-    case halfOpened
     case fullyOpen
     
     var description: String {
         switch self {
         case .closed: return "Closed"
-        case .halfOpened: return "Half-Opened (Tabletop)"
         case .fullyOpen: return "Fully Open"
         }
     }
@@ -121,6 +106,16 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
         }
     }
     
+    /// SF Symbol artwork printed on the cartridge label.
+    var symbolName: String {
+        switch self {
+        case .brickBreaker: return "square.grid.3x2.fill"
+        case .retroRacer: return "car.fill"
+        case .snake: return "scribble.variable"
+        case .fallingBlocks: return "square.stack.3d.down.right.fill"
+        }
+    }
+    
     /// Cartridge label color for the cover screen carousel.
     var cartridgeColorHex: String {
         switch self {
@@ -137,8 +132,50 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
 /// Identifies haptic feedback patterns for different interactions.
 enum HapticEventType {
     case buttonPress          // D-Pad & action buttons
-    case buttonRelease        // Button release feedback
     case cartridgeInsert      // Cartridge slot-in moment
     case hingeClick           // Hinge close mechanical click
     case gameEvent            // In-game collision, line clear, etc.
+}
+
+// MARK: - Game Sound
+
+/// Sound effects a game can raise. Games queue these with
+/// `PixelGameProtocol.emit(_:)`; the frame loop plays them through `AudioManager`.
+enum GameSound: Equatable, Sendable {
+    // Shared
+    case roundStart
+    case levelUp
+    case gameOver
+    case powerUp
+    case collision
+
+    // Brick Breaker
+    case paddleBounce
+    case wallBounce
+    case brickBreak
+    case lifeLost
+
+    // Snake
+    case eat
+
+    // Retro Racer
+    case laneChange
+    case crash
+
+    // Falling Blocks
+    case moveTick
+    case rotate
+    case pieceLock
+    case hardDrop
+    case lineClear(lines: Int)
+
+    /// Whether the event is big enough to also fire the `.gameEvent` haptic.
+    var isImpactful: Bool {
+        switch self {
+        case .collision, .crash, .lifeLost, .lineClear, .gameOver:
+            return true
+        default:
+            return false
+        }
+    }
 }

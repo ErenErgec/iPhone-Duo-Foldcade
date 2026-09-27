@@ -1,0 +1,53 @@
+{
+  "identifier" : "5E7A1C2B",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "6.99",
+      "familyShareable" : false,
+      "internalID" : "6740000001",
+      "localizations" : [
+        {
+          "description" : "Unlocks the Atomic Purple, Cyberpunk Neon and Arcade Cabinet skins.",
+          "displayName" : "Retro Collector Pack",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.retrocartridge.collector_pack",
+      "referenceName" : "Retro Collector Pack",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "49.99",
+      "familyShareable" : false,
+      "internalID" : "6740000002",
+      "localizations" : [
+        {
+          "description" : "Unlocks every skin and all future content.",
+          "displayName" : "Lifetime Pro",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.retrocartridge.lifetime_pro",
+      "referenceName" : "Lifetime Pro",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+
+    ]
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}

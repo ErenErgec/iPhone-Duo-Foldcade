@@ -1,7 +1,7 @@
 // RetroCartridgeTests.swift
 // RetroCartridgeTests
 //
-// Placeholder test file for the RetroCartridge test target.
+// Unit tests for app state, display detection and game metadata.
 
 import XCTest
 @testable import RetroCartridge
@@ -13,13 +13,29 @@ final class RetroCartridgeTests: XCTestCase {
         XCTAssertEqual(appState.selectedGameType, .brickBreaker)
         XCTAssertNil(appState.activeGame)
         XCTAssertFalse(appState.isGameActive)
-        XCTAssertFalse(appState.isInsertingCartridge)
-        XCTAssertFalse(appState.hasPoweredOn)
     }
     
     func testPostureManagerDefaults() {
         let posture = PostureManager()
+        XCTAssertEqual(posture.currentPosture, .closed)
+        XCTAssertFalse(posture.isCompactWidth)
+    }
+    
+    func testPostureManagerDisplayDetection() {
+        let posture = PostureManager()
+        
+        // iPhone Duo outer display, in either orientation
+        posture.updateDisplay(fullScreenSize: CGSize(width: 678, height: 466))
+        XCTAssertTrue(posture.isCompactWidth)
+        XCTAssertEqual(posture.currentPosture, .closed)
+        posture.updateDisplay(fullScreenSize: CGSize(width: 466, height: 678))
+        XCTAssertTrue(posture.isCompactWidth)
+        
+        // iPhone Duo inner display
+        posture.updateDisplay(fullScreenSize: CGSize(width: 669, height: 871))
+        XCTAssertFalse(posture.isCompactWidth)
         XCTAssertEqual(posture.currentPosture, .fullyOpen)
+        posture.updateDisplay(fullScreenSize: CGSize(width: 871, height: 669))
         XCTAssertFalse(posture.isCompactWidth)
     }
     

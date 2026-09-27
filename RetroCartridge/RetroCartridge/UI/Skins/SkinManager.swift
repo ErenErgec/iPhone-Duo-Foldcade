@@ -2,8 +2,6 @@
 //  SkinManager.swift
 //  RetroCartridge
 //
-//  Created by AI on 2026-09-22.
-//
 
 import SwiftUI
 
@@ -13,6 +11,8 @@ struct SkinTheme: Equatable, Sendable {
     var accentColor: Color
     var textColor: Color
     var screenBorderColor: Color
+    /// Fill color of the A / B action buttons.
+    var actionButtonColor: Color
     var isTranslucent: Bool
 }
 

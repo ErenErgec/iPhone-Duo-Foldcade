@@ -10,6 +10,7 @@ final class SnakeGame: PixelGameProtocol {
     var score: Int = 0
     var level: Int = 1
     var highScore: Int = 0
+    var pendingSounds: [GameSound] = []
     
     struct SnakeSegment {
         var x: Int
@@ -73,8 +74,10 @@ final class SnakeGame: PixelGameProtocol {
         if head.x == food.x && head.y == food.y {
             score += 10 * level
             foodEaten += 1
+            emit(.eat)
             if foodEaten % 5 == 0 {
                 level += 1
+                emit(.levelUp)
                 moveInterval = max(0.060, moveInterval - 0.005)
             }
             spawnFood()
@@ -98,6 +101,8 @@ final class SnakeGame: PixelGameProtocol {
     func die() {
         if score > highScore { highScore = score }
         gameState = .gameOver(score: score)
+        emit(.collision)
+        emit(.gameOver)
     }
     
     func render(context: inout GraphicsContext, size: CGSize) {
@@ -105,19 +110,24 @@ final class SnakeGame: PixelGameProtocol {
         
         if gameState == .menu { return }
         
-        let cellW = size.width / Double(gridSize)
-        let cellH = size.height / Double(gridSize)
+        // Square cells, board centered on the screen
+        let cellSize = min(size.width, size.height) / Double(gridSize)
+        let cellW = cellSize
+        let cellH = cellSize
+        let boardX = (size.width - cellSize * Double(gridSize)) / 2
+        let boardY = (size.height - cellSize * Double(gridSize)) / 2
+        context.translateBy(x: boardX, y: boardY)
         
         // Grid
         for i in 0...gridSize {
             var path = Path()
             path.move(to: CGPoint(x: Double(i) * cellW, y: 0))
-            path.addLine(to: CGPoint(x: Double(i) * cellW, y: size.height))
+            path.addLine(to: CGPoint(x: Double(i) * cellW, y: cellH * Double(gridSize)))
             context.stroke(path, with: .color(Color(white: 0.1)), lineWidth: 1)
             
             var path2 = Path()
             path2.move(to: CGPoint(x: 0, y: Double(i) * cellH))
-            path2.addLine(to: CGPoint(x: size.width, y: Double(i) * cellH))
+            path2.addLine(to: CGPoint(x: cellW * Double(gridSize), y: Double(i) * cellH))
             context.stroke(path2, with: .color(Color(white: 0.1)), lineWidth: 1)
         }
         
@@ -144,6 +154,7 @@ final class SnakeGame: PixelGameProtocol {
             case .menu, .gameOver:
                 reset()
                 gameState = .playing
+                emit(.roundStart)
             default: break
             }
         case .buttonStartPressed:
@@ -163,6 +174,7 @@ final class SnakeGame: PixelGameProtocol {
     
     func reset() {
         gameState = .menu
+        pendingSounds.removeAll()
         score = 0
         level = 1
         snake = [
