@@ -47,9 +47,9 @@ xcodebuild -project RetroCartridge/RetroCartridge.xcodeproj -scheme RetroCartrid
   - Text-only or custom-view items stay horizontal.
 - **Appearance:** the window forces the dark style so system bars and titles read on the dark console.
 
-## Project status (2026-09-23)
+## Project status (2026-09-28)
 
-- **Git:** all work is on branch `gameplay-fixes`, open as PR #1 against `main` (`main` still holds only the initial scaffold). Commit and push only when the user asks; they usually test in Device Hub first.
+- **Git:** PR #1 (`gameplay-fixes`) was merged into `main` on 2026-09-28; `main` is the working branch. The GitHub repo is private. Commit and push only when the user asks; they usually test in Device Hub first.
 - **Done and verified by the user on the simulator:**
   - games running at 60 FPS;
   - CRT shader;
