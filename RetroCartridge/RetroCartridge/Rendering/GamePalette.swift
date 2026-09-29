@@ -63,6 +63,9 @@ struct GamePalette: Equatable, Sendable {
         case .mazeMuncher: return .mazeMuncher
         case .frogHop: return .frogHop
         case .lunarHinge: return .lunarHinge
+        case .paddleDuel: return .paddleDuel
+        case .astroDrift: return .astroDrift
+        case .towerStack: return .towerStack
         }
     }
 }

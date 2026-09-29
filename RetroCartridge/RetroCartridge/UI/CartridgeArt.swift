@@ -31,6 +31,9 @@ struct PixelArt: Equatable, Sendable {
         case .mazeMuncher: return .mazeMuncher
         case .frogHop: return .frogHop
         case .lunarHinge: return .lunarHinge
+        case .paddleDuel: return .paddleDuel
+        case .astroDrift: return .astroDrift
+        case .towerStack: return .towerStack
         }
     }
 
@@ -337,6 +340,67 @@ extension PixelArt {
         ".GG.......GGG...",
         "GGGG..FFFFGGGG..",
         "GGGGGGGGGGGGGGG.",
+        "GGGGGGGGGGGGGGGG",
+        "GGGGGGGGGGGGGGGG"
+    ])
+
+    /// Paddle Duel: the ball's path from the computer's paddle to yours.
+    static let paddleDuel = PixelArt(rows: [
+        "................",
+        "...XXXXXX.......",
+        "................",
+        "..........F.....",
+        "...........F....",
+        "............F...",
+        "G.G.G.G.G.G.G.G.",
+        "............F...",
+        "...........F....",
+        "..........F.....",
+        ".........HH.....",
+        ".........HH.....",
+        "................",
+        "................",
+        ".......PPPPPP...",
+        "................"
+    ])
+
+    /// Astro Drift: the ship firing at a big rock, a small one drifting by.
+    static let astroDrift = PixelArt(rows: [
+        "..G.........G...",
+        ".....XXXX.......",
+        "....X....X.....G",
+        "....X.....X.....",
+        "....X....X......",
+        ".....XXXX.......",
+        "..........H.....",
+        "...G.......H....",
+        "........P.......",
+        ".......PPP......",
+        "......PP.PP.....",
+        "......P...P.....",
+        ".......YYY....G.",
+        ".G.........XX...",
+        "..........X..X..",
+        "...........XX..."
+    ])
+
+    /// Tower Stack: a narrowing tower, the next block sliding in, and a
+    /// cut-off piece falling away.
+    static let towerStack = PixelArt(rows: [
+        "................",
+        "..PPPPPP........",
+        "................",
+        "...........XX...",
+        ".....44444......",
+        ".....33333..XX..",
+        "....333333......",
+        "....2222222.....",
+        "...22222222.....",
+        "...11111111.....",
+        "..111111111.....",
+        "..0000000000....",
+        ".00000000000....",
+        ".GGGGGGGGGGGG...",
         "GGGGGGGGGGGGGGGG",
         "GGGGGGGGGGGGGGGG"
     ])

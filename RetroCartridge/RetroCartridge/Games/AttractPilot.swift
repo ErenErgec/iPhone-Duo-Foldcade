@@ -92,6 +92,12 @@ final class AttractPilot {
             decide(every: 0.25, deltaTime: deltaTime) { steer(frog) }
         case let lander as LunarHingeGame:
             steer(lander)
+        case let paddles as PaddleDuelGame:
+            steer(paddles)
+        case let ship as AstroDriftGame:
+            steer(ship)
+        case let tower as TowerStackGame:
+            steer(tower)
         default:
             break
         }
@@ -447,5 +453,64 @@ final class AttractPilot {
             wantedVY = max(-0.05, min(0.05, (top - 0.1 - game.y) * 0.8))
         }
         setThrust(game.vy > wantedVY)
+    }
+
+    // MARK: - Paddle Duel
+
+    /// Meets the ball on its way down, aiming a little off-center so the
+    /// returns vary, with a wandering error so it misses now and then.
+    private func steer(_ game: PaddleDuelGame) {
+        let target = game.ballVY > 0 ? game.ballX + sin(clock * 0.9) * 0.08 : 0.5
+        if game.playerX < target - 0.02 {
+            hold(.right)
+        } else if game.playerX > target + 0.02 {
+            hold(.left)
+        } else {
+            release()
+        }
+    }
+
+    // MARK: - Astro Drift
+
+    /// Turns toward the nearest rock and fires once it's lined up.
+    private func steer(_ game: AstroDriftGame) {
+        guard game.isShipActive, let rock = game.rocks.min(by: {
+            distance(from: game, to: $0) < distance(from: game, to: $1)
+        }) else {
+            release()
+            return
+        }
+        let dx = AstroDriftGame.wrappedOffset(from: game.shipX, to: rock.x)
+        let dy = AstroDriftGame.wrappedOffset(from: game.shipY, to: rock.y)
+        let wanted = atan2(dx, -dy)
+        var turn = (wanted - game.shipAngle).truncatingRemainder(dividingBy: 2 * .pi)
+        if turn > .pi { turn -= 2 * .pi }
+        if turn < -.pi { turn += 2 * .pi }
+
+        if turn > 0.1 {
+            hold(.right)
+        } else if turn < -0.1 {
+            hold(.left)
+        } else {
+            release()
+            game.handleInput(action: .buttonAPressed)
+        }
+    }
+
+    private func distance(from game: AstroDriftGame, to rock: AstroDriftGame.Rock) -> Double {
+        let dx = AstroDriftGame.wrappedOffset(from: game.shipX, to: rock.x)
+        let dy = AstroDriftGame.wrappedOffset(from: game.shipY, to: rock.y)
+        return (dx * dx + dy * dy).squareRoot()
+    }
+
+    // MARK: - Tower Stack
+
+    /// Drops the block when it's over the tower, give or take a wandering
+    /// error, so some drops are perfect and some get cut.
+    private func steer(_ game: TowerStackGame) {
+        let aim = game.top.x + sin(clock * 1.3) * 0.03
+        if abs(game.sliderX - aim) < 0.012 {
+            game.handleInput(action: .buttonAPressed)
+        }
     }
 }

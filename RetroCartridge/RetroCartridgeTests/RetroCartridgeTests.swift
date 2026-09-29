@@ -669,9 +669,9 @@ final class RetroCartridgeTests: XCTestCase {
 
     func testCartridgesAreSplitAcrossTheProducts() {
         let free = GameType.allCases.filter(\.isFree)
-        XCTAssertEqual(free, [.brickBreaker, .retroRacer, .snake, .fallingBlocks, .pixelInvaders, .mineSweep])
-        XCTAssertEqual(ProductIdentifiers.cartridges(unlockedBy: ProductIdentifiers.retroCollectorPack), [.mazeMuncher, .frogHop])
-        XCTAssertEqual(ProductIdentifiers.cartridges(unlockedBy: ProductIdentifiers.lifetimePro), [.mazeMuncher, .frogHop, .lunarHinge])
+        XCTAssertEqual(free, [.brickBreaker, .retroRacer, .snake, .fallingBlocks, .pixelInvaders, .mineSweep, .paddleDuel, .towerStack])
+        XCTAssertEqual(ProductIdentifiers.cartridges(unlockedBy: ProductIdentifiers.retroCollectorPack), [.mazeMuncher, .frogHop, .astroDrift])
+        XCTAssertEqual(ProductIdentifiers.cartridges(unlockedBy: ProductIdentifiers.lifetimePro), [.mazeMuncher, .frogHop, .lunarHinge, .astroDrift])
     }
 
     func testEveryPaidItemBelongsToARealProduct() {
@@ -697,7 +697,7 @@ final class RetroCartridgeTests: XCTestCase {
     func testStoreSummariesDescribeTheContents() {
         XCTAssertEqual(
             ProductIdentifiers.summary(for: ProductIdentifiers.retroCollectorPack),
-            "6 skins, 2 cartridges and 3 sound packs."
+            "6 skins, 3 cartridges and 3 sound packs."
         )
         XCTAssertEqual(
             ProductIdentifiers.summary(for: ProductIdentifiers.lifetimePro),
@@ -793,6 +793,122 @@ final class RetroCartridgeTests: XCTestCase {
         appState.pauseMenuSelection = .music
         PauseMenu.handle(.buttonAPressed, appState: appState, screenModes: [.crt], currentScreen: .crt)
         XCTAssertEqual(appState.isMusicOn, !original)
+    }
+
+    // MARK: - Paddle Duel, Astro Drift, Tower Stack
+
+    func testPaddleReturnScoresAndSpeedsUp() {
+        let game = PaddleDuelGame()
+        game.handleInput(action: .buttonAPressed)
+        game.serveTimer = 0
+        game.ballX = game.playerX
+        game.ballY = game.playerY - 0.06
+        game.ballVX = 0
+        game.ballVY = 0.6
+        for _ in 0..<10 { game.update(deltaTime: 1.0 / 60) }
+        XCTAssertLessThan(game.ballVY, 0, "the ball goes back up")
+        XCTAssertGreaterThan((game.ballVX * game.ballVX + game.ballVY * game.ballVY).squareRoot(), 0.6)
+        XCTAssertEqual(game.score, 10)
+    }
+
+    func testPaddleMissCostsABallAndThreeEndTheMatch() {
+        let game = PaddleDuelGame()
+        game.handleInput(action: .buttonAPressed)
+        for _ in 0..<3 {
+            game.serveTimer = 0
+            game.playerX = 0.1
+            game.ballX = 0.9
+            game.ballY = 0.97
+            game.ballVX = 0
+            game.ballVY = 1
+            game.update(deltaTime: 0.1)
+        }
+        XCTAssertEqual(game.lives, 0)
+        XCTAssertEqual(game.gameState, .gameOver(score: 0))
+    }
+
+    func testPaddlePointsWonLevelUp() {
+        let game = PaddleDuelGame()
+        game.handleInput(action: .buttonAPressed)
+        for _ in 0..<3 {
+            game.serveTimer = 0
+            game.cpuX = 0.1
+            game.ballX = 0.9
+            game.ballY = 0.02
+            game.ballVX = 0
+            game.ballVY = -1
+            game.update(deltaTime: 0.1)
+        }
+        XCTAssertEqual(game.pointsWon, 3)
+        XCTAssertEqual(game.level, 2)
+        XCTAssertEqual(game.score, 100 + 100 + 100)
+    }
+
+    func testAstroShotsSplitRocks() {
+        let game = AstroDriftGame()
+        game.handleInput(action: .buttonAPressed)
+        game.shieldTimer = 10
+        // One big rock straight ahead of the ship, standing still
+        game.rocks = [AstroDriftGame.Rock(x: 0.5, y: 0.3, vx: 0, vy: 0, size: 3, spin: 0, outline: Array(repeating: 1, count: 9))]
+        game.handleInput(action: .buttonAPressed)
+        for _ in 0..<30 { game.update(deltaTime: 1.0 / 60) }
+        XCTAssertEqual(game.score, 20)
+        XCTAssertEqual(game.rocks.count, 2)
+        XCTAssertTrue(game.rocks.allSatisfy { $0.size == 2 })
+    }
+
+    func testAstroClearingTheFieldStartsABiggerWave() {
+        let game = AstroDriftGame()
+        game.handleInput(action: .buttonAPressed)
+        let firstWave = game.rocks.count
+        game.shieldTimer = 10
+        game.rocks = [AstroDriftGame.Rock(x: 0.5, y: 0.3, vx: 0, vy: 0, size: 1, spin: 0, outline: Array(repeating: 1, count: 9))]
+        game.handleInput(action: .buttonAPressed)
+        for _ in 0..<150 { game.update(deltaTime: 1.0 / 60) }
+        XCTAssertEqual(game.level, 2)
+        XCTAssertEqual(game.rocks.count, firstWave + 1)
+    }
+
+    func testAstroFieldWraps() {
+        XCTAssertEqual(AstroDriftGame.wrappedOffset(from: 0.95, to: 0.05), 0.1, accuracy: 1e-9)
+        XCTAssertEqual(AstroDriftGame.wrappedOffset(from: 0.05, to: 0.95), -0.1, accuracy: 1e-9)
+    }
+
+    func testTowerPerfectDropKeepsTheWidth() {
+        let game = TowerStackGame()
+        game.handleInput(action: .buttonAPressed)
+        game.sliderX = game.top.x + 0.005
+        game.handleInput(action: .buttonAPressed)
+        XCTAssertEqual(game.blocks.count, 2)
+        XCTAssertEqual(game.top.width, game.baseWidth, accuracy: 1e-9)
+        XCTAssertEqual(game.streak, 1)
+        XCTAssertEqual(game.score, 15)
+    }
+
+    func testTowerOverhangIsCutOff() {
+        let game = TowerStackGame()
+        game.handleInput(action: .buttonAPressed)
+        let base = game.top
+        game.sliderX = base.x + 0.1
+        game.handleInput(action: .dpadDownPressed)
+        XCTAssertEqual(game.top.x, base.x + 0.1, accuracy: 1e-9)
+        XCTAssertEqual(game.top.width, base.width - 0.1, accuracy: 1e-9)
+        XCTAssertEqual(game.pieces.count, 1)
+        XCTAssertEqual(game.streak, 0)
+    }
+
+    func testTowerMissEndsTheRoundAndTenBlocksLevelUp() {
+        let game = TowerStackGame()
+        game.handleInput(action: .buttonAPressed)
+        for _ in 0..<10 {
+            game.sliderX = game.top.x
+            game.handleInput(action: .buttonAPressed)
+        }
+        XCTAssertEqual(game.level, 2)
+
+        game.sliderX = game.top.x + game.top.width + 0.01
+        game.handleInput(action: .buttonAPressed)
+        if case .gameOver = game.gameState {} else { XCTFail("a miss ends the round") }
     }
 
     // MARK: - Label designer

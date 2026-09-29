@@ -263,6 +263,16 @@ struct CartridgeShell: Equatable, Sendable {
         isTranslucent: true
     )
 
+    /// Off-white plastic, like an old console accessory.
+    static let white = CartridgeShell(topColor: Color(hex: "#E9E6DF"), bottomColor: Color(hex: "#BDB8AD"))
+
+    /// Clear blue plastic.
+    static let clearBlue = CartridgeShell(
+        topColor: Color(hex: "#6D9DC5").opacity(0.5),
+        bottomColor: Color(hex: "#1D3557").opacity(0.65),
+        isTranslucent: true
+    )
+
     /// Gold plastic, for special editions.
     static let gold = CartridgeShell(
         topColor: Color(hex: "#F3D98B"),
@@ -315,6 +325,9 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
     case mazeMuncher = "Maze Muncher"
     case frogHop = "Frog Hop"
     case lunarHinge = "Lunar Hinge"
+    case paddleDuel = "Paddle Duel"
+    case astroDrift = "Astro Drift"
+    case towerStack = "Tower Stack"
     
     var id: String { rawValue }
 
@@ -419,6 +432,40 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
                 shell: .gold,
                 modes: [.standard, .daily],
                 requiredProductID: ProductIdentifiers.lifetimePro,
+                scoreGoal: 1000,
+                levelGoal: 4
+            )
+        case .paddleDuel:
+            return CartridgeInfo(
+                subtitle: String(localized: "Table tennis against the machine"),
+                genre: String(localized: "SPORTS", comment: "Genre printed on a cartridge label"),
+                symbolName: "sportscourt.fill",
+                labelColorHex: "#F9844A",
+                shell: .white,
+                modes: [.paddleMatch, .paddleSquash, .daily],
+                scoreGoal: 1500,
+                levelGoal: 4
+            )
+        case .astroDrift:
+            return CartridgeInfo(
+                subtitle: String(localized: "Rocks, a ship and a lot of space"),
+                genre: String(localized: "SHOOTER", comment: "Genre printed on a cartridge label"),
+                symbolName: "scope",
+                labelColorHex: "#6D9DC5",
+                shell: .clearBlue,
+                modes: [.standard, .daily],
+                requiredProductID: ProductIdentifiers.retroCollectorPack,
+                scoreGoal: 5000,
+                levelGoal: 4
+            )
+        case .towerStack:
+            return CartridgeInfo(
+                subtitle: String(localized: "Drop it right on top"),
+                genre: String(localized: "TIMING", comment: "Genre printed on a cartridge label"),
+                symbolName: "square.stack.fill",
+                labelColorHex: "#F15BB5",
+                shell: .black,
+                modes: [.standard, .daily],
                 scoreGoal: 1000,
                 levelGoal: 4
             )

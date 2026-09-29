@@ -222,6 +222,16 @@
         }
       }
     },
+    "Alone against the wall. Keep the rally going." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duvara karşı tek başına. Rallini sürdür."
+          }
+        }
+      }
+    },
     "APP STORE UNAVAILABLE" : {
       "localizations" : {
         "tr" : {
@@ -269,6 +279,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "B düğmesi"
+          }
+        }
+      }
+    },
+    "Beat the computer. Three misses and you're out." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bilgisayarı yen. Üç kaçırışta oyun biter."
           }
         }
       }
@@ -641,6 +661,16 @@
         }
       }
     },
+    "Drop it right on top" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tam üstüne bırak"
+          }
+        }
+      }
+    },
     "Earned" : {
       "localizations" : {
         "tr" : {
@@ -692,22 +722,22 @@
         }
       }
     },
-    "EQUIPPED" : {
-      "localizations" : {
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "TAKILI"
-          }
-        }
-      }
-    },
     "Equipped" : {
       "localizations" : {
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Takılı"
+          }
+        }
+      }
+    },
+    "EQUIPPED" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TAKILI"
           }
         }
       }
@@ -986,22 +1016,22 @@
         }
       }
     },
-    "IN USE" : {
-      "localizations" : {
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "KULLANIMDA"
-          }
-        }
-      }
-    },
     "In use" : {
       "localizations" : {
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kullanımda"
+          }
+        }
+      }
+    },
+    "IN USE" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KULLANIMDA"
           }
         }
       }
@@ -1137,6 +1167,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Maraton"
+          }
+        }
+      }
+    },
+    "Match" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maç"
           }
         }
       }
@@ -1294,22 +1334,22 @@
         }
       }
     },
-    "Off" : {
-      "localizations" : {
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kapalı"
-          }
-        }
-      }
-    },
     "OFF" : {
       "localizations" : {
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "KAPALI"
+          }
+        }
+      }
+    },
+    "Off" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kapalı"
           }
         }
       }
@@ -1324,22 +1364,22 @@
         }
       }
     },
-    "ON" : {
-      "localizations" : {
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AÇIK"
-          }
-        }
-      }
-    },
     "On" : {
       "localizations" : {
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Açık"
+          }
+        }
+      }
+    },
+    "ON" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AÇIK"
           }
         }
       }
@@ -1679,22 +1719,22 @@
         }
       }
     },
-    "Records" : {
-      "localizations" : {
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rekorlar"
-          }
-        }
-      }
-    },
     "RECORDS" : {
       "localizations" : {
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "REKORLAR"
+          }
+        }
+      }
+    },
+    "Records" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rekorlar"
           }
         }
       }
@@ -1733,10 +1773,10 @@
     "RETRO" : {
       "shouldTranslate" : false
     },
-    "Retro Cartridge" : {
+    "RETRO CARTRIDGE" : {
       "shouldTranslate" : false
     },
-    "RETRO CARTRIDGE" : {
+    "Retro Cartridge" : {
       "shouldTranslate" : false
     },
     "RETRY" : {
@@ -1755,6 +1795,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sağ"
+          }
+        }
+      }
+    },
+    "Rocks, a ship and a lot of space" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kayalar, bir gemi ve bolca uzay"
           }
         }
       }
@@ -1830,16 +1880,6 @@
         }
       }
     },
-    "Screen" : {
-      "localizations" : {
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ekran"
-          }
-        }
-      }
-    },
     "SCREEN" : {
       "comment" : "Pause menu row",
       "localizations" : {
@@ -1847,6 +1887,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "EKRAN"
+          }
+        }
+      }
+    },
+    "Screen" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ekran"
           }
         }
       }
@@ -1894,22 +1944,22 @@
         }
       }
     },
-    "Skins" : {
-      "localizations" : {
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kaplamalar"
-          }
-        }
-      }
-    },
     "SKINS" : {
       "localizations" : {
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "KAPLAMALAR"
+          }
+        }
+      }
+    },
+    "Skins" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaplamalar"
           }
         }
       }
@@ -1944,12 +1994,32 @@
         }
       }
     },
+    "SPORTS" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SPOR"
+          }
+        }
+      }
+    },
     "Sprint" : {
       "localizations" : {
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sürat"
+          }
+        }
+      }
+    },
+    "Squash" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Squash"
           }
         }
       }
@@ -1993,6 +2063,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mağaza"
+          }
+        }
+      }
+    },
+    "Table tennis against the machine" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Makineye karşı masa tenisi"
           }
         }
       }
@@ -2074,6 +2154,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "SÜRE"
+          }
+        }
+      }
+    },
+    "TIMING" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ZAMANLAMA"
           }
         }
       }

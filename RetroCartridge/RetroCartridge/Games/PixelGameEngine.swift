@@ -31,6 +31,12 @@ enum PixelGameEngine {
             game = FrogHopGame()
         case .lunarHinge:
             game = LunarHingeGame()
+        case .paddleDuel:
+            game = PaddleDuelGame()
+        case .astroDrift:
+            game = AstroDriftGame()
+        case .towerStack:
+            game = TowerStackGame()
         }
         game.mode = mode
         game.reset()
