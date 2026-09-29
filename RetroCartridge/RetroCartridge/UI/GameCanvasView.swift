@@ -4,7 +4,8 @@
 //
 // The screen half of the console: a molded bezel with power LED around a
 // CRT tube that renders the active game at 60 FPS, in-tube messages for the
-// title, pause and game-over states, and a score readout on the bezel.
+// title and game-over states, the pause menu, and a score readout on the
+// bezel. Ejecting powers the tube off before the cartridge comes out.
 //
 
 import SwiftUI
@@ -22,6 +23,9 @@ struct GameCanvasView: View {
 
     /// Duration of the CRT power-on animation, in seconds.
     private let powerOnDuration: TimeInterval = 0.7
+
+    /// Duration of the power-off animation when ejecting, in seconds.
+    private let powerOffDuration: TimeInterval = 0.45
 
     /// Handheld-style, slightly wider than square (Game Boy screens are 10:9).
     private let screenAspectRatio: CGFloat = 10 / 9
@@ -68,6 +72,14 @@ struct GameCanvasView: View {
                                 )
                             }
                             .onChange(of: timeline.date) { oldDate, newDate in
+                                // Ejecting: the game stays frozen while the tube powers off
+                                if let ejectStart = appState.ejectStart {
+                                    if newDate.timeIntervalSince(ejectStart) >= powerOffDuration {
+                                        appState.endGame()
+                                    }
+                                    return
+                                }
+
                                 let delta = newDate.timeIntervalSince(oldDate)
                                 activeGame.update(deltaTime: min(max(delta, 0), 0.05))
 
@@ -94,6 +106,15 @@ struct GameCanvasView: View {
             }
             .padding(inset)
         }
+    }
+
+    /// Tube power from 0 (off) to 1 (on): rising at power-on, falling back
+    /// while the cartridge is ejected, which plays the power-on in reverse.
+    private func tubePower(at date: Date) -> Double {
+        if let ejectStart = appState.ejectStart {
+            return 1 - date.timeIntervalSince(ejectStart) / powerOffDuration
+        }
+        return date.timeIntervalSince(powerOnStart) / powerOnDuration
     }
 
     /// The screen to draw, limited to what the player has unlocked.
@@ -151,13 +172,16 @@ struct GameCanvasView: View {
                     title: game.gameType.rawValue,
                     gameState: game.gameState,
                     highScore: max(appState.highScore(for: game.gameType, mode: game.mode), game.score),
-                    blinkOn: Int(date.timeIntervalSinceReferenceDate * 2.5) % 2 == 0
+                    blinkOn: Int(date.timeIntervalSinceReferenceDate * 2.5) % 2 == 0,
+                    menuSelection: appState.pauseMenuSelection,
+                    screenModeTitle: screenSettings.mode.title,
+                    canChangeScreen: PauseMenu.availableScreenModes(store: storeManager).count > 1
                 )
             }
             .screenEffect(
                 screenSettings,
                 hingeAngle: hingeEngine.hingeAngle,
-                powerOnProgress: date.timeIntervalSince(powerOnStart) / powerOnDuration
+                powerOnProgress: tubePower(at: date)
             )
             .padding(3)
 
@@ -211,13 +235,16 @@ private struct BezelReadout: View {
 
 // MARK: - State Panel
 
-/// Title, pause and game-over messages rendered inside the CRT tube, so they
-/// get the same curvature and scanlines as the game itself.
+/// Title and game-over messages and the pause menu, rendered inside the
+/// tube so they get the same curvature and scanlines as the game itself.
 private struct GameStatePanel: View {
     let title: String
     let gameState: GameState
     let highScore: Int
     let blinkOn: Bool
+    let menuSelection: PauseMenuItem
+    let screenModeTitle: String
+    let canChangeScreen: Bool
 
     private let phosphor = Color(hex: "#9CFFB8")
 
@@ -230,7 +257,13 @@ private struct GameStatePanel: View {
                 case .menu:
                     panel(u: u, title: title.uppercased(), lines: [], prompt: "PRESS A TO START")
                 case .paused:
-                    panel(u: u, title: "PAUSED", lines: [], prompt: "PRESS START")
+                    PauseMenuPanel(
+                        selection: menuSelection,
+                        screenModeTitle: screenModeTitle,
+                        canChangeScreen: canChangeScreen,
+                        blinkOn: blinkOn,
+                        u: u
+                    )
                 case .gameOver(let finalScore):
                     panel(
                         u: u,

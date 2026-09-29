@@ -240,4 +240,64 @@ final class RetroCartridgeTests: XCTestCase {
             XCTAssertNotEqual(pilot.game.gameState, .menu, gameType.rawValue)
         }
     }
+
+    // MARK: - Pause menu and eject
+
+    private func makePausedAppState() -> AppState {
+        let appState = AppState(progress: ProgressStore(defaults: makeDefaults()))
+        appState.startGame(type: .snake)
+        appState.activeGame?.handleInput(action: .buttonAPressed)
+        appState.activeGame?.pause()
+        return appState
+    }
+
+    func testPauseMenuIsActiveOnlyWhilePaused() {
+        let appState = makePausedAppState()
+        XCTAssertTrue(appState.isPauseMenuActive)
+        appState.activeGame?.resume()
+        XCTAssertFalse(appState.isPauseMenuActive)
+    }
+
+    func testPauseMenuSelectionWraps() {
+        let appState = makePausedAppState()
+        XCTAssertEqual(appState.pauseMenuSelection, .resume)
+        PauseMenu.handle(.dpadUpPressed, appState: appState, screenModes: [.crt], currentScreen: .crt)
+        XCTAssertEqual(appState.pauseMenuSelection, .eject)
+        PauseMenu.handle(.dpadDownPressed, appState: appState, screenModes: [.crt], currentScreen: .crt)
+        XCTAssertEqual(appState.pauseMenuSelection, .resume)
+    }
+
+    func testPauseMenuResumesWithB() {
+        let appState = makePausedAppState()
+        PauseMenu.handle(.buttonBPressed, appState: appState, screenModes: [.crt], currentScreen: .crt)
+        XCTAssertEqual(appState.activeGame?.gameState, .playing)
+    }
+
+    func testPauseMenuCyclesOnlyUnlockedScreens() {
+        let appState = makePausedAppState()
+        // AppState persists screen settings in the app's own defaults, so
+        // put back whatever was set on this simulator
+        let original = appState.screenSettings
+        defer { appState.screenSettings = original }
+        appState.screenSettings = .standard
+        appState.pauseMenuSelection = .screen
+        XCTAssertEqual(
+            PauseMenu.handle(.dpadRightPressed, appState: appState, screenModes: [.crt], currentScreen: .crt),
+            .ignored
+        )
+        PauseMenu.handle(.dpadLeftPressed, appState: appState, screenModes: [.crt, .lcd, .arcade], currentScreen: .crt)
+        XCTAssertEqual(appState.screenSettings.mode, .arcade)
+    }
+
+    func testEjectingKeepsTheGameUntilThePowerOffEnds() {
+        let appState = makePausedAppState()
+        appState.pauseMenuSelection = .eject
+        PauseMenu.handle(.buttonAPressed, appState: appState, screenModes: [.crt], currentScreen: .crt)
+        XCTAssertTrue(appState.isEjecting)
+        XCTAssertNotNil(appState.activeGame)
+        XCTAssertFalse(appState.isPauseMenuActive)
+        appState.endGame()
+        XCTAssertFalse(appState.isEjecting)
+        XCTAssertNil(appState.activeGame)
+    }
 }

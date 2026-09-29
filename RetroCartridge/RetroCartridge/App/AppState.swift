@@ -101,10 +101,25 @@ final class AppState {
     /// Start a new game session with the selected game type.
     func startGame(_ game: any PixelGameProtocol) {
         activeGame = game
+        ejectStart = nil
+        pauseMenuSelection = .resume
         // Library overlays shouldn't reappear when the cartridge is ejected.
         isStoreVisible = false
         isSkinSelectorVisible = false
         isScreenSettingsVisible = false
+    }
+
+    /// When the eject began: the tube powers off, then `GameCanvasView`
+    /// calls `endGame()`. Nil while no eject is in progress.
+    private(set) var ejectStart: Date?
+
+    /// Whether the cartridge is being ejected (the tube is powering off).
+    var isEjecting: Bool { ejectStart != nil }
+
+    /// Starts ejecting the cartridge: the game freezes while the tube powers off.
+    func ejectCartridge() {
+        guard activeGame != nil, ejectStart == nil else { return }
+        ejectStart = Date()
     }
     
     /// End the current game session and return to menu.
@@ -113,6 +128,17 @@ final class AppState {
             updateHighScore(game.score, for: game.gameType, mode: game.mode)
         }
         activeGame = nil
+        ejectStart = nil
+    }
+
+    // MARK: - Pause Menu
+
+    /// The highlighted row of the in-tube pause menu.
+    var pauseMenuSelection: PauseMenuItem = .resume
+
+    /// Whether controller input drives the pause menu instead of the game.
+    var isPauseMenuActive: Bool {
+        activeGame?.gameState == .paused && !isEjecting
     }
     
     /// Pause the active game (e.g., on fold/background).

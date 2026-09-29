@@ -12,6 +12,8 @@ import SwiftUI
 public struct ControllerView: View {
     @Environment(AppState.self) private var appState
     @Environment(HapticManager.self) private var hapticManager
+    @Environment(AudioManager.self) private var audioManager
+    @Environment(StoreManager.self) private var storeManager
 
     public init() {}
 
@@ -60,8 +62,36 @@ public struct ControllerView: View {
     // MARK: - Input
 
     private func press(_ action: GameInputAction) {
-        appState.activeGame?.handleInput(action: action)
+        // The console ignores input while the tube powers off
+        guard !appState.isEjecting else { return }
         hapticManager.playHaptic(.buttonPress)
+
+        // While paused, the D-Pad and A / B drive the pause menu. Start
+        // still reaches the game, which resumes itself.
+        if appState.isPauseMenuActive {
+            guard action != .buttonStartPressed else {
+                appState.pauseMenuSelection = .resume
+                appState.activeGame?.handleInput(action: action)
+                return
+            }
+            let outcome = PauseMenu.handle(
+                action,
+                appState: appState,
+                screenModes: PauseMenu.availableScreenModes(store: storeManager),
+                currentScreen: storeManager.effectiveScreenSettings(appState.screenSettings).mode
+            )
+            switch outcome {
+            case .moved, .changed:
+                audioManager.playGameSound(.moveTick)
+            case .confirmed:
+                audioManager.playCartridgeClick()
+            case .ignored:
+                break
+            }
+            return
+        }
+
+        appState.activeGame?.handleInput(action: action)
     }
 
     // MARK: - Pieces
@@ -108,9 +138,12 @@ public struct ControllerView: View {
     private func startSelectButtons(theme: SkinTheme, unit: CGFloat) -> some View {
         HStack(spacing: unit * 0.45) {
             ConsoleButton {
-                // Select ejects the cartridge and returns to the game menu
-                press(.buttonSelectPressed)
-                appState.endGame()
+                // Select ejects the cartridge: the tube powers off, then the
+                // library returns
+                guard !appState.isEjecting else { return }
+                hapticManager.playHaptic(.buttonPress)
+                audioManager.playCartridgeClick()
+                appState.ejectCartridge()
             } label: { isPressed in
                 PillButton(title: "SELECT", unit: unit, theme: theme, isPressed: isPressed)
             }

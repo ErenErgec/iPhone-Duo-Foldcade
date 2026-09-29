@@ -49,6 +49,7 @@
 		D9FAE47E35752387DA9FF746 /* CartridgeArt.swift in Sources */ = {isa = PBXBuildFile; fileRef = F572E5075EABCE30B220AF16 /* CartridgeArt.swift */; };
 		76827DBEEF4823E2E6DDDC1B /* AttractPilot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 880E3CC9E33A86EC6E951F9F /* AttractPilot.swift */; };
 		E8C268C93BD75A0BAA33D4E2 /* AttractScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B76AF2FF78603680C9FC0C0 /* AttractScreen.swift */; };
+		FA3EEA4E93EEFCD8A1E1585E /* PauseMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC226AEA802B413476577317 /* PauseMenu.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -108,6 +109,7 @@
 		F572E5075EABCE30B220AF16 /* CartridgeArt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartridgeArt.swift; sourceTree = "<group>"; };
 		880E3CC9E33A86EC6E951F9F /* AttractPilot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttractPilot.swift; sourceTree = "<group>"; };
 		7B76AF2FF78603680C9FC0C0 /* AttractScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttractScreen.swift; sourceTree = "<group>"; };
+		FC226AEA802B413476577317 /* PauseMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PauseMenu.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -137,6 +139,7 @@
 				7B76AF2FF78603680C9FC0C0 /* AttractScreen.swift */,
 				F572E5075EABCE30B220AF16 /* CartridgeArt.swift */,
 				17441286342C035B63E9C511 /* ControllerView.swift */,
+				FC226AEA802B413476577317 /* PauseMenu.swift */,
 				87FEA080C926760FB3C162F5 /* GameCanvasView.swift */,
 				57E0BB0000000000000000F3 /* StoreView.swift */,
 				57E0BB0000000000000000F2 /* SkinPickerView.swift */,
@@ -403,6 +406,7 @@
 				D9FAE47E35752387DA9FF746 /* CartridgeArt.swift in Sources */,
 				194F0E4D015A7188FC1A0C00 /* ClassicGreySkin.swift in Sources */,
 				720656CE84DDB80C10FD63A2 /* ControllerView.swift in Sources */,
+				FA3EEA4E93EEFCD8A1E1585E /* PauseMenu.swift in Sources */,
 				6227BA44799E531A7B669A2D /* CoverScreenLayout.swift in Sources */,
 				299F8F38045EC936D167BDC5 /* CyberpunkNeonSkin.swift in Sources */,
 				40CFAA3D64F6C7F99611C3F5 /* FallingBlocksGame.swift in Sources */,

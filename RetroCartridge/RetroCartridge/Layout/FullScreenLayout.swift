@@ -17,6 +17,13 @@ public struct FullScreenLayout: View {
     @Environment(HapticManager.self) private var hapticManager
     @Environment(AudioManager.self) private var audioManager
     @Environment(StoreManager.self) private var storeManager
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    /// The cartridge sliding into the slot, just before the console powers on.
+    @State private var insertingGame: GameType?
+
+    /// Bumped when a cartridge goes in, jolting the console once.
+    @State private var consoleThunk = 0
 
     public init() {}
 
@@ -53,15 +60,26 @@ public struct FullScreenLayout: View {
                 
                 // Halves are measured on the full display so the split lands on
                 // the fold; each half then keeps clear of its own screen edges.
-                GameCanvasView()
-                    .padding(split.firstHalfInsets(from: insets))
-                    .frame(width: split.first.width, height: split.first.height)
-                    .offset(x: split.first.minX, y: split.first.minY)
-                
-                ControllerView()
-                    .padding(split.secondHalfInsets(from: insets))
-                    .frame(width: split.second.width, height: split.second.height)
-                    .offset(x: split.second.minX, y: split.second.minY)
+                ZStack(alignment: .topLeading) {
+                    GameCanvasView()
+                        .padding(split.firstHalfInsets(from: insets))
+                        .frame(width: split.first.width, height: split.first.height)
+                        .offset(x: split.first.minX, y: split.first.minY)
+
+                    ControllerView()
+                        .padding(split.secondHalfInsets(from: insets))
+                        .frame(width: split.second.width, height: split.second.height)
+                        .offset(x: split.second.minX, y: split.second.minY)
+                }
+                // The cartridge seating: the parts jolt down and settle back
+                .keyframeAnimator(initialValue: 0.0, trigger: consoleThunk) { content, drop in
+                    content.offset(y: drop)
+                } keyframes: { _ in
+                    KeyframeTrack {
+                        CubicKeyframe(5, duration: 0.07)
+                        SpringKeyframe(0, duration: 0.35, spring: .bouncy)
+                    }
+                }
                 
                 HingeGroove(isVertical: split.isSideBySide)
                     .frame(
@@ -75,6 +93,11 @@ public struct FullScreenLayout: View {
             }
         }
         .ignoresSafeArea()
+        .onAppear {
+            if !reduceMotion {
+                consoleThunk += 1
+            }
+        }
     }
     
     // MARK: - Library
@@ -146,6 +169,7 @@ public struct FullScreenLayout: View {
     /// A cartridge standing on its stretch of shelf, with its subtitle.
     private func cartridgeSlot(_ game: GameType, width: CGFloat) -> some View {
         let isLocked = !storeManager.isUnlocked(game)
+        let isInserting = insertingGame == game
 
         return VStack(spacing: 0) {
             Button {
@@ -157,8 +181,13 @@ public struct FullScreenLayout: View {
                     isSelected: game == appState.selectedGameType,
                     isLocked: isLocked
                 )
+                // Sliding down into the slot, behind the shelf
+                .offset(y: isInserting ? width * 0.35 : 0)
+                .scaleEffect(isInserting ? 0.92 : 1)
+                .opacity(isInserting ? 0 : 1)
             }
             .buttonStyle(CartridgePressStyle())
+            .opacity(insertingGame != nil && !isInserting ? 0.35 : 1)
             .accessibilityLabel(game.rawValue)
             .accessibilityValue(isLocked ? "Locked" : game.subtitle)
 
@@ -178,6 +207,7 @@ public struct FullScreenLayout: View {
     }
 
     private func insert(_ game: GameType) {
+        guard insertingGame == nil else { return }
         guard storeManager.isUnlocked(game) else {
             hapticManager.playHaptic(.buttonPress)
             withAnimation(LibraryOverlays.animation) {
@@ -186,8 +216,23 @@ public struct FullScreenLayout: View {
             return
         }
         audioManager.playCartridgeClick()
-        hapticManager.playHaptic(.cartridgeInsert)
-        appState.startGame(type: game)
+
+        guard !reduceMotion else {
+            hapticManager.playHaptic(.cartridgeInsert)
+            appState.startGame(type: game)
+            return
+        }
+
+        // Slide the cartridge into the slot, then power on
+        withAnimation(.easeIn(duration: 0.25)) {
+            insertingGame = game
+        }
+        Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(250))
+            hapticManager.playHaptic(.cartridgeInsert)
+            appState.startGame(type: game)
+            insertingGame = nil
+        }
     }
 }
 
