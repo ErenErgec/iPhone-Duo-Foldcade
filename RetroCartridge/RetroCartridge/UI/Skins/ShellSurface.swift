@@ -22,13 +22,15 @@ struct ShellSurface: View {
     var detailScale: CGFloat = 1
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
     @State private var neonPulse = false
 
     var body: some View {
         ZStack {
             Color.black
 
-            if theme.finish == .translucent {
+            // With Reduce Transparency, clear plastic is drawn solid
+            if theme.finish == .translucent && !reduceTransparency {
                 CircuitBoard(detailScale: detailScale)
             }
 

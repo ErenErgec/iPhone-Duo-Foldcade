@@ -28,6 +28,8 @@ struct CartridgeView: View {
     /// Width / height of the cartridge shell.
     static let aspectRatio: CGFloat = 0.8
 
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+
     var body: some View {
         GeometryReader { geo in
             let w = geo.size.width
@@ -43,7 +45,8 @@ struct CartridgeView: View {
                     .shadow(color: glowColor(shell: shell, label: labelColor), radius: 30)
                     .shadow(color: .black.opacity(0.55), radius: isSelected ? 16 : 8, y: isSelected ? 12 : 6)
 
-                if shell.isTranslucent {
+                // With Reduce Transparency, clear plastic is drawn solid
+                if shell.isTranslucent && !reduceTransparency {
                     CartridgeBoard(width: w)
                         .clipShape(outline)
                 }

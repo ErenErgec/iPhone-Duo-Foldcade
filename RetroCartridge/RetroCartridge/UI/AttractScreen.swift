@@ -4,8 +4,8 @@
 //
 // The cover screen's attract mode: the selected cartridge plays itself
 // (`AttractPilot`) through the Color CRT, silently, at 30 FPS. It's purely
-// decorative, so it's hidden from accessibility and stays still when
-// Reduce Motion is on.
+// decorative, so it's hidden from accessibility and stays off with Reduce
+// Motion or Reduce Transparency.
 //
 
 import SwiftUI
@@ -14,11 +14,13 @@ struct AttractScreen: View {
     let gameType: GameType
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
     @State private var pilot: AttractPilot?
 
     var body: some View {
         ZStack {
-            if !reduceMotion, let pilot {
+            // A faded layer behind text: off with Reduce Motion or Reduce Transparency
+            if !reduceMotion, !reduceTransparency, let pilot {
                 TimelineView(.animation(minimumInterval: 1.0 / 30)) { timeline in
                     // Capturing the frame date makes each frame's renderer
                     // distinct, as in `GameCanvasView`.

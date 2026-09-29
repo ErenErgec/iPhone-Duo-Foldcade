@@ -37,8 +37,11 @@ extension AnyTransition {
 struct OverlayBackdrop: View {
     let onDismiss: () -> Void
 
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+
     var body: some View {
-        Color.black.opacity(0.62)
+        // Nearly opaque with Reduce Transparency, so nothing shows through
+        Color.black.opacity(reduceTransparency ? 0.92 : 0.62)
             .ignoresSafeArea()
             .contentShape(Rectangle())
             .onTapGesture(perform: onDismiss)

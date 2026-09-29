@@ -60,6 +60,7 @@ struct GameCanvasView: View {
 
                 VStack(spacing: inset * 0.6) {
                     bezelHeader(theme: theme, inset: inset)
+                        .accessibilityHidden(true)
 
                     if let activeGame = appState.activeGame {
                         TimelineView(.animation) { timeline in
@@ -120,6 +121,7 @@ struct GameCanvasView: View {
                                     toastUntil = newDate.addingTimeInterval(2.5)
                                     audioManager.playGameSound(.powerUp)
                                     hapticManager.playHaptic(.gameEvent)
+                                    AccessibilityNotification.Announcement("Achievement earned: \(earned.title.capitalized)").post()
                                 }
 
                                 // Persist the score as soon as a round ends, since pressing A
@@ -233,6 +235,27 @@ struct GameCanvasView: View {
                 .allowsHitTesting(false)
         }
         .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+        // VoiceOver reads the game's state instead of the pixels
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(game.gameType.rawValue) screen")
+        .accessibilityValue(screenDescription(for: game))
+        .accessibilityAddTraits(.updatesFrequently)
+    }
+
+    /// What the screen shows, in words, for VoiceOver.
+    private func screenDescription(for game: any PixelGameProtocol) -> String {
+        switch game.gameState {
+        case .menu:
+            return "Title screen, \(game.mode.title) mode. Press A to start."
+        case .playing:
+            return "Playing. Score \(game.score), level \(game.level)."
+        case .paused:
+            return "Paused. \(appState.pauseMenuSelection.title.capitalized) selected. "
+                + "Screen \(screenSettings.mode.title), palette \(appState.paletteChoice.title), "
+                + "music \(appState.isMusicOn ? "on" : "off")."
+        case .gameOver(let score):
+            return "Game over. Score \(score). Press A to play again."
+        }
     }
 }
 
@@ -256,6 +279,8 @@ private struct BezelReadout: View {
         .font(.system(size: fontSize, weight: .bold, design: .monospaced))
         .lineLimit(1)
         .minimumScaleFactor(0.6)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Score \(score), level \(level), high score \(highScore)")
     }
 
     private func item(_ label: String, _ value: String) -> some View {

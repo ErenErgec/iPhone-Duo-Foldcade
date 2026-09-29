@@ -28,6 +28,7 @@ public struct ControllerView: View {
                     Spacer(minLength: unit * 0.2)
 
                     brandLabel(theme: theme, unit: unit)
+                        .accessibilityHidden(true)
 
                     Spacer(minLength: unit * 0.3)
 
@@ -36,6 +37,16 @@ public struct ControllerView: View {
                             press(action)
                         } onRelease: { action in
                             appState.activeGame?.handleInput(action: action)
+                        }
+                        .accessibilityElement(children: .ignore)
+                        .accessibilityLabel("Directional pad")
+                        .accessibilityHint("Touch and drag to steer, or use the actions for a single step.")
+                        .accessibilityAddTraits(.allowsDirectInteraction)
+                        .accessibilityActions {
+                            Button("Up") { tapDirection(.dpadUpPressed, release: .dpadUpReleased) }
+                            Button("Down") { tapDirection(.dpadDownPressed, release: .dpadDownReleased) }
+                            Button("Left") { tapDirection(.dpadLeftPressed, release: .dpadLeftReleased) }
+                            Button("Right") { tapDirection(.dpadRightPressed, release: .dpadRightReleased) }
                         }
 
                         Spacer(minLength: unit * 0.3)
@@ -55,6 +66,7 @@ public struct ControllerView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
                     .padding(unit * 0.3)
                     .allowsHitTesting(false)
+                    .accessibilityHidden(true)
             }
         }
     }
@@ -101,6 +113,16 @@ public struct ControllerView: View {
         appState.activeGame?.handleInput(action: action)
     }
 
+    /// One D-Pad step for VoiceOver actions: a press, then the release a
+    /// moment later, as a quick tap would send.
+    private func tapDirection(_ action: GameInputAction, release: GameInputAction) {
+        press(action)
+        Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(150))
+            appState.activeGame?.handleInput(action: release)
+        }
+    }
+
     // MARK: - Pieces
 
     private func brandLabel(theme: SkinTheme, unit: CGFloat) -> some View {
@@ -128,6 +150,11 @@ public struct ControllerView: View {
             } label: { isPressed in
                 RoundActionButton(letter: "B", size: unit * 0.78, theme: theme, isPressed: isPressed)
             }
+            .consoleControl("B button") {
+                press(.buttonBPressed)
+            } release: {
+                appState.activeGame?.handleInput(action: .buttonBReleased)
+            }
             .offset(y: unit * 0.3)
 
             ConsoleButton {
@@ -137,6 +164,11 @@ public struct ControllerView: View {
             } label: { isPressed in
                 RoundActionButton(letter: "A", size: unit * 0.78, theme: theme, isPressed: isPressed)
             }
+            .consoleControl("A button") {
+                press(.buttonAPressed)
+            } release: {
+                appState.activeGame?.handleInput(action: .buttonAReleased)
+            }
             .offset(y: -unit * 0.15)
         }
         .rotationEffect(.degrees(-8))
@@ -145,14 +177,12 @@ public struct ControllerView: View {
     private func startSelectButtons(theme: SkinTheme, unit: CGFloat) -> some View {
         HStack(spacing: unit * 0.45) {
             ConsoleButton {
-                // Select ejects the cartridge: the tube powers off, then the
-                // library returns
-                guard !appState.isEjecting else { return }
-                hapticManager.playHaptic(.buttonPress)
-                audioManager.playCartridgeClick()
-                appState.ejectCartridge()
+                eject()
             } label: { isPressed in
                 PillButton(title: "SELECT", unit: unit, theme: theme, isPressed: isPressed)
+            }
+            .consoleControl("Select", hint: "Ejects the cartridge.") {
+                eject()
             }
 
             ConsoleButton {
@@ -160,7 +190,42 @@ public struct ControllerView: View {
             } label: { isPressed in
                 PillButton(title: "START", unit: unit, theme: theme, isPressed: isPressed)
             }
+            .consoleControl("Start", hint: "Pauses or resumes the game.") {
+                press(.buttonStartPressed)
+            }
         }
+    }
+
+    /// Select ejects the cartridge: the tube powers off, then the library returns.
+    private func eject() {
+        guard !appState.isEjecting else { return }
+        hapticManager.playHaptic(.buttonPress)
+        audioManager.playCartridgeClick()
+        appState.ejectCartridge()
+    }
+}
+
+// MARK: - Accessibility
+
+extension View {
+    /// Exposes a console control to VoiceOver as a named button. It can be
+    /// played directly (touches pass straight through for real-time play) or
+    /// activated with a double tap, which presses and releases it.
+    func consoleControl(
+        _ name: String,
+        hint: String? = nil,
+        press: @escaping () -> Void,
+        release: @escaping () -> Void = {}
+    ) -> some View {
+        self
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(name)
+            .accessibilityHint(hint ?? "")
+            .accessibilityAddTraits([.isButton, .allowsDirectInteraction])
+            .accessibilityAction {
+                press()
+                release()
+            }
     }
 }
 
