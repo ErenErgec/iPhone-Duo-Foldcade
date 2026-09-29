@@ -5,6 +5,7 @@
 
 import XCTest
 import SwiftUI
+import AVFoundation
 @testable import RetroCartridge
 
 final class RetroCartridgeTests: XCTestCase {
@@ -918,6 +919,49 @@ final class RetroCartridgeTests: XCTestCase {
         // Sound packs keep music lengths, so the parts stay in step
         let arcade = SoundPack.arcade.voice(patches[0])
         XCTAssertEqual(arcade.notes.map(\.durationMs), patches[0].notes.map(\.durationMs))
+    }
+
+    func testLimiterOnlyTouchesPeaks() {
+        XCTAssertEqual(ToneGenerator.limit(0.5), 0.5)
+        XCTAssertEqual(ToneGenerator.limit(-ToneGenerator.limiterKnee), -ToneGenerator.limiterKnee)
+        XCTAssertLessThan(ToneGenerator.limit(1), 1)
+        // Six voices at their loudest, after the master gain
+        XCTAssertLessThan(ToneGenerator.limit(3.2), 1)
+        XCTAssertGreaterThan(ToneGenerator.limit(3.2), ToneGenerator.limit(1))
+        // Far beyond that, it saturates at full scale but never passes it
+        XCTAssertLessThanOrEqual(ToneGenerator.limit(100), 1)
+        XCTAssertEqual(ToneGenerator.limit(-2), -ToneGenerator.limit(2))
+    }
+
+    /// The loudest moment found by rendering offline: a crash and the
+    /// game-over tune over Falling Blocks' music in the Arcade pack. It used
+    /// to clip flat for hundreds of samples.
+    func testLoudestMomentsDontClip() throws {
+        let table = SynthPatch.allCases.map(\.definition)
+            + GameType.allCases.flatMap { ChipMusic.patches(for: ChipMusic.track(for: $0)) }
+        let generator = ToneGenerator(patches: table.map { SoundPack.arcade.voice($0) }, sampleRate: ChipMusic.sampleRate)
+        let track = try XCTUnwrap(GameType.allCases.firstIndex(of: .fallingBlocks))
+        let music = SynthPatch.allCases.count + track * ChipMusic.partsPerTrack
+        for part in 0..<ChipMusic.partsPerTrack {
+            generator.trigger(patchIndex: music + part)
+        }
+
+        let format = try XCTUnwrap(AVAudioFormat(standardFormatWithSampleRate: ChipMusic.sampleRate, channels: 1))
+        let buffer = try XCTUnwrap(AVAudioPCMBuffer(pcmFormat: format, frameCapacity: 512))
+        buffer.frameLength = 512
+        var peak: Float = 0
+        for block in 0..<200 {
+            if block == 80 {
+                for patch in [SynthPatch.crashTone, .crashNoise, .gameOver] {
+                    generator.trigger(patchIndex: patch.rawValue)
+                }
+            }
+            _ = generator.render(frameCount: 512, audioBufferList: buffer.mutableAudioBufferList)
+            let samples = UnsafeBufferPointer(start: buffer.floatChannelData?[0], count: 512)
+            peak = max(peak, samples.map(abs).max() ?? 0)
+        }
+        XCTAssertGreaterThan(peak, Float(ToneGenerator.limiterKnee), "the moment is loud enough to reach the limiter")
+        XCTAssertLessThan(peak, 0.999)
     }
 
     func testPauseMenuTogglesMusic() {

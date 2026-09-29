@@ -521,7 +521,8 @@ final class ToneGenerator: @unchecked Sendable {
     private let sampleRate: Double
     private let channelCount = SynthChannel.allCases.count
     private let pendingCapacity = 16
-    /// Overall output level; keeps three full voices under clipping.
+    /// Overall output level; three full voices come close to full scale,
+    /// and the limiter rounds off anything louder.
     private let masterGain = 0.75
     /// Per-sample gain slew coefficient (~1 ms time constant).
     private let gainSlew: Double
@@ -671,7 +672,7 @@ final class ToneGenerator: @unchecked Sendable {
             for channel in 0..<channelCount {
                 mix += nextSample(voice: &voices[channel])
             }
-            let sample = isSilenced ? 0 : Float(max(-1.0, min(1.0, mix * masterGain)))
+            let sample = isSilenced ? 0 : Float(Self.limit(mix * masterGain))
 
             for buffer in ablPointer {
                 guard let data = buffer.mData?.assumingMemoryBound(to: Float.self) else { continue }
@@ -680,6 +681,23 @@ final class ToneGenerator: @unchecked Sendable {
         }
 
         return noErr
+    }
+
+    /// Where the limiter starts bending the signal. Music and single effects
+    /// peak around 0.5, so they pass through untouched.
+    static let limiterKnee = 0.8
+
+    /// A soft limiter: passes the signal through up to `limiterKnee`, then
+    /// bends it smoothly toward full scale, which it never reaches. Loud
+    /// moments (a crash and the game-over tune over the music) would
+    /// otherwise clip flat and crackle. No allocation: safe on the audio thread.
+    @inline(__always)
+    static func limit(_ sample: Double) -> Double {
+        let magnitude = abs(sample)
+        guard magnitude > limiterKnee else { return sample }
+        let headroom = 1 - limiterKnee
+        let bent = limiterKnee + headroom * tanh((magnitude - limiterKnee) / headroom)
+        return sample < 0 ? -bent : bent
     }
 
     /// Starts a patch on its channel unless a higher-priority patch is playing there.
