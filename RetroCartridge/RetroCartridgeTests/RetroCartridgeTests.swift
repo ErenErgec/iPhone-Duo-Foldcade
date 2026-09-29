@@ -795,6 +795,83 @@ final class RetroCartridgeTests: XCTestCase {
         XCTAssertEqual(appState.isMusicOn, !original)
     }
 
+    // MARK: - Label designer
+
+    func testBuiltInLabelsAreValid() {
+        for gameType in GameType.allCases {
+            XCTAssertTrue(PixelArt.label(for: gameType).isValid, gameType.rawValue)
+        }
+        XCTAssertTrue(PixelArt.blank.isValid)
+        XCTAssertEqual(PixelArt.blank.paintedCount, 0)
+        XCTAssertFalse(PixelArt(rows: ["P"]).isValid)
+        XCTAssertFalse(PixelArt.blank.setting("Z", atX: 0, y: 0).isValid)
+    }
+
+    func testPencilPaintsAndMirrors() {
+        let single = PixelArt.blank.setting("P", atX: 2, y: 3)
+        XCTAssertEqual(single.pixel(atX: 2, y: 3), "P")
+        XCTAssertEqual(single.paintedCount, 1)
+
+        let mirrored = PixelArt.blank.setting("X", atX: 2, y: 3, mirrored: true)
+        XCTAssertEqual(mirrored.pixel(atX: 13, y: 3), "X")
+        XCTAssertEqual(mirrored.paintedCount, 2)
+
+        // Outside the grid nothing changes
+        XCTAssertEqual(PixelArt.blank.setting("P", atX: 16, y: 0), .blank)
+    }
+
+    func testFillStopsAtOtherColors() {
+        // A closed box of walls: filling inside stays inside
+        var art = PixelArt.blank
+        for i in 2...6 {
+            art = art.setting("G", atX: i, y: 2).setting("G", atX: i, y: 6)
+                .setting("G", atX: 2, y: i).setting("G", atX: 6, y: i)
+        }
+        let filled = art.filling(fromX: 4, y: 4, with: "F")
+        XCTAssertEqual(filled.paintedCount - art.paintedCount, 9) // the 3×3 inside
+        XCTAssertEqual(filled.pixel(atX: 0, y: 0), ".")
+
+        // Filling outside covers everything else
+        let outside = art.filling(fromX: 0, y: 0, with: "P")
+        XCTAssertEqual(outside.paintedCount, 256 - 9)
+    }
+
+    func testCustomLabelsPersistAndFallBack() {
+        let defaults = makeDefaults()
+        let store = LabelStore(defaults: defaults)
+        XCTAssertEqual(store.art(for: .snake), PixelArt.label(for: .snake))
+        XCTAssertFalse(store.hasCustomLabel(for: .snake))
+
+        let drawing = PixelArt.blank.setting("H", atX: 7, y: 7)
+        store.save(drawing, for: .snake)
+        XCTAssertEqual(LabelStore(defaults: defaults).art(for: .snake), drawing)
+
+        // Drawing the original back, or removing the label, restores it
+        store.save(PixelArt.label(for: .snake), for: .snake)
+        XCTAssertFalse(store.hasCustomLabel(for: .snake))
+        store.save(drawing, for: .snake)
+        store.removeCustomLabel(for: .snake)
+        XCTAssertFalse(LabelStore(defaults: defaults).hasCustomLabel(for: .snake))
+    }
+
+    func testCorruptSavedLabelsAreIgnored() {
+        let defaults = makeDefaults()
+        defaults.set(["Snake": ["PPP"], "Not A Game": PixelArt.blank.rows], forKey: "customLabels")
+        let store = LabelStore(defaults: defaults)
+        XCTAssertTrue(store.customLabels.isEmpty)
+    }
+
+    func testDesignerOffersEveryPaletteColor() {
+        for gameType in GameType.allCases {
+            let palette = GamePalette.native(for: gameType)
+            let pixels = PixelArt.pixels(for: palette)
+            XCTAssertEqual(pixels.first, ".")
+            for pixel in pixels.dropFirst() {
+                XCTAssertNotNil(PixelArt.color(for: pixel, in: palette), "\(gameType.rawValue): \(pixel)")
+            }
+        }
+    }
+
     // MARK: - Localization
 
     /// The Turkish strings from the String Catalog, as the app bundle ships them.

@@ -16,7 +16,7 @@ import SwiftUI
 // MARK: - Pixel art
 
 /// A small grid of pixels, one character per pixel (see the key above).
-struct PixelArt: Sendable {
+struct PixelArt: Equatable, Sendable {
     let rows: [String]
 
     /// The label artwork of a cartridge.
@@ -49,17 +49,90 @@ struct PixelArt: Sendable {
     }
 }
 
+// MARK: - Editing
+
+extension PixelArt {
+    /// Labels are square, this many pixels a side.
+    static let size = 16
+
+    /// A label with nothing drawn on it.
+    static let blank = PixelArt(rows: Array(repeating: String(repeating: ".", count: size), count: size))
+
+    /// Every character a label may use (see the key above).
+    static let knownPixels = Set<Character>(".PHFXYGW0123456789")
+
+    /// Whether this is a 16×16 grid of known pixel characters.
+    var isValid: Bool {
+        rows.count == Self.size && rows.allSatisfy { row in
+            row.count == Self.size && row.allSatisfy(Self.knownPixels.contains)
+        }
+    }
+
+    /// The pixel characters a palette can draw, in the designer's order:
+    /// empty, the roles, then the palette's spectrum colors.
+    static func pixels(for palette: GamePalette) -> [Character] {
+        Array(".PHFXYGW") + (0..<min(10, palette.spectrum.count)).map { Character(String($0)) }
+    }
+
+    /// The character at a pixel, or empty outside the grid.
+    func pixel(atX x: Int, y: Int) -> Character {
+        guard rows.indices.contains(y) else { return "." }
+        let row = Array(rows[y])
+        return row.indices.contains(x) ? row[x] : "."
+    }
+
+    /// This art with one pixel set, and its mirror image across the middle
+    /// column too when `mirrored`.
+    func setting(_ pixel: Character, atX x: Int, y: Int, mirrored: Bool = false) -> PixelArt {
+        var grid = rows.map(Array.init)
+        guard grid.indices.contains(y), grid[y].indices.contains(x) else { return self }
+        grid[y][x] = pixel
+        if mirrored {
+            grid[y][grid[y].count - 1 - x] = pixel
+        }
+        return PixelArt(rows: grid.map { String($0) })
+    }
+
+    /// This art with the area of same-colored pixels around a pixel (joined
+    /// edge to edge) filled with another.
+    func filling(fromX x: Int, y: Int, with pixel: Character) -> PixelArt {
+        var grid = rows.map(Array.init)
+        guard grid.indices.contains(y), grid[y].indices.contains(x) else { return self }
+        let target = grid[y][x]
+        guard target != pixel else { return self }
+
+        var pending = [(x, y)]
+        while let point = pending.popLast() {
+            let (px, py) = point
+            guard grid.indices.contains(py), grid[py].indices.contains(px), grid[py][px] == target else { continue }
+            grid[py][px] = pixel
+            pending += [(px + 1, py), (px - 1, py), (px, py + 1), (px, py - 1)]
+        }
+        return PixelArt(rows: grid.map { String($0) })
+    }
+
+    /// How many pixels are drawn (not empty).
+    var paintedCount: Int {
+        rows.joined().filter { $0 != "." }.count
+    }
+}
+
 // MARK: - Label artwork view
 
-/// Draws a cartridge's pixel art in its game's palette, pixels kept square
-/// and centered.
+/// Draws a cartridge's label in its game's palette, pixels kept square and
+/// centered: the player's own label when they drew one, else the built-in art.
 struct CartridgeArt: View {
     let game: GameType
 
+    @Environment(AppState.self) private var appState
+
     var body: some View {
-        Canvas { context, size in
-            let palette = GamePalette.native(for: game)
-            let art = PixelArt.label(for: game)
+        let art = appState.labels.art(for: game)
+        let palette = GamePalette.native(for: game)
+
+        // Capturing the art makes each label's renderer distinct, so an
+        // edited label redraws (see `GameCanvasView`).
+        Canvas { [art] context, size in
             context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(palette.background))
 
             let count = CGFloat(max(art.rows.count, art.rows.map(\.count).max() ?? 0))

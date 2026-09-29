@@ -3,7 +3,7 @@
 // RetroCartridge
 //
 // Chrome shared by the in-hierarchy overlays (skin picker, screen settings,
-// store).
+// records, label designer, store).
 //
 // These are in-hierarchy panels rather than sheets, so they keep the console's
 // retro look and sit inside whichever display layout hosts them.
@@ -216,7 +216,8 @@ struct OverlayLockBadge: View {
 
 // MARK: - Library overlays
 
-/// Hosts the skin picker, screen settings, records and store as in-hierarchy overlays.
+/// Hosts the skin picker, screen settings, records, label designer and store
+/// as in-hierarchy overlays.
 /// The store stacks above the others, and each backdrop tap closes only the
 /// top panel.
 struct LibraryOverlays: View {
@@ -231,6 +232,7 @@ struct LibraryOverlays: View {
         let showsSkinPicker = isEnabled && appState.isSkinSelectorVisible
         let showsScreenSettings = isEnabled && appState.isScreenSettingsVisible
         let showsRecords = isEnabled && appState.isRecordsVisible
+        let showsLabelDesigner = isEnabled && appState.isLabelDesignerVisible
         let showsStore = isEnabled && appState.isStoreVisible
         
         ZStack {
@@ -261,6 +263,15 @@ struct LibraryOverlays: View {
                     .zIndex(11)
             }
             
+            if showsLabelDesigner {
+                OverlayBackdrop { close(\.isLabelDesignerVisible) }
+                    .transition(.opacity)
+                    .zIndex(10)
+                LabelDesignerView()
+                    .transition(.overlayPanel)
+                    .zIndex(11)
+            }
+            
             if showsStore {
                 OverlayBackdrop { close(\.isStoreVisible) }
                     .transition(.opacity)
@@ -273,6 +284,7 @@ struct LibraryOverlays: View {
         .animation(Self.animation, value: showsSkinPicker)
         .animation(Self.animation, value: showsScreenSettings)
         .animation(Self.animation, value: showsRecords)
+        .animation(Self.animation, value: showsLabelDesigner)
         .animation(Self.animation, value: showsStore)
     }
     

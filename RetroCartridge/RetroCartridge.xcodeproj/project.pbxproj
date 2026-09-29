@@ -65,6 +65,8 @@
 		8E79ED25D9AAA2317A7D2C70 /* OcclusionAvoidance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 830382F6F2D6048BD2EF3AEE /* OcclusionAvoidance.swift */; };
 		C4BCD40E8E83BB13B8E3DF42 /* ChipMusic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ADE1ACC998C07CCDF807E12 /* ChipMusic.swift */; };
 		B8F6112F557397486E0B90CC /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = E87486F61B23DCF5C81EBCE9 /* Localizable.xcstrings */; };
+		D7257D5B6DA215E33081FF69 /* LabelStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA84B40BBEDD48CAE102AE3 /* LabelStore.swift */; };
+		D2DAAEB38E69A008A43CEB05 /* LabelDesignerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7E70AF52E2FA8E338FCE243 /* LabelDesignerView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -140,6 +142,8 @@
 		830382F6F2D6048BD2EF3AEE /* OcclusionAvoidance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OcclusionAvoidance.swift; sourceTree = "<group>"; };
 		1ADE1ACC998C07CCDF807E12 /* ChipMusic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChipMusic.swift; sourceTree = "<group>"; };
 		E87486F61B23DCF5C81EBCE9 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		BDA84B40BBEDD48CAE102AE3 /* LabelStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelStore.swift; sourceTree = "<group>"; };
+		F7E70AF52E2FA8E338FCE243 /* LabelDesignerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelDesignerView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -175,6 +179,7 @@
 				57E0BB0000000000000000F2 /* SkinPickerView.swift */,
 				FF3E442A1B8BB71C6A604E74 /* ScreenSettingsView.swift */,
 				A0B777D6058450A4862AE6B7 /* RecordsView.swift */,
+				F7E70AF52E2FA8E338FCE243 /* LabelDesignerView.swift */,
 				57E0BB0000000000000000F1 /* OverlayPanel.swift */,
 			);
 			path = UI;
@@ -251,6 +256,7 @@
 				057CF93884D57447C526BAAB /* HingeEngine.swift */,
 				99CD56444E0BB80576F0C69C /* PostureManager.swift */,
 				3EEE3B220D92F1C8139D16AB /* ProgressStore.swift */,
+				BDA84B40BBEDD48CAE102AE3 /* LabelStore.swift */,
 				8C1CEBAE8171A91826FBAD82 /* Achievements.swift */,
 			);
 			path = Core;
@@ -510,6 +516,7 @@
 				57E0BB0000000000000000B2 /* SkinPickerView.swift in Sources */,
 				F730C9995B3369A64BB9AF11 /* ScreenSettingsView.swift in Sources */,
 				094A9581F904E8F5EC3E7DF9 /* RecordsView.swift in Sources */,
+				D2DAAEB38E69A008A43CEB05 /* LabelDesignerView.swift in Sources */,
 				57E0BB0000000000000000B1 /* OverlayPanel.swift in Sources */,
 				677B8DF4217D3EED21CB1C41 /* GameModels.swift in Sources */,
 				D2DDD4CE661F117CAF47450B /* HapticManager.swift in Sources */,
@@ -520,6 +527,7 @@
 				1F731E3550AFB142BAC4ADAE /* PixelGameProtocol.swift in Sources */,
 				349DA3AFA1F86A358B2BA421 /* PostureManager.swift in Sources */,
 				64B1FDE4D6A297AAF4F6DB35 /* ProgressStore.swift in Sources */,
+				D7257D5B6DA215E33081FF69 /* LabelStore.swift in Sources */,
 				3B1BEE17D217EE959F8E62E7 /* Achievements.swift in Sources */,
 				71C7D06E6A57AA69BCF61731 /* ProductIdentifiers.swift in Sources */,
 				ADB0CCD71E9D30600FBF6354 /* RetroCartridgeApp.swift in Sources */,

@@ -12,8 +12,12 @@ final class AppState {
     /// High scores and achievements, persisted.
     let progress: ProgressStore
 
-    init(progress: ProgressStore = ProgressStore()) {
+    /// The player's own cartridge labels, persisted.
+    let labels: LabelStore
+
+    init(progress: ProgressStore = ProgressStore(), labels: LabelStore = LabelStore()) {
         self.progress = progress
+        self.labels = labels
     }
     
     // MARK: - Game State
@@ -145,6 +149,9 @@ final class AppState {
 
     /// Whether the records overlay is visible. The store stacks above it.
     var isRecordsVisible: Bool = false
+
+    /// Whether the label designer overlay is visible. The store stacks above it.
+    var isLabelDesignerVisible: Bool = false
     
     // MARK: - High Scores (Persisted)
     
@@ -177,6 +184,7 @@ final class AppState {
         isSkinSelectorVisible = false
         isScreenSettingsVisible = false
         isRecordsVisible = false
+        isLabelDesignerVisible = false
     }
 
     /// When the eject began: the tube powers off, then `GameCanvasView`

@@ -192,6 +192,13 @@ public struct FullScreenLayout: View {
             }
             .buttonStyle(CartridgePressStyle())
             .opacity(insertingGame != nil && !isInserting ? 0.35 : 1)
+            .contextMenu {
+                if !isLocked {
+                    Button("Design Label", systemImage: "pencil.and.scribble") {
+                        designLabel(for: game)
+                    }
+                }
+            }
             .accessibilityLabel(game.rawValue)
             .accessibilityValue(isLocked ? String(localized: "Locked, part of \(ProductIdentifiers.fallbackDisplayName(for: game.info.requiredProductID ?? ""))") : game.subtitle)
 
@@ -216,6 +223,18 @@ public struct FullScreenLayout: View {
             .accessibilityHidden(true)
         }
         .frame(width: width)
+    }
+
+    /// Opens the label designer on a cartridge.
+    private func designLabel(for game: GameType) {
+        hapticManager.playHaptic(.buttonPress)
+        appState.selectedGameType = game
+        withAnimation(LibraryOverlays.animation) {
+            appState.isSkinSelectorVisible = false
+            appState.isScreenSettingsVisible = false
+            appState.isRecordsVisible = false
+            appState.isLabelDesignerVisible = true
+        }
     }
 
     private func insert(_ game: GameType) {

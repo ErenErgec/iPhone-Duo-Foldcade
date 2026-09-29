@@ -102,6 +102,16 @@
         }
       }
     },
+    "%lld pixels drawn" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld piksel çizildi"
+          }
+        }
+      }
+    },
     "%lld screen modes with tuning" : {
       "localizations" : {
         "tr" : {
@@ -222,6 +232,16 @@
         }
       }
     },
+    "ARCADE" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ATARİ"
+          }
+        }
+      }
+    },
     "Arcade" : {
       "comment" : "Sound pack name",
       "localizations" : {
@@ -229,16 +249,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Atari"
-          }
-        }
-      }
-    },
-    "ARCADE" : {
-      "localizations" : {
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ATARİ"
           }
         }
       }
@@ -367,6 +377,16 @@
         }
       }
     },
+    "CLEAR" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TEMİZLE"
+          }
+        }
+      }
+    },
     "Clear 40 lines fast. Time left is bonus." : {
       "localizations" : {
         "tr" : {
@@ -399,6 +419,26 @@
     },
     "COLLECTOR PACK" : {
       "shouldTranslate" : false
+    },
+    "COLOR" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RENK"
+          }
+        }
+      }
+    },
+    "Color %lld" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Renk %lld"
+          }
+        }
+      }
     },
     "COLOR BLEED" : {
       "localizations" : {
@@ -511,6 +551,16 @@
         }
       }
     },
+    "Design Label" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etiket Tasarla"
+          }
+        }
+      }
+    },
     "Directional pad" : {
       "localizations" : {
         "tr" : {
@@ -561,12 +611,52 @@
         }
       }
     },
+    "DRAW" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ÇİZ"
+          }
+        }
+      }
+    },
+    "DRAW YOUR OWN CARTRIDGE ART" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KENDİ KARTUŞ ETİKETİNİ ÇİZ"
+          }
+        }
+      }
+    },
+    "Drawing grid, 16 by 16 pixels" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çizim ızgarası, 16×16 piksel"
+          }
+        }
+      }
+    },
     "Earned" : {
       "localizations" : {
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kazanıldı"
+          }
+        }
+      }
+    },
+    "EDIT" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DÜZENLE"
           }
         }
       }
@@ -602,6 +692,16 @@
         }
       }
     },
+    "EQUIPPED" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TAKILI"
+          }
+        }
+      }
+    },
     "Equipped" : {
       "localizations" : {
         "tr" : {
@@ -612,12 +712,12 @@
         }
       }
     },
-    "EQUIPPED" : {
+    "Eraser" : {
       "localizations" : {
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "TAKILI"
+            "value" : "Silgi"
           }
         }
       }
@@ -658,6 +758,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Satın almalar geri yüklenemedi: %@"
+          }
+        }
+      }
+    },
+    "FILL" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DOLDUR"
           }
         }
       }
@@ -774,6 +884,26 @@
         }
       }
     },
+    "Guide color" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kılavuz rengi"
+          }
+        }
+      }
+    },
+    "Hazard color" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tehlike rengi"
+          }
+        }
+      }
+    },
     "HI" : {
       "comment" : "Bezel readout: high score",
       "localizations" : {
@@ -815,6 +945,16 @@
         }
       }
     },
+    "Highlight color" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vurgu rengi"
+          }
+        }
+      }
+    },
     "HINGE" : {
       "comment" : "Lunar Hinge HUD: the hinge angle",
       "localizations" : {
@@ -846,16 +986,6 @@
         }
       }
     },
-    "In use" : {
-      "localizations" : {
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kullanımda"
-          }
-        }
-      }
-    },
     "IN USE" : {
       "localizations" : {
         "tr" : {
@@ -866,12 +996,42 @@
         }
       }
     },
+    "In use" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kullanımda"
+          }
+        }
+      }
+    },
     "Included with Lifetime Pro" : {
       "localizations" : {
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lifetime Pro'ya dahil"
+          }
+        }
+      }
+    },
+    "LABEL DESIGNER" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ETİKET TASARIMCISI"
+          }
+        }
+      }
+    },
+    "Labels" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etiketler"
           }
         }
       }
@@ -981,22 +1141,22 @@
         }
       }
     },
-    "Maze" : {
-      "localizations" : {
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Labirent"
-          }
-        }
-      }
-    },
     "MAZE" : {
       "localizations" : {
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "LABİRENT"
+          }
+        }
+      }
+    },
+    "Maze" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Labirent"
           }
         }
       }
@@ -1008,6 +1168,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Yumuşak"
+          }
+        }
+      }
+    },
+    "MIRROR" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AYNA"
+          }
+        }
+      }
+    },
+    "Mirror drawing" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aynalı çizim"
           }
         }
       }
@@ -1064,6 +1244,16 @@
         }
       }
     },
+    "Next cartridge" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sonraki kartuş"
+          }
+        }
+      }
+    },
     "Night" : {
       "localizations" : {
         "tr" : {
@@ -1104,6 +1294,16 @@
         }
       }
     },
+    "Off" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kapalı"
+          }
+        }
+      }
+    },
     "OFF" : {
       "localizations" : {
         "tr" : {
@@ -1130,6 +1330,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "AÇIK"
+          }
+        }
+      }
+    },
+    "On" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Açık"
           }
         }
       }
@@ -1174,12 +1384,32 @@
         }
       }
     },
+    "ORIGINAL" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ORİJİNAL"
+          }
+        }
+      }
+    },
     "Original" : {
       "localizations" : {
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Orijinal"
+          }
+        }
+      }
+    },
+    "ORIGINAL LABEL" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ORİJİNAL ETİKET"
           }
         }
       }
@@ -1255,6 +1485,16 @@
         }
       }
     },
+    "Pickup color" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toplanan nesne rengi"
+          }
+        }
+      }
+    },
     "PIXEL GRID" : {
       "localizations" : {
         "tr" : {
@@ -1271,6 +1511,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "PİKSEL GÖLGESİ"
+          }
+        }
+      }
+    },
+    "Player color" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oyuncu rengi"
           }
         }
       }
@@ -1335,6 +1585,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "BAŞLAMAK İÇİN A'YA BAS"
+          }
+        }
+      }
+    },
+    "Previous cartridge" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Önceki kartuş"
           }
         }
       }
@@ -1601,6 +1861,16 @@
         }
       }
     },
+    "Second hazard color" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İkinci tehlike rengi"
+          }
+        }
+      }
+    },
     "Select" : {
       "shouldTranslate" : false
     },
@@ -1707,22 +1977,22 @@
         }
       }
     },
-    "Store" : {
-      "localizations" : {
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mağaza"
-          }
-        }
-      }
-    },
     "STORE" : {
       "localizations" : {
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "MAĞAZA"
+          }
+        }
+      }
+    },
+    "Store" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mağaza"
           }
         }
       }
@@ -1838,12 +2108,32 @@
         }
       }
     },
+    "TOOL" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ARAÇ"
+          }
+        }
+      }
+    },
     "Touch and drag to steer, or use the actions for a single step." : {
       "localizations" : {
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Yön vermek için dokunup sürükle ya da tek adım için eylemleri kullan."
+          }
+        }
+      }
+    },
+    "Touch to draw with the selected color." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seçili renkle çizmek için dokun."
           }
         }
       }
@@ -1877,6 +2167,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ultra"
+          }
+        }
+      }
+    },
+    "UNDO" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GERİ AL"
           }
         }
       }
@@ -1951,12 +2251,32 @@
         }
       }
     },
+    "White" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beyaz"
+          }
+        }
+      }
+    },
     "Wrap" : {
       "localizations" : {
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Geçişli"
+          }
+        }
+      }
+    },
+    "YOUR LABEL" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SENİN ETİKETİN"
           }
         }
       }
