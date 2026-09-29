@@ -25,13 +25,14 @@ struct CartridgeView: View {
             let w = geo.size.width
             let h = geo.size.height
             let labelColor = Color(hex: game.cartridgeColorHex)
+            let shell = game.info.shell
 
             ZStack(alignment: .top) {
                 // Shell
                 CartridgeShape(notch: w * 0.13)
                     .fill(
                         LinearGradient(
-                            colors: [Color(white: 0.36), Color(white: 0.24)],
+                            colors: [shell.topColor, shell.bottomColor],
                             startPoint: .top,
                             endPoint: .bottom
                         )

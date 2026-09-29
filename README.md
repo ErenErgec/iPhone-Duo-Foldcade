@@ -54,7 +54,7 @@ All four games implement `PixelGameProtocol` and render at 60 FPS in a SwiftUI `
 | **🧩 Falling Blocks** | Tetromino stacking with a ghost piece and line clears. | D-Pad ◀ ▶ ▼ moves, ▲ hard-drops, A / B rotates. |
 
 - **All games:** A starts or retries, Start pauses, and Select ejects the cartridge back to the library.
-- **High scores** are saved per game.
+- **High scores** are saved per game and mode (`ProgressStore`).
 - **Sound:** every game plays chiptune effects from `AudioManager`, a 3-channel sequenced synth (pulse/triangle/noise) that renders on the audio thread. Big events also trigger a haptic.
 
 ---
@@ -110,14 +110,16 @@ RetroCartridge/
 │   │   ├── AudioManager.swift         # Sequenced 3-channel chiptune synth (AVAudioEngine)
 │   │   ├── HapticManager.swift        # CoreHaptics transient feedback
 │   │   ├── HingeEngine.swift          # Smoothed hinge angle (onHingeChange) + 90° unfold chime
-│   │   └── PostureManager.swift       # Outer / inner display detection (DuoDisplay)
+│   │   ├── PostureManager.swift       # Outer / inner display detection (DuoDisplay)
+│   │   └── ProgressStore.swift        # High scores per game and mode, achievements
 │   ├── Layout/
 │   │   ├── AdaptiveConsoleLayout.swift # Cover vs inner routing, system toolbar, fold/unfold, hinge
 │   │   ├── CoverScreenLayout.swift    # Outer display: cartridge carousel
 │   │   └── FullScreenLayout.swift     # Inner display: library, console split at the fold (FoldSplit)
 │   ├── Rendering/
 │   │   ├── CRTView.metal              # CRT layer-effect shader
-│   │   └── CRTEffect.swift            # SwiftUI bridge for the shader
+│   │   ├── CRTEffect.swift            # SwiftUI bridge for the shader
+│   │   └── GamePalette.swift          # Role-based game colors (each game's palette sits in its file)
 │   ├── UI/
 │   │   ├── GameCanvasView.swift       # CRT bezel, 60 FPS game loop, sound dispatch
 │   │   ├── ControllerView.swift       # D-Pad, A/B, Select/Start
@@ -127,7 +129,7 @@ RetroCartridge/
 │   │   ├── OverlayPanel.swift         # Overlay panel chrome + LibraryOverlays (skin picker, store host)
 │   │   └── Skins/                     # SkinTheme definitions + console previews
 │   ├── Games/                         # PixelGameProtocol, factory, and the four games
-│   ├── Models/GameModels.swift        # Game, input, posture, skin and sound types
+│   ├── Models/GameModels.swift        # Game, cartridge metadata, mode, input, posture, skin and sound types
 │   └── Store/                         # StoreManager + product identifiers
 └── RetroCartridgeTests/               # Unit tests
 DESIGN.md                              # iPhone Duo platform reference: Apple guidance + measurements

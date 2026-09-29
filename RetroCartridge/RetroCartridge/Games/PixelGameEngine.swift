@@ -5,16 +5,25 @@
 enum PixelGameEngine {
     
     /// Creates a fresh game of the given type.
-    static func createGame(type: GameType) -> any PixelGameProtocol {
+    /// - Parameters:
+    ///   - type: The cartridge to create.
+    ///   - mode: The rule set, one of `type.modes`.
+    static func createGame(type: GameType, mode: GameMode = .standard) -> any PixelGameProtocol {
+        assert(type.modes.contains(mode), "\(type.rawValue) has no \(mode.id) mode")
+
+        let game: any PixelGameProtocol
         switch type {
         case .brickBreaker:
-            return BrickBreakerGame()
+            game = BrickBreakerGame()
         case .snake:
-            return SnakeGame()
+            game = SnakeGame()
         case .retroRacer:
-            return RetroRacerGame()
+            game = RetroRacerGame()
         case .fallingBlocks:
-            return FallingBlocksGame()
+            game = FallingBlocksGame()
         }
+        game.mode = mode
+        game.reset()
+        return game
     }
 }

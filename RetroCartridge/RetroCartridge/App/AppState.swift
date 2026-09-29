@@ -2,12 +2,19 @@
 // RetroCartridge
 //
 // Global application state managed with @Observable.
-// Tracks active game, selected skin, and UI preferences.
+// Tracks active game, selected skin, UI preferences and player progress.
 
 import SwiftUI
 
 @Observable
 final class AppState {
+
+    /// High scores and achievements, persisted.
+    let progress: ProgressStore
+
+    init(progress: ProgressStore = ProgressStore()) {
+        self.progress = progress
+    }
     
     // MARK: - Game State
     
@@ -51,25 +58,22 @@ final class AppState {
     
     // MARK: - High Scores (Persisted)
     
-    /// Get the high score for a specific game type.
-    func highScore(for gameType: GameType) -> Int {
-        UserDefaults.standard.integer(forKey: "highScore_\(gameType.rawValue)")
+    /// The high score for a game type in a mode.
+    func highScore(for gameType: GameType, mode: GameMode = .standard) -> Int {
+        progress.highScore(for: gameType, mode: mode)
     }
     
-    /// Update the high score for a specific game type if the new score is higher.
-    func updateHighScore(_ score: Int, for gameType: GameType) {
-        let current = highScore(for: gameType)
-        if score > current {
-            UserDefaults.standard.set(score, forKey: "highScore_\(gameType.rawValue)")
-        }
+    /// Update the high score for a game type in a mode if the new score is higher.
+    func updateHighScore(_ score: Int, for gameType: GameType, mode: GameMode = .standard) {
+        progress.recordScore(score, for: gameType, mode: mode)
     }
     
     // MARK: - Game Lifecycle
     
     /// Insert a cartridge: create a fresh game of the given type and power on.
-    func startGame(type: GameType) {
+    func startGame(type: GameType, mode: GameMode = .standard) {
         selectedGameType = type
-        startGame(PixelGameEngine.createGame(type: type))
+        startGame(PixelGameEngine.createGame(type: type, mode: mode))
     }
     
     /// Start a new game session with the selected game type.
@@ -83,7 +87,7 @@ final class AppState {
     /// End the current game session and return to menu.
     func endGame() {
         if let game = activeGame {
-            updateHighScore(game.score, for: game.gameType)
+            updateHighScore(game.score, for: game.gameType, mode: game.mode)
         }
         activeGame = nil
     }

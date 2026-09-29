@@ -78,14 +78,31 @@ public struct FullScreenLayout: View {
     
     // MARK: - Library
 
+    /// Margin around the library content.
+    private static let libraryPadding: CGFloat = 32
+
     private var library: some View {
-        libraryContent
-            .padding(32)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(ConsoleBackdrop(glowColor: Color(hex: appState.selectedGameType.cartridgeColorHex)))
+        GeometryReader { geo in
+            // Decided once per display, not per pose: `.includeInactive` also
+            // returns the fold while flat, so folding never reflows the grid.
+            let hasFold = !geo.reservedRegions(kind: .division, options: .includeInactive).isEmpty
+            let metrics = LibraryGridMetrics(
+                itemCount: GameType.allCases.count,
+                availableWidth: geo.size.width - Self.libraryPadding * 2,
+                hasFold: hasFold
+            )
+
+            ScrollView {
+                libraryContent(metrics: metrics)
+                    .padding(Self.libraryPadding)
+                    .frame(maxWidth: .infinity, minHeight: geo.size.height)
+            }
+            .scrollBounceBehavior(.basedOnSize)
+        }
+        .background(ConsoleBackdrop(glowColor: Color(hex: appState.selectedGameType.cartridgeColorHex)))
     }
 
-    private var libraryContent: some View {
+    private func libraryContent(metrics: LibraryGridMetrics) -> some View {
         VStack(spacing: 36) {
             VStack(spacing: 10) {
                 Text("RETRO CARTRIDGE")
@@ -98,26 +115,21 @@ public struct FullScreenLayout: View {
                     .foregroundStyle(.white.opacity(0.45))
             }
 
-            // One row of four when it fits, otherwise a balanced 2×2 grid
-            ViewThatFits(in: .horizontal) {
-                HStack(alignment: .top, spacing: 28) {
-                    ForEach(GameType.allCases) { cartridgeButton($0) }
-                }
-                Grid(horizontalSpacing: 28, verticalSpacing: 28) {
-                    GridRow {
-                        cartridgeButton(.brickBreaker)
-                        cartridgeButton(.retroRacer)
-                    }
-                    GridRow {
-                        cartridgeButton(.snake)
-                        cartridgeButton(.fallingBlocks)
-                    }
+            LazyVGrid(
+                columns: Array(
+                    repeating: GridItem(.fixed(metrics.itemWidth), spacing: LibraryGridMetrics.spacing, alignment: .top),
+                    count: metrics.columns
+                ),
+                spacing: LibraryGridMetrics.spacing
+            ) {
+                ForEach(GameType.allCases) { game in
+                    cartridgeButton(game, width: metrics.itemWidth)
                 }
             }
         }
     }
     
-    private func cartridgeButton(_ game: GameType) -> some View {
+    private func cartridgeButton(_ game: GameType, width: CGFloat) -> some View {
         Button {
             audioManager.playCartridgeClick()
             hapticManager.playHaptic(.cartridgeInsert)
@@ -135,9 +147,49 @@ public struct FullScreenLayout: View {
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
             }
-            .frame(width: 170)
+            .frame(width: width)
         }
         .buttonStyle(CartridgePressStyle())
+    }
+}
+
+// MARK: - Library grid
+
+/// Column count and cartridge width for the library grid.
+///
+/// Rows are balanced, so four cartridges become 2×2 rather than 3 + 1. On a
+/// display with a fold the column count is even, following the HIG ("In a
+/// grid-style layout, prefer an even number of columns so content divides
+/// cleanly"). Cartridges are sized from the container, not fixed dimensions.
+struct LibraryGridMetrics: Equatable {
+    /// Space between cartridges, in both directions.
+    static let spacing: CGFloat = 28
+
+    /// Narrowest a cartridge may get before a column is dropped.
+    static let minItemWidth: CGFloat = 150
+
+    /// Widest a cartridge may grow.
+    static let maxItemWidth: CGFloat = 190
+
+    let columns: Int
+    let itemWidth: CGFloat
+
+    init(itemCount: Int, availableWidth: CGFloat, hasFold: Bool) {
+        let spacing = Self.spacing
+        let fitting = max(1, Int((availableWidth + spacing) / (Self.minItemWidth + spacing)))
+
+        // As few rows as fit, with the cartridges spread evenly over them
+        let items = max(1, itemCount)
+        let rows = (items + fitting - 1) / fitting
+        var columns = (items + rows - 1) / rows
+
+        if hasFold && columns % 2 == 1 {
+            columns = columns + 1 <= fitting ? columns + 1 : max(1, columns - 1)
+        }
+
+        self.columns = columns
+        let widthPerColumn = (availableWidth - spacing * CGFloat(columns - 1)) / CGFloat(columns)
+        self.itemWidth = max(1, min(Self.maxItemWidth, widthPerColumn))
     }
 }
 

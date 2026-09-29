@@ -10,6 +10,8 @@ final class BrickBreakerGame: PixelGameProtocol {
     var score: Int = 0
     var level: Int = 1
     var highScore: Int = 0
+    var mode: GameMode = .standard
+    var palette: GamePalette = .brickBreaker
     var pendingSounds: [GameSound] = []
     
     struct Paddle {
@@ -30,7 +32,8 @@ final class BrickBreakerGame: PixelGameProtocol {
     struct Brick {
         var x: Int
         var y: Int
-        var color: Color
+        /// Index into the palette's spectrum.
+        var colorIndex: Int
         var isDestroyed: Bool = false
     }
     
@@ -229,10 +232,9 @@ final class BrickBreakerGame: PixelGameProtocol {
     
     func setupLevel() {
         bricks.removeAll()
-        let colors: [Color] = [.red, .orange, .yellow, .green, .cyan]
         for r in 0..<rows {
             for c in 0..<cols {
-                bricks.append(Brick(x: c, y: r, color: colors[r % colors.count]))
+                bricks.append(Brick(x: c, y: r, colorIndex: r))
             }
         }
         balls.removeAll()
@@ -245,7 +247,7 @@ final class BrickBreakerGame: PixelGameProtocol {
     }
     
     func render(context: inout GraphicsContext, size: CGSize) {
-        context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(.black))
+        context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(palette.background))
         
         if gameState == .menu {
             // Render menu
@@ -255,7 +257,7 @@ final class BrickBreakerGame: PixelGameProtocol {
         // Render paddle
         let pWidth = size.width * paddle.width
         let pRect = CGRect(x: size.width * paddle.x - pWidth / 2, y: size.height * 0.9, width: pWidth, height: size.height * 0.02)
-        context.fill(Path(pRect), with: .color(.cyan))
+        context.fill(Path(pRect), with: .color(palette.player))
         
         // Render bricks
         let brickW = size.width / Double(cols)
@@ -264,23 +266,23 @@ final class BrickBreakerGame: PixelGameProtocol {
         
         for brick in bricks where !brick.isDestroyed {
             let rect = CGRect(x: Double(brick.x) * brickW, y: brickStartY + Double(brick.y) * brickH, width: brickW - 2, height: brickH - 2)
-            context.fill(Path(rect), with: .color(brick.color))
+            context.fill(Path(rect), with: .color(palette.spectrumColor(brick.colorIndex)))
         }
         
         // Render powerups
         for p in powerUps {
             let rect = CGRect(x: size.width * p.x - 5, y: size.height * p.y - 5, width: 10, height: 10)
-            context.fill(Path(rect), with: .color(p.type == .multiBall ? .white : .orange))
+            context.fill(Path(rect), with: .color(p.type == .multiBall ? palette.pickupAlt : palette.pickup))
         }
         
         // Render balls
         for ball in balls {
             for (idx, pos) in ball.history.enumerated() {
                 let rect = CGRect(x: size.width * pos.0 - 2, y: size.height * pos.1 - 2, width: 4, height: 4)
-                context.fill(Path(rect), with: .color(.white.opacity(Double(idx + 1) * 0.25)))
+                context.fill(Path(rect), with: .color(palette.playerHighlight.opacity(Double(idx + 1) * 0.25)))
             }
             let rect = CGRect(x: size.width * ball.x - 4, y: size.height * ball.y - 4, width: 8, height: 8)
-            context.fill(Path(rect), with: .color(.white))
+            context.fill(Path(rect), with: .color(palette.playerHighlight))
         }
     }
     
@@ -323,4 +325,22 @@ final class BrickBreakerGame: PixelGameProtocol {
         powerUps.removeAll()
         setupLevel()
     }
+}
+
+// MARK: - Palette
+
+extension GamePalette {
+    /// Brick Breaker's native palette.
+    static let brickBreaker = GamePalette(
+        background: .black,
+        guide: Color(white: 0.1),
+        player: .cyan,                // paddle
+        playerHighlight: .white,      // ball and its trail
+        pickup: .orange,              // wide paddle
+        pickupAlt: .white,            // multi-ball
+        hazard: .red,
+        hazardAlt: .orange,
+        outline: .black,
+        spectrum: [.red, .orange, .yellow, .green, .cyan] // brick rows, top down
+    )
 }

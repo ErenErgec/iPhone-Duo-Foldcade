@@ -10,16 +10,20 @@ final class FallingBlocksGame: PixelGameProtocol {
     var score: Int = 0
     var level: Int = 1
     var highScore: Int = 0
+    var mode: GameMode = .standard
+    var palette: GamePalette = .fallingBlocks
     var pendingSounds: [GameSound] = []
     
     let cols = 10
     let rows = 20
     
-    var grid: [[Color?]] = Array(repeating: Array(repeating: nil, count: 10), count: 20)
+    /// Locked cells, holding the spectrum index of the piece that filled them.
+    var grid: [[Int?]] = Array(repeating: Array(repeating: nil, count: 10), count: 20)
     
     struct Tetromino {
         var shape: [[Int]]
-        var color: Color
+        /// Index into the palette's spectrum, one per piece kind.
+        var colorIndex: Int
         var x: Int
         var y: Int
         
@@ -46,14 +50,15 @@ final class FallingBlocksGame: PixelGameProtocol {
         }
     }
     
-    let pieceTypes: [([[Int]], Color)] = [
-        ([[0,0,0,0], [1,1,1,1], [0,0,0,0], [0,0,0,0]], .cyan), // I
-        ([[1,1], [1,1]], .yellow), // O
-        ([[0,1,0], [1,1,1], [0,0,0]], .purple), // T
-        ([[0,1,1], [1,1,0], [0,0,0]], .green), // S
-        ([[1,1,0], [0,1,1], [0,0,0]], .red), // Z
-        ([[0,0,1], [1,1,1], [0,0,0]], .orange), // L
-        ([[1,0,0], [1,1,1], [0,0,0]], .blue) // J
+    /// Piece shapes; each one's index is also its spectrum color index.
+    let pieceShapes: [[[Int]]] = [
+        [[0,0,0,0], [1,1,1,1], [0,0,0,0], [0,0,0,0]], // I
+        [[1,1], [1,1]], // O
+        [[0,1,0], [1,1,1], [0,0,0]], // T
+        [[0,1,1], [1,1,0], [0,0,0]], // S
+        [[1,1,0], [0,1,1], [0,0,0]], // Z
+        [[0,0,1], [1,1,1], [0,0,0]], // L
+        [[1,0,0], [1,1,1], [0,0,0]] // J
     ]
     
     var currentPiece: Tetromino!
@@ -69,16 +74,21 @@ final class FallingBlocksGame: PixelGameProtocol {
     
     func spawnPiece() {
         if nextPiece == nil {
-            let type = pieceTypes.randomElement()!
-            nextPiece = Tetromino(shape: type.0, color: type.1, x: cols/2 - type.0.count/2, y: 0)
+            nextPiece = randomPiece()
         }
         currentPiece = nextPiece
-        let type = pieceTypes.randomElement()!
-        nextPiece = Tetromino(shape: type.0, color: type.1, x: cols/2 - type.0.count/2, y: 0)
+        nextPiece = randomPiece()
         
         if checkCollision(piece: currentPiece, dx: 0, dy: 0) {
             die()
         }
+    }
+    
+    /// A random piece at the top center of the board.
+    func randomPiece() -> Tetromino {
+        let kind = Int.random(in: 0..<pieceShapes.count)
+        let shape = pieceShapes[kind]
+        return Tetromino(shape: shape, colorIndex: kind, x: cols/2 - shape.count/2, y: 0)
     }
     
     func update(deltaTime: TimeInterval) {
@@ -105,7 +115,7 @@ final class FallingBlocksGame: PixelGameProtocol {
                     let r = currentPiece.y + i
                     let c = currentPiece.x + j
                     if r >= 0 && r < rows && c >= 0 && c < cols {
-                        grid[r][c] = currentPiece.color
+                        grid[r][c] = currentPiece.colorIndex
                     }
                 }
             }
@@ -175,7 +185,7 @@ final class FallingBlocksGame: PixelGameProtocol {
     }
     
     func render(context: inout GraphicsContext, size: CGSize) {
-        context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(.black))
+        context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(palette.background))
         
         if gameState == .menu { return }
         
@@ -190,9 +200,9 @@ final class FallingBlocksGame: PixelGameProtocol {
         for r in 0..<rows {
             for c in 0..<cols {
                 let rect = CGRect(x: offsetX + Double(c) * cellSize, y: offsetY + Double(r) * cellSize, width: cellSize, height: cellSize)
-                if let color = grid[r][c] {
-                    context.fill(Path(rect), with: .color(color))
-                    context.stroke(Path(rect), with: .color(.black), lineWidth: 1)
+                if let colorIndex = grid[r][c] {
+                    context.fill(Path(rect), with: .color(palette.spectrumColor(colorIndex)))
+                    context.stroke(Path(rect), with: .color(palette.outline), lineWidth: 1)
                 }
             }
         }
@@ -205,7 +215,7 @@ final class FallingBlocksGame: PixelGameProtocol {
             for j in 0..<ghost.shape[i].count {
                 if ghost.shape[i][j] == 1 {
                     let rect = CGRect(x: offsetX + Double(ghost.x + j) * cellSize, y: offsetY + Double(ghost.y + i) * cellSize, width: cellSize, height: cellSize)
-                    context.stroke(Path(rect), with: .color(ghost.color.opacity(0.5)), lineWidth: 2)
+                    context.stroke(Path(rect), with: .color(palette.spectrumColor(ghost.colorIndex).opacity(0.5)), lineWidth: 2)
                 }
             }
         }
@@ -215,8 +225,8 @@ final class FallingBlocksGame: PixelGameProtocol {
             for j in 0..<currentPiece.shape[i].count {
                 if currentPiece.shape[i][j] == 1 {
                     let rect = CGRect(x: offsetX + Double(currentPiece.x + j) * cellSize, y: offsetY + Double(currentPiece.y + i) * cellSize, width: cellSize, height: cellSize)
-                    context.fill(Path(rect), with: .color(currentPiece.color))
-                    context.stroke(Path(rect), with: .color(.black), lineWidth: 1)
+                    context.fill(Path(rect), with: .color(palette.spectrumColor(currentPiece.colorIndex)))
+                    context.stroke(Path(rect), with: .color(palette.outline), lineWidth: 1)
                 }
             }
         }
@@ -302,4 +312,22 @@ final class FallingBlocksGame: PixelGameProtocol {
         nextPiece = nil
         spawnPiece()
     }
+}
+
+// MARK: - Palette
+
+extension GamePalette {
+    /// Falling Blocks's native palette.
+    static let fallingBlocks = GamePalette(
+        background: .black,
+        guide: Color(white: 0.1),
+        player: .cyan,
+        playerHighlight: .white,
+        pickup: .yellow,
+        pickupAlt: .green,
+        hazard: .red,
+        hazardAlt: .orange,
+        outline: .black,                   // cell edges
+        spectrum: [.cyan, .yellow, .purple, .green, .red, .orange, .blue] // I O T S Z L J
+    )
 }

@@ -41,6 +41,8 @@
 		57E0BB0000000000000000B2 /* SkinPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E0BB0000000000000000F2 /* SkinPickerView.swift */; };
 		57E0BB0000000000000000B3 /* StoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E0BB0000000000000000F3 /* StoreView.swift */; };
 		57E0BB0000000000000000B4 /* ConsoleSkinPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E0BB0000000000000000F4 /* ConsoleSkinPreview.swift */; };
+		2E31C09473DE7594D11015A0 /* GamePalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EAF4D860F97D1FBBA8D649C /* GamePalette.swift */; };
+		64B1FDE4D6A297AAF4F6DB35 /* ProgressStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EEE3B220D92F1C8139D16AB /* ProgressStore.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -92,6 +94,8 @@
 		57E0BB0000000000000000F3 /* StoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreView.swift; sourceTree = "<group>"; };
 		57E0BB0000000000000000F4 /* ConsoleSkinPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleSkinPreview.swift; sourceTree = "<group>"; };
 		57E0BB0000000000000000F5 /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Products.storekit; sourceTree = "<group>"; };
+		9EAF4D860F97D1FBBA8D649C /* GamePalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamePalette.swift; sourceTree = "<group>"; };
+		3EEE3B220D92F1C8139D16AB /* ProgressStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressStore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -194,6 +198,7 @@
 				C2EC463497578DFADD618FA7 /* HapticManager.swift */,
 				057CF93884D57447C526BAAB /* HingeEngine.swift */,
 				99CD56444E0BB80576F0C69C /* PostureManager.swift */,
+				3EEE3B220D92F1C8139D16AB /* ProgressStore.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -270,6 +275,7 @@
 			isa = PBXGroup;
 			children = (
 				B785C2862CE1B74D356292D5 /* CRTEffect.swift */,
+				9EAF4D860F97D1FBBA8D649C /* GamePalette.swift */,
 				10FBB5F77ED593D2B7C8320B /* CRTView.metal */,
 			);
 			path = Rendering;
@@ -371,6 +377,7 @@
 				B6AD0B14BB189F075875626E /* AudioManager.swift in Sources */,
 				2061C3D92333D50207BB2984 /* BrickBreakerGame.swift in Sources */,
 				42E2B78F3434B46054A26EE6 /* CRTEffect.swift in Sources */,
+				2E31C09473DE7594D11015A0 /* GamePalette.swift in Sources */,
 				7A7D41FBA09DA948C8CAA7C9 /* CRTView.metal in Sources */,
 				A1C0DE0000000000000000A1 /* CartridgeView.swift in Sources */,
 				194F0E4D015A7188FC1A0C00 /* ClassicGreySkin.swift in Sources */,
@@ -390,6 +397,7 @@
 				FC184BF79E8C70A9A2D41B64 /* PixelGameEngine.swift in Sources */,
 				1F731E3550AFB142BAC4ADAE /* PixelGameProtocol.swift in Sources */,
 				349DA3AFA1F86A358B2BA421 /* PostureManager.swift in Sources */,
+				64B1FDE4D6A297AAF4F6DB35 /* ProgressStore.swift in Sources */,
 				71C7D06E6A57AA69BCF61731 /* ProductIdentifiers.swift in Sources */,
 				ADB0CCD71E9D30600FBF6354 /* RetroCartridgeApp.swift in Sources */,
 				67697161ED6B40C49A4BF984 /* RetroRacerGame.swift in Sources */,

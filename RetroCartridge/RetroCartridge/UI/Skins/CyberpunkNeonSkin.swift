@@ -13,6 +13,6 @@ extension SkinTheme {
         textColor: Color(red: 255/255, green: 20/255, blue: 147/255), // #FF1493
         screenBorderColor: Color(red: 0, green: 255/255, blue: 255/255), // #00FFFF
         actionButtonColor: Color(hex: "#FF2E88"), // hot pink
-        isTranslucent: false
+        finish: .glossy
     )
 }

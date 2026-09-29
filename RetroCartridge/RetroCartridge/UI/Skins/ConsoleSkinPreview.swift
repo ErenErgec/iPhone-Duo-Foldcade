@@ -64,7 +64,7 @@ struct ConsoleSkinPreview: View {
 
         return ZStack {
             RoundedRectangle(cornerRadius: r * 1.4, style: .continuous)
-                .fill(LinearGradient(colors: [Color(hex: "#2B2E35"), Color(hex: "#17191D")], startPoint: .top, endPoint: .bottom))
+                .fill(LinearGradient(colors: [theme.bezelTopColor, theme.bezelBottomColor], startPoint: .top, endPoint: .bottom))
 
             VStack(spacing: w * 0.035) {
                 // Accent light strip, like the bezel header

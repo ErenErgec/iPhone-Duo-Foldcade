@@ -131,6 +131,11 @@ final class StoreManager {
         }
     }
 
+    func isUnlocked(_ gameType: GameType) -> Bool {
+        guard let productID = gameType.info.requiredProductID else { return true }
+        return hasLifetimePro || isPurchased(productID)
+    }
+
     /// Rebuilds the owned set from current entitlements, so refunds and
     /// revocations drop out as well.
     private func updatePurchasedProducts() async {

@@ -10,6 +10,8 @@ final class SnakeGame: PixelGameProtocol {
     var score: Int = 0
     var level: Int = 1
     var highScore: Int = 0
+    var mode: GameMode = .standard
+    var palette: GamePalette = .snake
     var pendingSounds: [GameSound] = []
     
     struct SnakeSegment {
@@ -106,7 +108,7 @@ final class SnakeGame: PixelGameProtocol {
     }
     
     func render(context: inout GraphicsContext, size: CGSize) {
-        context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(.black))
+        context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(palette.background))
         
         if gameState == .menu { return }
         
@@ -123,23 +125,23 @@ final class SnakeGame: PixelGameProtocol {
             var path = Path()
             path.move(to: CGPoint(x: Double(i) * cellW, y: 0))
             path.addLine(to: CGPoint(x: Double(i) * cellW, y: cellH * Double(gridSize)))
-            context.stroke(path, with: .color(Color(white: 0.1)), lineWidth: 1)
+            context.stroke(path, with: .color(palette.guide), lineWidth: 1)
             
             var path2 = Path()
             path2.move(to: CGPoint(x: 0, y: Double(i) * cellH))
             path2.addLine(to: CGPoint(x: cellW * Double(gridSize), y: Double(i) * cellH))
-            context.stroke(path2, with: .color(Color(white: 0.1)), lineWidth: 1)
+            context.stroke(path2, with: .color(palette.guide), lineWidth: 1)
         }
         
         // Food
         let pulse = (sin(Date().timeIntervalSince1970 * 5) + 1) / 2
         let foodRect = CGRect(x: Double(food.x) * cellW + 2, y: Double(food.y) * cellH + 2, width: cellW - 4, height: cellH - 4)
-        context.fill(Path(foodRect), with: .color(Color(hex: "00FF41").opacity(0.5 + pulse * 0.5)))
+        context.fill(Path(foodRect), with: .color(palette.pickup.opacity(0.5 + pulse * 0.5)))
         
         // Snake
         for (i, seg) in snake.enumerated() {
             let rect = CGRect(x: Double(seg.x) * cellW + 1, y: Double(seg.y) * cellH + 1, width: cellW - 2, height: cellH - 2)
-            context.fill(Path(rect), with: .color(i == 0 ? Color(hex: "50FF80") : Color(hex: "00FF41")))
+            context.fill(Path(rect), with: .color(i == 0 ? palette.playerHighlight : palette.player))
         }
     }
     
@@ -190,3 +192,20 @@ final class SnakeGame: PixelGameProtocol {
     }
 }
 
+// MARK: - Palette
+
+extension GamePalette {
+    /// Snake's native palette.
+    static let snake = GamePalette(
+        background: .black,
+        guide: Color(white: 0.1),          // grid lines
+        player: Color(hex: "00FF41"),      // body
+        playerHighlight: Color(hex: "50FF80"), // head
+        pickup: Color(hex: "00FF41"),      // food
+        pickupAlt: Color(hex: "50FF80"),
+        hazard: Color(hex: "FF3B30"),
+        hazardAlt: Color(hex: "FF9500"),
+        outline: .black,
+        spectrum: [Color(hex: "00FF41"), Color(hex: "50FF80")]
+    )
+}

@@ -10,12 +10,15 @@ final class RetroRacerGame: PixelGameProtocol {
     var score: Int = 0
     var level: Int = 1
     var highScore: Int = 0
+    var mode: GameMode = .standard
+    var palette: GamePalette = .retroRacer
     var pendingSounds: [GameSound] = []
     
     struct Car {
         var lane: Int
         var y: Double
-        var color: Color
+        /// Drawn in the palette's second hazard color.
+        var isAlt: Bool
     }
     
     var playerLane: Double = 1.0 // 0, 1, 2
@@ -65,8 +68,7 @@ final class RetroRacerGame: PixelGameProtocol {
         if spawnTimer <= 0 {
             spawnTimer = currentSpawnInterval
             let lane = Int.random(in: 0...2)
-            let color = Bool.random() ? Color(hex: "E63946") : Color(hex: "FFD166")
-            obstacles.append(Car(lane: lane, y: -0.2, color: color))
+            obstacles.append(Car(lane: lane, y: -0.2, isAlt: Bool.random()))
         }
         
         // Update obstacles
@@ -100,7 +102,7 @@ final class RetroRacerGame: PixelGameProtocol {
     
     func render(context: inout GraphicsContext, size: CGSize) {
         // Road
-        context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(Color(hex: "1a1a2e")))
+        context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(palette.background))
         
         if gameState == .menu { return }
         
@@ -110,7 +112,7 @@ final class RetroRacerGame: PixelGameProtocol {
             path.move(to: CGPoint(x: size.width * (Double(i) * 0.333), y: 0))
             path.addLine(to: CGPoint(x: size.width * (Double(i) * 0.333), y: size.height))
             // Basic dashed lines with offset
-            context.stroke(path, with: .color(.white.opacity(0.3)), style: StrokeStyle(lineWidth: 2, dash: [20, 20], dashPhase: CGFloat(-roadOffset * Double(size.height))))
+            context.stroke(path, with: .color(palette.guide), style: StrokeStyle(lineWidth: 2, dash: [20, 20], dashPhase: CGFloat(-roadOffset * Double(size.height))))
         }
         
         // Obstacles
@@ -118,14 +120,14 @@ final class RetroRacerGame: PixelGameProtocol {
             let cx = size.width * (Double(obs.lane) * 0.333 + 0.166)
             let cy = size.height * obs.y
             let rect = CGRect(x: cx - 20, y: cy - 30, width: 40, height: 60)
-            context.fill(Path(rect), with: .color(obs.color))
+            context.fill(Path(rect), with: .color(obs.isAlt ? palette.hazardAlt : palette.hazard))
         }
         
         // Player
         let px = size.width * (playerLane * 0.333 + 0.166)
         let py = size.height * 0.85
         let pRect = CGRect(x: px - 20, y: py - 30, width: 40, height: 60)
-        context.fill(Path(pRect), with: .color(Color(hex: "4361EE")))
+        context.fill(Path(pRect), with: .color(palette.player))
     }
     
     func handleInput(action: GameInputAction) {
@@ -174,4 +176,22 @@ final class RetroRacerGame: PixelGameProtocol {
         survivalTime = 0
         roadOffset = 0
     }
+}
+
+// MARK: - Palette
+
+extension GamePalette {
+    /// Retro Racer's native palette.
+    static let retroRacer = GamePalette(
+        background: Color(hex: "1a1a2e"),  // asphalt
+        guide: .white.opacity(0.3),        // lane dashes
+        player: Color(hex: "4361EE"),
+        playerHighlight: .white,
+        pickup: Color(hex: "FFD166"),
+        pickupAlt: Color(hex: "4ECDC4"),
+        hazard: Color(hex: "E63946"),      // traffic
+        hazardAlt: Color(hex: "FFD166"),   // traffic
+        outline: .black,
+        spectrum: [Color(hex: "E63946"), Color(hex: "FFD166")]
+    )
 }

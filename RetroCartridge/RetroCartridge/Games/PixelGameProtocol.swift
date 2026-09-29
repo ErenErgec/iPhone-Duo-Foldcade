@@ -30,6 +30,16 @@ protocol PixelGameProtocol: AnyObject {
     /// High score for this game (persisted).
     var highScore: Int { get set }
 
+    /// The rule set being played, one of `gameType.modes`. Set by
+    /// `PixelGameEngine` before the first round; games read it on `reset()`.
+    var mode: GameMode { get set }
+
+    // MARK: - Appearance
+
+    /// The colors `render` draws with. Starts as the game's native palette
+    /// and can be swapped at any time, even mid-round.
+    var palette: GamePalette { get set }
+
     // MARK: - Sound
 
     /// Sound effects raised since the last frame. Games add to it with

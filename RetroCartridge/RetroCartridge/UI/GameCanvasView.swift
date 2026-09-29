@@ -38,7 +38,7 @@ struct GameCanvasView: View {
                 RoundedRectangle(cornerRadius: inset * 1.4, style: .continuous)
                     .fill(
                         LinearGradient(
-                            colors: [Color(hex: "#2B2E35"), Color(hex: "#17191D")],
+                            colors: [theme.bezelTopColor, theme.bezelBottomColor],
                             startPoint: .top,
                             endPoint: .bottom
                         )
@@ -62,7 +62,7 @@ struct GameCanvasView: View {
                                 BezelReadout(
                                     score: activeGame.score,
                                     level: activeGame.level,
-                                    highScore: max(appState.highScore(for: activeGame.gameType), activeGame.score),
+                                    highScore: max(appState.highScore(for: activeGame.gameType, mode: activeGame.mode), activeGame.score),
                                     fontSize: max(10, inset * 0.5)
                                 )
                             }
@@ -83,7 +83,7 @@ struct GameCanvasView: View {
                                 // Persist the score as soon as a round ends, since pressing A
                                 // restarts the game and resets its score.
                                 if case .gameOver(let score) = activeGame.gameState {
-                                    appState.updateHighScore(score, for: activeGame.gameType)
+                                    appState.updateHighScore(score, for: activeGame.gameType, mode: activeGame.mode)
                                 }
                             }
                         }
@@ -101,16 +101,16 @@ struct GameCanvasView: View {
         HStack(spacing: 6) {
             // Power LED
             Circle()
-                .fill(appState.isGameActive ? Color(hex: "#FF3B30") : Color(white: 0.25))
+                .fill(appState.isGameActive ? theme.ledColor : Color(white: 0.25))
                 .frame(width: 7, height: 7)
-                .shadow(color: appState.isGameActive ? Color(hex: "#FF3B30") : .clear, radius: 4)
+                .shadow(color: appState.isGameActive ? theme.ledColor : .clear, radius: 4)
             Text("POWER")
                 .font(.system(size: max(8, inset * 0.36), weight: .bold, design: .monospaced))
                 .foregroundStyle(Color.white.opacity(0.35))
 
             Spacer()
 
-            Text("COLOR CRT")
+            Text(theme.screenLabel)
                 .font(.system(size: max(8, inset * 0.36), weight: .bold, design: .monospaced))
                 .tracking(2)
                 .foregroundStyle(Color.white.opacity(0.3))
@@ -144,7 +144,7 @@ struct GameCanvasView: View {
                 GameStatePanel(
                     title: game.gameType.rawValue,
                     gameState: game.gameState,
-                    highScore: max(appState.highScore(for: game.gameType), game.score),
+                    highScore: max(appState.highScore(for: game.gameType, mode: game.mode), game.score),
                     blinkOn: Int(date.timeIntervalSinceReferenceDate * 2.5) % 2 == 0
                 )
             }
