@@ -242,7 +242,7 @@ The update rate and precision are system policy; prefer `status` when you only n
 | Area | Implementation |
 | :--- | :--- |
 | Toolchain | Deployment target and SDK iOS 27.1 (Xcode 27.1+) |
-| Toolbar | `NavigationStack` root. `navigationTitle("Retro Cartridge")` plus `Label` items in two `.topBarTrailing` groups: Skins/Screen (`.visibilityPriority(.high)`) and Store/Records, which go vertical in the side column. Hidden over a running console. The library's custom header buttons were removed. |
+| Toolbar | `NavigationStack` root. `navigationTitle("Retro Cartridge")` plus `Label` items in two `.topBarTrailing` groups: Skins/Screen/Labels (`.visibilityPriority(.high)`) and Store/Records, which go vertical in the side column. Hidden over a running console. The library's custom header buttons were removed. |
 | Hinge | `onHingeChange` → `HingeEngine.updateFromHardware(_:)` (real angle and status), with a fallback to the display posture. It drives the CRT curvature and the 90° chime. |
 | Appearance | The window forces the dark style so the title and glass bars read on the dark console |
 | Status bar | Visible, and part of the safe area. Each console half respects its own edge insets. |
@@ -266,6 +266,11 @@ The update rate and precision are system policy; prefer `status` when you only n
 - **VoiceOver play.** The console's controls carry `.allowsDirectInteraction`, so a VoiceOver user can play in real time by touch, as with any game. Every control also works with a double tap, and the D-Pad has named actions, so nothing depends on direct touch.
 - **Reduce Transparency.** Backgrounds become more opaque, as with the system's own bars (§5). Translucent shells and cartridges are drawn solid, overlay backdrops go nearly opaque, and the faded attract mode stays off.
 - **Localization.** A String Catalog with English as the source and Turkish. Casing uses the user's locale; product names and the console silkscreen stay English. Layout already adapts to longer text (monospaced labels scale down with `minimumScaleFactor`).
+
+**Decided on 2026-09-29 (Phase 6, designer, cartridges, text size):**
+- **Labels toolbar item.** The designer is customization, so Labels joins Skins and Screen in the high-priority group ("Group related toolbar items"); Store and Records still overflow first. Like the other overlays, it's reachable on both displays. The grid is smaller on the cover (15 pt pixels) than inside (22 pt), and a stroke is saved when the finger lifts.
+- **VoiceOver drawing.** The grid takes direct touches (`.allowsDirectInteraction`), as the console controls do; swatches are named by the role of their color.
+- **Dynamic Type and Bold Text.** Overlay and library text follows the body style's size steps and gets heavier with Bold Text; at accessibility sizes one-line text wraps instead of shrinking. The console's printed text is part of the hardware and scales with the console, not the text size.
 
 **Verified by the user in Device Hub (2026-09-23):**
 - Closed with the hinge on top, the outer display comes up in landscape.

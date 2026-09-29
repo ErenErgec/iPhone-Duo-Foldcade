@@ -45,7 +45,7 @@ See [DESIGN.md](DESIGN.md) for Apple's guidance and our measurements.
 
 ## 🎮 Games
 
-All nine games implement `PixelGameProtocol` and render at 60 FPS in a SwiftUI `Canvas` inside the CRT.
+All twelve games implement `PixelGameProtocol` and render at 60 FPS in a SwiftUI `Canvas` inside the CRT.
 
 | Game | Description | Modes | Controls |
 | :--- | :--- | :--- | :--- |
@@ -58,6 +58,9 @@ All nine games implement `PixelGameProtocol` and render at 60 FPS in a SwiftUI `
 | **🟡 Maze Muncher** | Pellets, power pellets and three ghosts with different hunting styles. | Standard | D-Pad steers |
 | **🐸 Frog Hop** | Traffic, river logs and five homes, against the clock. | Standard | D-Pad hops |
 | **🌙 Lunar Hinge** | Land on one of three pads (×1, ×2, ×4). **Fold the device to thrust**, or hold ▲ / A. | Standard | fold or ▲ / A thrust, ◀ ▶ side thrusters |
+| **🏓 Paddle Duel** | Table tennis against the computer: the hit point sets the angle, a moving paddle adds spin, and the computer gets quicker every level. | Match, Squash (against a wall) | ◀ ▶ move |
+| **☄️ Astro Drift** | A vector ship in a wrapping field of rocks that split when hit; each cleared field brings a bigger wave. | Standard | ◀ ▶ turn, ▲ thrust, A fires, B hyperspace |
+| **🏗️ Tower Stack** | Drop the sliding block on the tower; overhangs are cut off, perfect drops keep the width and a streak grows it back. | Standard | A or ▼ drops |
 
 Every game also has a **Daily** mode: the same round for everyone that day (seeded from the UTC date), with a high score that starts over daily. The title and game-over screens switch modes with ◀ ▶.
 
@@ -102,11 +105,13 @@ Every game also has a **Daily** mode: the same round for everyone that day (seed
   - Atomic Purple: translucent plastic over a circuit board;
   - Cyberpunk Neon: glossy black with a breathing neon edge that follows the display's corners;
   - 90's Arcade Cabinet: wood-grain laminate.
-- **Cartridges:** each game has its own plastic (grey, black, glow-in-the-dark, clear over its circuit board) and a 16×16 pixel-art label drawn in the game's palette. The library stands them on a shelf with a collection counter; locked cartridges look dusty and open the store.
+- **Cartridges:** each game has its own plastic (grey, off-white, black, glow-in-the-dark, clear over its circuit board) and a 16×16 pixel-art label drawn in the game's palette. The library stands them on a shelf with a collection counter; locked cartridges look dusty and open the store.
+- **Label designer:** **Labels** in the system toolbar (or *Design Label* in a cartridge's context menu) opens a 16×16 editor in the cartridge's palette: draw and fill, erase, mirror, undo, clear, or go back to the original. Every stroke is saved and the new label shows everywhere the cartridge appears.
 
 - **Accessibility:**
   - VoiceOver: the controls are buttons with the direct-interaction trait, so games can be played by touch; a double tap presses a button, and the D-Pad has Up/Down/Left/Right actions for single steps. The game screen describes the game in words (title screen, score and level, pause menu, final score), and new achievements are announced.
   - Reduce Motion skips decorative motion; Reduce Transparency draws translucent shells solid, turns off the faded attract mode and makes overlay backdrops nearly opaque.
+- **Text size and Bold Text:** overlay and library text follows Dynamic Type and Bold Text, and wraps rather than shrinking at accessibility sizes. The console's printed text scales with the console.
 - **Languages:** English and Turkish, from a String Catalog (`Localizable.xcstrings`). Game titles, skin and product names and the console's silkscreen stay in English.
 
 ---
@@ -117,10 +122,10 @@ Every game also has a **Daily** mode: the same round for everyone that day (seed
 
 | Product | ID | Price | Unlocks |
 | :--- | :--- | :--- | :--- |
-| Retro Collector Pack | `com.retrocartridge.collector_pack` | $6.99 | 6 skins (all but Gold Edition), the Maze Muncher and Frog Hop cartridges, the Pocket, Arcade and Mellow sound packs |
+| Retro Collector Pack | `com.retrocartridge.collector_pack` | $6.99 | 6 skins (all but Gold Edition), the Maze Muncher, Frog Hop and Astro Drift cartridges, the Pocket, Arcade and Mellow sound packs |
 | Lifetime Pro | `com.retrocartridge.lifetime_pro` | $49.99 | Everything in the Collector Pack, plus the Lunar Hinge cartridge, the Gold Edition skin, every screen mode with tuning, and all future content |
 
-- **Free:** six cartridges (Brick Breaker, Retro Racer, Snake, Falling Blocks, Pixel Invaders, Mine Sweep), every mode, every palette, Classic Grey, Color CRT and the Classic sound pack.
+- **Free:** eight cartridges (Brick Breaker, Retro Racer, Snake, Falling Blocks, Pixel Invaders, Mine Sweep, Paddle Duel, Tower Stack), every mode, every palette, Classic Grey, Color CRT and the Classic sound pack.
 - **Derived contents:** each item names the product that unlocks it (`requiredProductID`), and the store builds its lists and descriptions from those (`ProductIdentifiers.summary(for:)`), so it always shows exactly what a purchase opens.
 - **Locked items:** locked cartridges look dusty on the shelf and name their pack. Tapping anything locked opens the store with the product that unlocks it highlighted. Locked cartridges still play in the cover's attract mode. `Products.storekit` defines both products for local testing, and the shared scheme uses it when you run from Xcode.
 
@@ -143,6 +148,7 @@ RetroCartridge/
 │   │   ├── HingeEngine.swift          # Smoothed hinge angle (onHingeChange) + 90° unfold chime
 │   │   ├── PostureManager.swift       # Outer / inner display detection (DuoDisplay)
 │   │   ├── ProgressStore.swift        # High scores per game and mode (daily ones reset), achievements
+│   │   ├── LabelStore.swift           # The player's own cartridge labels
 │   │   └── Achievements.swift         # Achievement definitions and per-frame tracker
 │   ├── Layout/
 │   │   ├── AdaptiveConsoleLayout.swift # Cover vs inner routing, system toolbar, fold/unfold, hinge
@@ -163,11 +169,13 @@ RetroCartridge/
 │   │   ├── PauseMenu.swift            # In-tube pause menu (input logic + on-screen display)
 │   │   ├── ScreenSettingsView.swift   # Screen mode picker and tuning overlay
 │   │   ├── RecordsView.swift          # High scores per mode and achievements overlay
+│   │   ├── LabelDesignerView.swift    # 16×16 cartridge label editor overlay
+│   │   ├── RetroTypography.swift      # retroFont: Dynamic Type and Bold Text for overlay text
 │   │   ├── SkinPickerView.swift       # Skin picker overlay
 │   │   ├── StoreView.swift            # Store overlay
 │   │   ├── OverlayPanel.swift         # Overlay panel chrome + LibraryOverlays (skin picker, store host)
 │   │   └── Skins/                     # SkinTheme definitions, ShellSurface finishes, console previews
-│   ├── Games/                         # PixelGameProtocol, factory, GameRNG, AttractPilot, and the nine games
+│   ├── Games/                         # PixelGameProtocol, factory, GameRNG, AttractPilot, and the twelve games
 │   ├── Models/GameModels.swift        # Game, cartridge metadata, mode, input, posture, skin and sound types
 │   ├── Localizable.xcstrings          # String Catalog: English source, Turkish translations
 │   └── Store/                         # StoreManager + product identifiers

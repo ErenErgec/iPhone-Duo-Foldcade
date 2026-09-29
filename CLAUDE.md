@@ -57,21 +57,22 @@ xcodebuild -project RetroCartridge/RetroCartridge.xcodeproj -scheme RetroCartrid
   - Case with `localizedUppercase` / `localizedCapitalized` (Turkish i/İ). Product names are English everywhere and use `uppercased()`.
   - Game titles, skin names, product names and the console silkscreen (RETRO CARTRIDGE, POWER, SELECT, START) stay in English (`shouldTranslate: false`).
   - Xcode adds new keys to the catalog when building; add their Turkish text before committing.
-- **Cartridge labels:** `PixelArt` rows are 16×16 characters naming palette roles (key in `CartridgeArt.swift`); a test enforces the size and characters.
+- **Cartridge labels:** `PixelArt` rows are 16×16 characters naming palette roles (key in `CartridgeArt.swift`); a test enforces the size and characters. Draw labels with `CartridgeArt`, which shows the player's own label from `appState.labels` (`LabelStore`) when there is one; never read `PixelArt.label(for:)` directly for display.
+- **Overlay text:** use `retroFont(_:weight:)` for text in overlays and the library, never a fixed `.font(.system(size:))`, so it follows Dynamic Type and Bold Text. The console's printed text (bezel, tube, silkscreen, cartridge labels) stays fixed and scales with the console.
 - **Motion:** decorative motion (neon pulse, attract mode, insert slide, console jolt) is skipped with Reduce Motion.
 - **Library grid:** `LibraryGridMetrics` uses an even column count when the display has a fold (HIG: "prefer an even number of columns"). The fold is read with `.includeInactive`, so folding never reflows the grid. Cartridge width comes from the container, not a fixed size.
 - **Audio thread safety:** `AudioManager` renders on the audio thread. No allocation or blocking there beyond the existing unfair lock.
 - **Hinge angle:** it comes from `onHingeChange` (iOS 27.1), forwarded to `HingeEngine.updateFromHardware(_:)`, with the display posture as a fallback. Use it for visuals (CRT, chime) and as game input (Apple: "ideal for driving interactions or effects"), never for layout; layout uses reserved regions.
   - Games that take it conform to `HingeControllable` (Lunar Hinge). Every hinge action needs a button equivalent, so the game works in every pose.
 - **System toolbar:** the root is wrapped in a `NavigationStack`. The app name is a `navigationTitle`, and Skins/Store are `Label` items (icon + title), so iPhone Duo can lay them out vertically in the side column. On the inner display in portrait they form a regular top bar.
-  - Items: two `ToolbarItemGroup`s, Skins and Screen (`.visibilityPriority(.high)`), then Store and Records. Skins, Screen and Records replace each other; the store stacks above them.
+  - Items: two `ToolbarItemGroup`s, Skins, Screen and Labels (`.visibilityPriority(.high)`), then Store and Records. Skins, Screen, Labels and Records replace each other; the store stacks above them.
   - The toolbar is hidden over a running console (immersive, no bars).
   - Text-only or custom-view items stay horizontal.
 - **Appearance:** the window forces the dark style so system bars and titles read on the dark console.
 
 ## Project status (2026-09-29)
 
-- **Git:** `main` is the working branch; PR #1 (`gameplay-fixes`) was merged on 2026-09-28. The design and variety plan (Phases 0–5 below) is on `claude/festive-dirac-8zepxk`, in review as a PR into `main`. The GitHub repo is private. Commit and push only when the user asks; they usually test in Device Hub first.
+- **Git:** `main` is the working branch; PR #1 (`gameplay-fixes`) was merged on 2026-09-28. The design and variety plan (Phases 0–6 below) is on `claude/festive-dirac-8zepxk`, in review as a PR into `main`. The GitHub repo is private. Commit and push only when the user asks; they usually test in Device Hub first.
 - **Done and verified by the user on the simulator (before the plan):**
   - games running at 60 FPS;
   - CRT shader;
@@ -84,17 +85,20 @@ xcodebuild -project RetroCartridge/RetroCartridge.xcodeproj -scheme RetroCartrid
   - Phase 1: screen modes (CRT, LCD, Trinitron, Arcade) with tuning, skin finishes, cartridge shells and pixel-art labels, shelf, cover attract mode, insert and eject transitions, in-tube pause menu.
   - Phase 2: seeded games and daily rounds, mode picker, shared palettes, deeper original four games, five new cartridges (Pixel Invaders, Mine Sweep, Maze Muncher, Frog Hop, Lunar Hinge with hinge thrust), achievements, sound packs, four new skins.
   - Phase 4: Records overlay, toolbar groups with visibility priorities, occlusion avoidance; `ArrangementView` evaluated and not adopted for the console.
-  - Phase 3: store aligned with its contents (six free cartridges; Maze Muncher and Frog Hop in the Collector Pack; Lunar Hinge, Gold Edition, screen modes and tuning in Lifetime Pro), derived store copy, locked-item highlighting.
-  - Phase 5: a looping chiptune theme per cartridge (MUSIC in the pause menu), VoiceOver play and Reduce Transparency, Turkish localization (not yet built).
+  - Phase 3: store aligned with its contents (six free cartridges at the time; Maze Muncher and Frog Hop in the Collector Pack; Lunar Hinge, Gold Edition, screen modes and tuning in Lifetime Pro), derived store copy, locked-item highlighting.
+  - Phase 5: a looping chiptune theme per cartridge (MUSIC in the pause menu), VoiceOver play and Reduce Transparency, Turkish localization.
+  - Phase 6 (not yet built): label designer (Labels toolbar item), three new cartridges (Paddle Duel and Tower Stack free, Astro Drift in the Collector Pack), overlay text following Dynamic Type and Bold Text.
 - **Not yet verified:**
   - the unit tests on the Duo simulator after Phases 1–3;
   - the plan's visuals and interactions in Device Hub, in both inner-display orientations and on the cover;
   - Lunar Hinge played by folding (the simulator may not deliver hinge readings; ▲ / A always thrust);
   - sound effects, music and the four sound packs by ear (music was checked only by rendering it offline);
+  - the label designer on both displays (drawing inside the scrolling panel on the cover), and the three new cartridges;
+  - the overlays at large and accessibility text sizes and with Bold Text;
   - VoiceOver play on the console, and the app in Turkish (set the simulator's language, or the scheme's App Language, to Turkish);
   - StoreKit purchases end to end (run from Xcode with `Products.storekit` selected in the scheme);
   - anything on real iPhone Duo hardware (ships 2026-10-23).
-- **Possible next steps:** run the tests and check the plan in Device Hub (including the toolbar overflow on the outer display and the console with the inner camera active), check sound and purchases, and a cartridge designer (a finger-drawn 16×16 label editor was discussed and deferred).
+- **Possible next steps:** run the tests and check the plan in Device Hub (including the toolbar overflow on the outer display, now with five items, and the console with the inner camera active), check sound and purchases, and Game Center leaderboards (needs App Store Connect setup).
 
 ## Conventions
 
