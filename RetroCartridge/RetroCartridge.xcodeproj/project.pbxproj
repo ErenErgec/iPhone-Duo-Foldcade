@@ -44,6 +44,8 @@
 		2E31C09473DE7594D11015A0 /* GamePalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EAF4D860F97D1FBBA8D649C /* GamePalette.swift */; };
 		64B1FDE4D6A297AAF4F6DB35 /* ProgressStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EEE3B220D92F1C8139D16AB /* ProgressStore.swift */; };
 		F730C9995B3369A64BB9AF11 /* ScreenSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF3E442A1B8BB71C6A604E74 /* ScreenSettingsView.swift */; };
+		FC7FA955E567C75F39AE9E9D /* ShellSurface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B3BC3C1A70B6689CC493AA /* ShellSurface.swift */; };
+		9BE04857F10CFE8F7F51BA70 /* ShellFinish.metal in Sources */ = {isa = PBXBuildFile; fileRef = 9385ACD366F7F593A0E3E1D5 /* ShellFinish.metal */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -98,6 +100,8 @@
 		9EAF4D860F97D1FBBA8D649C /* GamePalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamePalette.swift; sourceTree = "<group>"; };
 		3EEE3B220D92F1C8139D16AB /* ProgressStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressStore.swift; sourceTree = "<group>"; };
 		FF3E442A1B8BB71C6A604E74 /* ScreenSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenSettingsView.swift; sourceTree = "<group>"; };
+		62B3BC3C1A70B6689CC493AA /* ShellSurface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellSurface.swift; sourceTree = "<group>"; };
+		9385ACD366F7F593A0E3E1D5 /* ShellFinish.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = ShellFinish.metal; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -261,6 +265,7 @@
 				3628B66C3CD93516B7909369 /* ClassicGreySkin.swift */,
 				D1AD9D1084CD725675BB20D9 /* CyberpunkNeonSkin.swift */,
 				74DA9A9C713F68BA96D486CC /* SkinManager.swift */,
+				62B3BC3C1A70B6689CC493AA /* ShellSurface.swift */,
 				57E0BB0000000000000000F4 /* ConsoleSkinPreview.swift */,
 			);
 			path = Skins;
@@ -280,6 +285,7 @@
 				B785C2862CE1B74D356292D5 /* CRTEffect.swift */,
 				9EAF4D860F97D1FBBA8D649C /* GamePalette.swift */,
 				10FBB5F77ED593D2B7C8320B /* CRTView.metal */,
+				9385ACD366F7F593A0E3E1D5 /* ShellFinish.metal */,
 			);
 			path = Rendering;
 			sourceTree = "<group>";
@@ -382,6 +388,7 @@
 				42E2B78F3434B46054A26EE6 /* CRTEffect.swift in Sources */,
 				2E31C09473DE7594D11015A0 /* GamePalette.swift in Sources */,
 				7A7D41FBA09DA948C8CAA7C9 /* CRTView.metal in Sources */,
+				9BE04857F10CFE8F7F51BA70 /* ShellFinish.metal in Sources */,
 				A1C0DE0000000000000000A1 /* CartridgeView.swift in Sources */,
 				194F0E4D015A7188FC1A0C00 /* ClassicGreySkin.swift in Sources */,
 				720656CE84DDB80C10FD63A2 /* ControllerView.swift in Sources */,
@@ -406,6 +413,7 @@
 				ADB0CCD71E9D30600FBF6354 /* RetroCartridgeApp.swift in Sources */,
 				67697161ED6B40C49A4BF984 /* RetroRacerGame.swift in Sources */,
 				FC25B1F7B1101CB92E34E387 /* SkinManager.swift in Sources */,
+				FC7FA955E567C75F39AE9E9D /* ShellSurface.swift in Sources */,
 				BF9619FE16D8D74E9C083144 /* SnakeGame.swift in Sources */,
 				063569A32C6915EE79689069 /* StoreManager.swift in Sources */,
 			);

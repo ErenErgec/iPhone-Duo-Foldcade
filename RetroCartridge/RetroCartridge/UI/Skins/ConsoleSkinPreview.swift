@@ -23,21 +23,13 @@ struct ConsoleSkinPreview: View {
             let unit = w / 5.2
 
             ZStack {
-                // Shell, layered like the real `ConsoleShell`
-                ZStack {
-                    Color.black
-                    theme.bodyColor
-                    LinearGradient(
-                        colors: [.white.opacity(0.16), .clear, .black.opacity(0.22)],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
+                // Shell, drawn like the real console at miniature scale
+                ShellSurface(theme: theme, cornerRadius: corner, detailScale: w / 669)
+                    .clipShape(RoundedRectangle(cornerRadius: corner, style: .continuous))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: corner, style: .continuous)
+                            .stroke(Color.white.opacity(0.14), lineWidth: 1)
                     )
-                }
-                .clipShape(RoundedRectangle(cornerRadius: corner, style: .continuous))
-                .overlay(
-                    RoundedRectangle(cornerRadius: corner, style: .continuous)
-                        .stroke(Color.white.opacity(0.14), lineWidth: 1)
-                )
 
                 VStack(spacing: 0) {
                     screen(w: w, h: h)

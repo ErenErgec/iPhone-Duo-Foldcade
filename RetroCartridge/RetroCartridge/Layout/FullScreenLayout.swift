@@ -195,21 +195,13 @@ struct LibraryGridMetrics: Equatable {
 
 // MARK: - Shell
 
-/// The molded plastic body of the console in the current skin.
+/// The molded body of the console in the current skin, edge to edge.
 private struct ConsoleShell: View {
     let theme: SkinTheme
 
     var body: some View {
-        ZStack {
-            Color.black
-            theme.bodyColor
-            LinearGradient(
-                colors: [.white.opacity(0.14), .clear, .black.opacity(0.2)],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-        }
-        .ignoresSafeArea()
+        ShellSurface(theme: theme)
+            .ignoresSafeArea()
     }
 }
 

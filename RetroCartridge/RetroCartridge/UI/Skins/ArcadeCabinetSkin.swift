@@ -13,6 +13,9 @@ extension SkinTheme {
         textColor: Color(red: 255/255, green: 215/255, blue: 0), // #FFD700
         screenBorderColor: Color(red: 59/255, green: 35/255, blue: 22/255), // #3B2316
         actionButtonColor: Color(hex: "#E53935"), // arcade red
-        finish: .woodGrain
+        finish: .woodGrain,
+        bezelTopColor: Color(hex: "#1A1A1A"), // black lacquer bezel, amber LED
+        bezelBottomColor: Color(hex: "#0A0A0A"),
+        ledColor: Color(hex: "#FFB300")
     )
 }

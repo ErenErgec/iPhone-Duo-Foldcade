@@ -13,6 +13,9 @@ extension SkinTheme {
         textColor: Color(red: 255/255, green: 20/255, blue: 147/255), // #FF1493
         screenBorderColor: Color(red: 0, green: 255/255, blue: 255/255), // #00FFFF
         actionButtonColor: Color(hex: "#FF2E88"), // hot pink
-        finish: .glossy
+        finish: .glossy,
+        bezelTopColor: Color(hex: "#0B0B14"), // black glass bezel, cyan LED
+        bezelBottomColor: Color(hex: "#050508"),
+        ledColor: Color(hex: "#00FFFF")
     )
 }
