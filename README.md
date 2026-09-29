@@ -36,7 +36,7 @@ See [DESIGN.md](DESIGN.md) for Apple's guidance and our measurements.
 1. **Full screen:** built with the iOS 27.1 SDK, so the app extends to every edge of both displays, including under the status bar and camera column.
 2. **Outer display:** locked to the landscape orientation that puts the hinge on top. iPhone Duo honors orientation locks on the outer display.
 3. **Inner display:** iPhone Duo doesn't honor orientation locks here, so the console adapts. It splits exactly at the fold, using the fold's reserved region: CRT above and controls below in portrait (the laptop/clamshell pose), side by side in landscape (book pose).
-4. **Vertical controls:** the app name, **Skins** and **Store** are standard toolbar items. iPhone Duo lays them out vertically in the column beside the camera and status bar, or as a top bar on the inner display in portrait. A running console hides the bars for an immersive screen.
+4. **Vertical controls:** the app name, **Skins**, **Screen** and **Store** are standard toolbar items. iPhone Duo lays them out vertically in the column beside the camera and status bar, or as a top bar on the inner display in portrait. A running console hides the bars for an immersive screen.
 5. **Hinge:** `onHingeChange` (iOS 27.1) drives the CRT curvature and an 8-bit chime with a haptic click when the hinge passes 90°. It is used for visuals only; layout uses reserved regions.
 6. **Display detection by size:** `PostureManager` / `DuoDisplay` tell the outer display (≈678×466 pt) from the inner one (≈669×951 pt).
 
@@ -53,21 +53,27 @@ All four games implement `PixelGameProtocol` and render at 60 FPS in a SwiftUI `
 | **🐍 Snake** | Grid snake that speeds up every five apples. | D-Pad changes direction (no reversing). |
 | **🧩 Falling Blocks** | Tetromino stacking with a ghost piece and line clears. | D-Pad ◀ ▶ ▼ moves, ▲ hard-drops, A / B rotates. |
 
-- **All games:** A starts or retries, Start pauses, and Select ejects the cartridge back to the library.
+- **All games:** A starts or retries, Start pauses, and Select ejects the cartridge (the tube powers off, then the library returns).
+- **Pause menu:** while paused, an on-screen menu inside the tube offers Resume, Screen (switch between unlocked screen modes) and Eject. The D-Pad moves and changes, A selects, B or Start resumes.
+- **Attract mode:** on the cover screen, the selected cartridge plays itself faintly behind the details (`AttractPilot`), silently and at 30 FPS. It stays still with Reduce Motion.
 - **High scores** are saved per game and mode (`ProgressStore`).
 - **Sound:** every game plays chiptune effects from `AudioManager`, a 3-channel sequenced synth (pulse/triangle/noise) that renders on the audio thread. Big events also trigger a haptic.
 
 ---
 
-## 📺 CRT shader
+## 📺 Screen modes
 
-`CRTView.metal` is a stitchable shader applied to the game layer with SwiftUI's `layerEffect` (`CRTEffect.swift`). It adds:
-- barrel curvature, driven by the hinge angle;
-- chromatic aberration towards the edges;
-- phosphor glow;
-- scanlines;
-- a vignette;
-- a power-on beam animation at the start of every session.
+`CRTView.metal` is a stitchable `screenEffect` shader applied to the game layer with SwiftUI's `layerEffect` (`CRTEffect.swift`). Pick a mode with **Screen** in the system toolbar or from the pause menu:
+
+| Mode | Look |
+| :--- | :--- |
+| **Color CRT** (free) | Barrel curvature driven by the hinge angle, chromatic aberration, phosphor glow, scanlines, vignette |
+| **Pocket LCD** | Flat four-shade green dot matrix with a pixel grid and pixels casting shadows on the backplate |
+| **Trinitron** | Cylindrical tube, vertical RGB aperture grille and the two faint damper wires |
+| **Arcade Monitor** | Deeper curve, thick scanlines and bloom |
+
+- Tuning sliders scale curvature, lines and bleed (0.5 is each mode's designed look).
+- Every session starts with a power-on beam; ejecting plays it in reverse. The LCD fades in and out from its backplate.
 
 ---
 
@@ -79,7 +85,12 @@ All four games implement `PixelGameProtocol` and render at 60 FPS in a SwiftUI `
   - Select/Start pills;
   - a speaker grille.
 - **Input timing:** buttons fire on touch-down for low latency, and D-Pad releases are sent to the games.
-- **Skins:** Classic Grey (free), Atomic Purple, Cyberpunk Neon and 90's Arcade Cabinet. Pick one with **Skins** in the system toolbar (on either display); the console restyles immediately and the choice is saved.
+- **Skins:** pick one with **Skins** in the system toolbar (on either display); the console restyles immediately and the choice is saved. Each has its own shell finish (`ShellSurface`), bezel and power LED:
+  - Classic Grey (free): grainy matte plastic;
+  - Atomic Purple: translucent plastic over a circuit board;
+  - Cyberpunk Neon: glossy black with a breathing neon edge that follows the display's corners;
+  - 90's Arcade Cabinet: wood-grain laminate.
+- **Cartridges:** each game has its own plastic (grey, black, glow-in-the-dark, clear over its circuit board) and a 16×16 pixel-art label drawn in the game's palette. The library stands them on a shelf with a collection counter; locked cartridges look dusty and open the store.
 
 ---
 
@@ -90,7 +101,7 @@ All four games implement `PixelGameProtocol` and render at 60 FPS in a SwiftUI `
 | Product | ID | Price | Unlocks |
 | :--- | :--- | :--- | :--- |
 | Retro Collector Pack | `com.retrocartridge.collector_pack` | $6.99 | Atomic Purple, Cyberpunk Neon, 90's Arcade Cabinet |
-| Lifetime Pro | `com.retrocartridge.lifetime_pro` | $49.99 | Every skin, plus future skins and cartridges |
+| Lifetime Pro | `com.retrocartridge.lifetime_pro` | $49.99 | Every skin, every screen mode and tuning, plus future skins and cartridges |
 
 All four games are free. `Products.storekit` defines both products for local testing, and the shared scheme uses it when you run from Xcode.
 
@@ -117,18 +128,23 @@ RetroCartridge/
 │   │   ├── CoverScreenLayout.swift    # Outer display: cartridge carousel
 │   │   └── FullScreenLayout.swift     # Inner display: library, console split at the fold (FoldSplit)
 │   ├── Rendering/
-│   │   ├── CRTView.metal              # CRT layer-effect shader
+│   │   ├── CRTView.metal              # Screen-mode layer-effect shader (CRT, LCD, Trinitron, Arcade)
 │   │   ├── CRTEffect.swift            # SwiftUI bridge for the shader
+│   │   ├── ShellFinish.metal          # Matte grain and wood-grain color effects for shells
 │   │   └── GamePalette.swift          # Role-based game colors (each game's palette sits in its file)
 │   ├── UI/
 │   │   ├── GameCanvasView.swift       # CRT bezel, 60 FPS game loop, sound dispatch
 │   │   ├── ControllerView.swift       # D-Pad, A/B, Select/Start
-│   │   ├── CartridgeView.swift        # Cartridge artwork, backdrop
+│   │   ├── CartridgeView.swift        # Cartridge shell and label, backdrop
+│   │   ├── CartridgeArt.swift         # 16×16 pixel-art labels in each game's palette
+│   │   ├── AttractScreen.swift        # Cover attract mode (a game playing itself)
+│   │   ├── PauseMenu.swift            # In-tube pause menu (input logic + on-screen display)
+│   │   ├── ScreenSettingsView.swift   # Screen mode picker and tuning overlay
 │   │   ├── SkinPickerView.swift       # Skin picker overlay
 │   │   ├── StoreView.swift            # Store overlay
 │   │   ├── OverlayPanel.swift         # Overlay panel chrome + LibraryOverlays (skin picker, store host)
-│   │   └── Skins/                     # SkinTheme definitions + console previews
-│   ├── Games/                         # PixelGameProtocol, factory, and the four games
+│   │   └── Skins/                     # SkinTheme definitions, ShellSurface finishes, console previews
+│   ├── Games/                         # PixelGameProtocol, factory, AttractPilot, and the four games
 │   ├── Models/GameModels.swift        # Game, cartridge metadata, mode, input, posture, skin and sound types
 │   └── Store/                         # StoreManager + product identifiers
 └── RetroCartridgeTests/               # Unit tests

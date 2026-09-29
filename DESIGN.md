@@ -242,10 +242,17 @@ The update rate and precision are system policy; prefer `status` when you only n
 | Area | Implementation |
 | :--- | :--- |
 | Toolchain | Deployment target and SDK iOS 27.1 (Xcode 27.1+) |
-| Toolbar | `NavigationStack` root. `navigationTitle("Retro Cartridge")` plus `Label` items Skins/Store in a `.topBarTrailing` group, which go vertical in the side column. Hidden over a running console. The library's custom header buttons were removed. |
+| Toolbar | `NavigationStack` root. `navigationTitle("Retro Cartridge")` plus `Label` items Skins/Screen/Store in a `.topBarTrailing` group, which go vertical in the side column. Hidden over a running console. The library's custom header buttons were removed. |
 | Hinge | `onHingeChange` → `HingeEngine.updateFromHardware(_:)` (real angle and status), with a fallback to the display posture. It drives the CRT curvature and the 90° chime. |
 | Appearance | The window forces the dark style so the title and glass bars read on the dark console |
 | Status bar | Visible, and part of the safe area. Each console half respects its own edge insets. |
+
+**Decided on 2026-09-29 (Phase 1 design), following the HIG sections quoted above:**
+- **Screen toolbar item:** `Label("Screen", systemImage: "tv")` joins Skins and Store in the same `ToolbarItemGroup` (icon + title, grouped, no manual spacing). The screen overlay is reachable on both displays, like the others ("Create a consistent experience across displays").
+- **Pause menu inside the tube:** it changes the screen and the session, so it sits in the CRT ("Locate controls near the content they affect") and works the same in every pose.
+- **Neon shell edge:** drawn with `ConcentricRectangle()` so it follows the display's corners (§6).
+- **Cover attract mode:** a full-bleed, faded background behind inset content ("letting a background image or header span the full width while scrollable content stays inset"), faded toward the vertical toolbar column so its items keep their contrast.
+- **Hinge:** still visuals only. The cover's "unfold to play" prompt was kept rather than animating it with the hinge, because the outer display goes dark as the device opens.
 
 **Verified by the user in Device Hub (2026-09-23):**
 - Closed with the hinge on top, the outer display comes up in landscape.

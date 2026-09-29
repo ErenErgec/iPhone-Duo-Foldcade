@@ -41,12 +41,18 @@ xcodebuild -project RetroCartridge/RetroCartridge.xcodeproj -scheme RetroCartrid
 - **Game Canvas redraw:** the `Canvas` in `UI/GameCanvasView.swift` must capture a per-frame value (`[frameDate = date]`). Otherwise SwiftUI treats the renderer as unchanged and the game looks frozen while it keeps running.
 - **Games stay UI-free:** they don't touch `AudioManager` or haptics. They `emit(_:)` sounds into `pendingSounds`, and the frame loop drains them.
 - **Game colors come from the palette:** `render` draws only with `palette` roles (`GamePalette`), never literal colors, so palettes can be swapped, even mid-round. Each game's native palette sits at the bottom of its file.
-- **Cartridge metadata lives in `GameType.info`** (`CartridgeInfo`): subtitle, genre, artwork, label color, shell, modes, required product. A new game adds one case there, one in `PixelGameEngine` and one in `GamePalette.native(for:)`.
+- **Cartridge metadata lives in `GameType.info`** (`CartridgeInfo`): subtitle, genre, artwork, label color, shell, modes, required product. A new game adds one case there, one in `PixelGameEngine`, one in `GamePalette.native(for:)` and one in `PixelArt.label(for:)`, plus a steering rule in `AttractPilot`.
 - **High scores:** `ProgressStore` keeps them per game and mode. The standard mode uses the pre-modes key `highScore_<Game>`, so never rename a shipped `GameMode.id`.
+- **Screen modes:** one `screenEffect` shader draws every `ScreenMode`. Always draw `storeManager.effectiveScreenSettings(appState.screenSettings)`, never the stored settings directly, so locked modes and tuning fall back after a refund.
+- **Pause menu and eject:** while a game is paused, `ControllerView` routes the D-Pad and A / B to `PauseMenu` (Start still goes to the game). Select calls `appState.ejectCartridge()`; `GameCanvasView` plays the power-off and then calls `endGame()`. Don't call `endGame()` from the controller.
+- **Attract mode:** `AttractPilot` plays games only through `handleInput` and reads their state. Keep games free of demo code.
+- **Cartridge labels:** `PixelArt` rows are 16×16 characters naming palette roles (key in `CartridgeArt.swift`); a test enforces the size and characters.
+- **Motion:** decorative motion (neon pulse, attract mode, insert slide, console jolt) is skipped with Reduce Motion.
 - **Library grid:** `LibraryGridMetrics` uses an even column count when the display has a fold (HIG: "prefer an even number of columns"). The fold is read with `.includeInactive`, so folding never reflows the grid. Cartridge width comes from the container, not a fixed size.
 - **Audio thread safety:** `AudioManager` renders on the audio thread. No allocation or blocking there beyond the existing unfair lock.
 - **Hinge angle:** it comes from `onHingeChange` (iOS 27.1), forwarded to `HingeEngine.updateFromHardware(_:)`, with the display posture as a fallback. Use it only for visuals (CRT, chime), never for layout; layout uses reserved regions.
 - **System toolbar:** the root is wrapped in a `NavigationStack`. The app name is a `navigationTitle`, and Skins/Store are `Label` items (icon + title), so iPhone Duo can lay them out vertically in the side column. On the inner display in portrait they form a regular top bar.
+  - Items: Skins, Screen, Store in one `ToolbarItemGroup`. Skins and Screen replace each other; the store stacks above both.
   - The toolbar is hidden over a running console (immersive, no bars).
   - Text-only or custom-view items stay horizontal.
 - **Appearance:** the window forces the dark style so system bars and titles read on the dark console.
