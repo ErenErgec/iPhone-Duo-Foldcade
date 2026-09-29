@@ -281,7 +281,7 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
         switch self {
         case .brickBreaker:
             return CartridgeInfo(
-                subtitle: "Classic paddle & ball action",
+                subtitle: "Twelve walls, four power-ups",
                 genre: "ARCADE",
                 symbolName: "square.grid.3x2.fill",
                 labelColorHex: "#FF6B6B",
@@ -294,7 +294,7 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
                 symbolName: "car.fill",
                 labelColorHex: "#4ECDC4",
                 shell: .black,
-                modes: [.standard, .daily]
+                modes: [.racerDay, .racerNight, .daily]
             )
         case .snake:
             return CartridgeInfo(
@@ -303,7 +303,7 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
                 symbolName: "scribble.variable",
                 labelColorHex: "#45B7D1",
                 shell: .glow,
-                modes: [.standard, .daily]
+                modes: [.snakeClassic, .snakeWrap, .snakeMaze, .daily]
             )
         case .fallingBlocks:
             return CartridgeInfo(
@@ -312,7 +312,7 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
                 symbolName: "square.stack.3d.down.right.fill",
                 labelColorHex: "#F7DC6F",
                 shell: .clearPurple,
-                modes: [.standard, .daily]
+                modes: [.blocksMarathon, .blocksSprint, .blocksUltra, .daily]
             )
         }
     }
@@ -365,13 +365,17 @@ enum GameSound: Equatable, Sendable {
     case wallBounce
     case brickBreak
     case lifeLost
+    case laserShot
+    case armorHit
 
     // Snake
     case eat
+    case bonus
 
     // Retro Racer
     case laneChange
     case crash
+    case coin
 
     // Falling Blocks
     case moveTick

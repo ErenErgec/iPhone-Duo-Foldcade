@@ -1,5 +1,9 @@
 // RetroRacerGame.swift
 // RetroCartridge
+//
+// Retro Racer: a three-lane highway dodge that speeds up over time, with
+// coins to collect. Night mode leaves only the headlights' cone and the
+// traffic's taillights to see by.
 
 import SwiftUI
 
@@ -25,6 +29,15 @@ final class RetroRacerGame: PixelGameProtocol {
     var playerLane: Double = 1.0 // 0, 1, 2
     var targetLane: Int = 1
     var obstacles: [Car] = []
+
+    /// A coin waiting in a lane.
+    struct Coin {
+        var lane: Int
+        var y: Double
+    }
+
+    var coins: [Coin] = []
+    var coinTimer: TimeInterval = 1.5
     
     var roadOffset: Double = 0
     var speed: Double = 0.5
@@ -72,8 +85,30 @@ final class RetroRacerGame: PixelGameProtocol {
             obstacles.append(Car(lane: lane, y: -0.2, isAlt: Bool.random(using: &rng)))
         }
         
+        // Coins, now and then, in a lane free of traffic at the top
+        coinTimer -= deltaTime
+        if coinTimer <= 0 {
+            coinTimer = Double.random(in: 1.8...3.2, using: &rng)
+            let lane = Int.random(in: 0...2, using: &rng)
+            if !obstacles.contains(where: { $0.lane == lane && $0.y < 0.1 }) {
+                coins.append(Coin(lane: lane, y: -0.1))
+            }
+        }
+
         // Update obstacles
         let playerRect = CGRect(x: playerLane * 0.33 + 0.165 - 0.05, y: 0.8, width: 0.1, height: 0.1)
+
+        for i in (0..<coins.count).reversed() {
+            coins[i].y += speed * deltaTime
+            let coinRect = CGRect(x: Double(coins[i].lane) * 0.33 + 0.165 - 0.03, y: coins[i].y, width: 0.06, height: 0.06)
+            if playerRect.intersects(coinRect) {
+                score += 10 * level
+                emit(.coin)
+                coins.remove(at: i)
+            } else if coins[i].y > 1.2 {
+                coins.remove(at: i)
+            }
+        }
         
         for i in (0..<obstacles.count).reversed() {
             obstacles[i].y += speed * deltaTime
@@ -116,6 +151,15 @@ final class RetroRacerGame: PixelGameProtocol {
             context.stroke(path, with: .color(palette.guide), style: StrokeStyle(lineWidth: 2, dash: [20, 20], dashPhase: CGFloat(-roadOffset * Double(size.height))))
         }
         
+        // Coins
+        for coin in coins {
+            let cx = size.width * (Double(coin.lane) * 0.333 + 0.166)
+            let cy = size.height * coin.y
+            let rect = CGRect(x: cx - 9, y: cy - 9, width: 18, height: 18)
+            context.fill(Path(ellipseIn: rect), with: .color(palette.pickup))
+            context.fill(Path(ellipseIn: rect.insetBy(dx: 6, dy: 4)), with: .color(palette.pickupAlt))
+        }
+
         // Obstacles
         for obs in obstacles {
             let cx = size.width * (Double(obs.lane) * 0.333 + 0.166)
@@ -124,11 +168,47 @@ final class RetroRacerGame: PixelGameProtocol {
             context.fill(Path(rect), with: .color(obs.isAlt ? palette.hazardAlt : palette.hazard))
         }
         
-        // Player
+        // Player, drawn over the night so the car stays visible
         let px = size.width * (playerLane * 0.333 + 0.166)
         let py = size.height * 0.85
         let pRect = CGRect(x: px - 20, y: py - 30, width: 40, height: 60)
+        if mode == .racerNight {
+            drawNight(in: &context, size: size, carX: px, carTop: pRect.minY)
+        }
         context.fill(Path(pRect), with: .color(palette.player))
+
+        // Speedometer
+        let kmh = Int(speed * 240)
+        context.draw(
+            Text("\(kmh) KM/H")
+                .font(.system(size: max(10, size.height * 0.045), weight: .heavy, design: .monospaced))
+                .foregroundStyle(palette.playerHighlight.opacity(0.8)),
+            at: CGPoint(x: size.width - 8, y: 8),
+            anchor: .topTrailing
+        )
+    }
+
+    /// Darkness everywhere but the headlights' cone, with the traffic's
+    /// taillights glowing through it.
+    private func drawNight(in context: inout GraphicsContext, size: CGSize, carX: Double, carTop: Double) {
+        var darkness = Path(CGRect(origin: .zero, size: size))
+        var cone = Path()
+        cone.move(to: CGPoint(x: carX - 14, y: carTop))
+        cone.addLine(to: CGPoint(x: carX - size.width * 0.28, y: carTop - size.height * 0.55))
+        cone.addLine(to: CGPoint(x: carX + size.width * 0.28, y: carTop - size.height * 0.55))
+        cone.addLine(to: CGPoint(x: carX + 14, y: carTop))
+        cone.closeSubpath()
+        darkness.addPath(cone)
+        context.fill(darkness, with: .color(palette.background.opacity(0.93)), style: FillStyle(eoFill: true))
+
+        for obs in obstacles {
+            let cx = size.width * (Double(obs.lane) * 0.333 + 0.166)
+            let bottom = size.height * obs.y + 30
+            for dx in [-14.0, 10.0] {
+                let light = CGRect(x: cx + dx, y: bottom - 5, width: 4, height: 3)
+                context.fill(Path(light), with: .color(palette.hazard))
+            }
+        }
     }
     
     func handleInput(action: GameInputAction) {
@@ -175,6 +255,8 @@ final class RetroRacerGame: PixelGameProtocol {
         playerLane = 1.0
         targetLane = 1
         obstacles.removeAll()
+        coins.removeAll()
+        coinTimer = 1.5
         survivalTime = 0
         roadOffset = 0
     }
@@ -189,11 +271,20 @@ extension GamePalette {
         guide: .white.opacity(0.3),        // lane dashes
         player: Color(hex: "4361EE"),
         playerHighlight: .white,
-        pickup: Color(hex: "FFD166"),
-        pickupAlt: Color(hex: "4ECDC4"),
+        pickup: Color(hex: "FFD166"),      // coins
+        pickupAlt: Color(hex: "B8860B"),   // coin face
         hazard: Color(hex: "E63946"),      // traffic
         hazardAlt: Color(hex: "FFD166"),   // traffic
         outline: .black,
         spectrum: [Color(hex: "E63946"), Color(hex: "FFD166")]
     )
+}
+
+// MARK: - Modes
+
+extension GameMode {
+    /// Retro Racer's standard rules.
+    static let racerDay = GameMode(id: "standard", title: "Day", summary: "Dodge traffic, grab coins.")
+
+    static let racerNight = GameMode(id: "night", title: "Night", summary: "Only your headlights to see by.")
 }

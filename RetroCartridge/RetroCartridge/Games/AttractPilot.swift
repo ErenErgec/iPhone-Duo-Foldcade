@@ -133,10 +133,16 @@ final class AttractPilot {
         var best: (action: GameInputAction, distance: Int)?
         for (direction, action, dx, dy) in options {
             guard !isReverse(direction, of: game.currentDir) else { continue }
-            let x = head.x + dx
-            let y = head.y + dy
+            var x = head.x + dx
+            var y = head.y + dy
+            if game.wrapsAround {
+                x = (x + game.gridSize) % game.gridSize
+                y = (y + game.gridSize) % game.gridSize
+            }
+            let cell = SnakeGame.SnakeSegment(x: x, y: y)
             let isSafe = x >= 0 && x < game.gridSize && y >= 0 && y < game.gridSize
-                && !game.snake.dropLast().contains(where: { $0.x == x && $0.y == y })
+                && !game.obstacles.contains(cell)
+                && !game.snake.dropLast().contains(cell)
             guard isSafe else { continue }
             let distance = abs(game.food.x - x) + abs(game.food.y - y)
             if best == nil || distance < best!.distance {

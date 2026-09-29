@@ -373,4 +373,129 @@ final class RetroCartridgeTests: XCTestCase {
         PauseMenu.handle(.dpadRightPressed, appState: appState, screenModes: [.crt], currentScreen: .crt)
         XCTAssertEqual(appState.paletteChoice, PaletteChoice.allCases[1])
     }
+
+    // MARK: - Brick Breaker
+
+    func testEveryBrickBreakerWallCanBeCleared() {
+        let game = BrickBreakerGame()
+        for index in BrickBreakerGame.levels.indices {
+            game.level = index + 1
+            game.setupLevel()
+            XCTAssertTrue(game.bricks.contains { $0.kind != .steel }, "level \(index + 1)")
+            XCTAssertTrue(game.bricks.allSatisfy { $0.x < game.cols && $0.y < game.rows }, "level \(index + 1)")
+        }
+    }
+
+    func testBallWaitsOnThePaddleUntilLaunched() {
+        let game = BrickBreakerGame()
+        game.handleInput(action: .buttonAPressed)
+        XCTAssertEqual(game.gameState, .playing)
+        XCTAssertNotNil(game.balls.first?.stuckOffset)
+
+        game.handleInput(action: .buttonAPressed)
+        XCTAssertNil(game.balls.first?.stuckOffset)
+        XCTAssertLessThan(game.balls.first?.vy ?? 0, 0)
+    }
+
+    func testBallLaunchesByItselfAfterAWhile() {
+        let game = BrickBreakerGame()
+        game.handleInput(action: .buttonAPressed)
+        for _ in 0..<180 {
+            game.update(deltaTime: 1.0 / 60)
+        }
+        XCTAssertNil(game.balls.first?.stuckOffset)
+    }
+
+    func testToughBricksTakeTwoHits() {
+        let game = BrickBreakerGame()
+        game.level = 4 // Armored core
+        game.setupLevel()
+        let tough = game.bricks.firstIndex { $0.kind == .tough }!
+        game.hitBrick(tough)
+        XCTAssertFalse(game.bricks[tough].isDestroyed)
+        game.hitBrick(tough)
+        XCTAssertTrue(game.bricks[tough].isDestroyed)
+
+        let steel = game.bricks.firstIndex { $0.kind == .steel }
+        XCTAssertNil(steel, "Armored core has no steel")
+    }
+
+    func testSteelBricksNeverBreak() {
+        let game = BrickBreakerGame()
+        game.level = 5 // Steel gates
+        game.setupLevel()
+        let steel = game.bricks.firstIndex { $0.kind == .steel }!
+        for _ in 0..<5 {
+            game.hitBrick(steel)
+        }
+        XCTAssertFalse(game.bricks[steel].isDestroyed)
+    }
+
+    // MARK: - Snake
+
+    func testWrapModeCarriesTheSnakeAcrossTheEdge() {
+        let game = PixelGameEngine.createGame(type: .snake, mode: .snakeWrap) as! SnakeGame
+        game.handleInput(action: .buttonAPressed)
+        game.snake = [SnakeGame.SnakeSegment(x: 19, y: 3), SnakeGame.SnakeSegment(x: 18, y: 3)]
+        game.food = SnakeGame.SnakeSegment(x: 5, y: 15)
+        game.moveSnake()
+        XCTAssertEqual(game.gameState, .playing)
+        XCTAssertEqual(game.snake.first, SnakeGame.SnakeSegment(x: 0, y: 3))
+    }
+
+    func testClassicModeWallsAreDeadly() {
+        let game = PixelGameEngine.createGame(type: .snake, mode: .snakeClassic) as! SnakeGame
+        game.handleInput(action: .buttonAPressed)
+        game.snake = [SnakeGame.SnakeSegment(x: 19, y: 3), SnakeGame.SnakeSegment(x: 18, y: 3)]
+        game.moveSnake()
+        XCTAssertNotEqual(game.gameState, .playing)
+    }
+
+    func testMazesLeaveTheStartClear() {
+        let start = (8...19).map { SnakeGame.SnakeSegment(x: $0, y: 10) }
+        for layout in 0..<4 {
+            let walls = SnakeGame.maze(layout)
+            XCTAssertFalse(walls.isEmpty)
+            XCTAssertTrue(walls.isDisjoint(with: start), "layout \(layout)")
+        }
+    }
+
+    // MARK: - Falling Blocks
+
+    func testSprintEndsAtFortyLines() {
+        let game = PixelGameEngine.createGame(type: .fallingBlocks, mode: .blocksSprint) as! FallingBlocksGame
+        game.handleInput(action: .buttonAPressed)
+        game.linesClearedTotal = 39
+        game.grid[game.rows - 1] = Array(repeating: 0, count: game.cols)
+        game.clearLines()
+        XCTAssertNotEqual(game.gameState, .playing)
+        XCTAssertGreaterThan(game.score, 0)
+    }
+
+    func testUltraEndsAfterTwoMinutes() {
+        let game = PixelGameEngine.createGame(type: .fallingBlocks, mode: .blocksUltra) as! FallingBlocksGame
+        game.handleInput(action: .buttonAPressed)
+        game.elapsed = game.ultraDuration - 0.01
+        game.update(deltaTime: 0.02)
+        XCTAssertNotEqual(game.gameState, .playing)
+    }
+
+    func testThreePiecesAreAlwaysPreviewed() {
+        let game = FallingBlocksGame()
+        XCTAssertGreaterThanOrEqual(game.upcoming.count, game.previewCount)
+        game.handleInput(action: .buttonAPressed)
+        game.handleInput(action: .dpadUpPressed)
+        XCTAssertGreaterThanOrEqual(game.upcoming.count, game.previewCount)
+    }
+
+    // MARK: - Retro Racer
+
+    func testCoinsScore() {
+        let game = RetroRacerGame()
+        game.handleInput(action: .buttonAPressed)
+        game.coins = [RetroRacerGame.Coin(lane: game.targetLane, y: 0.82)]
+        game.update(deltaTime: 1.0 / 60)
+        XCTAssertTrue(game.coins.isEmpty)
+        XCTAssertGreaterThanOrEqual(game.score, 10)
+    }
 }

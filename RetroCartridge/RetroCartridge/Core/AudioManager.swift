@@ -109,13 +109,16 @@ enum SynthPatch: Int, CaseIterable, Sendable {
     // Brick Breaker
     case paddleBounce, wallBounce, brickBreak
     case lifeLostTone, lifeLostNoise
+    case laserShot, armorHit
 
     // Snake
     case eat
+    case bonus
 
     // Retro Racer
     case laneChange
     case crashTone, crashNoise
+    case coin
 
     // Falling Blocks
     case moveTick, rotate
@@ -201,11 +204,28 @@ enum SynthPatch: Int, CaseIterable, Sendable {
                 .sweep(3000, 500, 260, .noise, volume: 0.3)
             ])
 
+        case .laserShot:
+            return SynthPatchDefinition(channel: .effects, priority: 1, notes: [
+                .sweep(1800, 600, 60, .pulse12, volume: 0.25)
+            ])
+        case .armorHit:
+            // A dull metallic clink
+            return SynthPatchDefinition(channel: .effects, priority: 2, notes: [
+                .sweep(1400, 900, 40, .pulse25, volume: 0.3)
+            ])
+
         // MARK: Snake
         case .eat:
             return SynthPatchDefinition(channel: .effects, priority: 2, notes: [
                 .sweep(Pitch.c5, Pitch.c6, 45, .pulse25, volume: 0.35, decays: false, legato: true),
                 .tone(Pitch.g6, 40, .pulse25, volume: 0.3, decays: true)
+            ])
+
+        case .bonus:
+            // A bright four-note run for the bonus food
+            return SynthPatchDefinition(channel: .lead, priority: 3, notes: [
+                .tone(Pitch.e5, 40, .pulse25), .tone(Pitch.g5, 40, .pulse25),
+                .tone(Pitch.c6, 40, .pulse25), .tone(Pitch.e6, 90, .pulse25, decays: true)
             ])
 
         // MARK: Retro Racer
@@ -220,6 +240,12 @@ enum SynthPatch: Int, CaseIterable, Sendable {
         case .crashNoise:
             return SynthPatchDefinition(channel: .noise, priority: 4, notes: [
                 .sweep(5000, 150, 750, .noise, volume: 0.5)
+            ])
+
+        case .coin:
+            // The classic two-note coin
+            return SynthPatchDefinition(channel: .effects, priority: 2, notes: [
+                .tone(Pitch.g5 * 1.26, 45, .square, volume: 0.3), .tone(Pitch.e6 * 1.19, 140, .square, volume: 0.3, decays: true)
             ])
 
         // MARK: Falling Blocks
@@ -672,9 +698,13 @@ final class AudioManager: @unchecked Sendable {
         case .wallBounce: play(.wallBounce)
         case .brickBreak: play(.brickBreak)
         case .lifeLost: play(.lifeLostTone, .lifeLostNoise)
+        case .laserShot: play(.laserShot)
+        case .armorHit: play(.armorHit)
         case .eat: play(.eat)
+        case .bonus: play(.bonus)
         case .laneChange: play(.laneChange)
         case .crash: play(.crashTone, .crashNoise)
+        case .coin: play(.coin)
         case .moveTick: play(.moveTick)
         case .rotate: play(.rotate)
         case .pieceLock: play(.pieceLockTone, .pieceLockNoise)
