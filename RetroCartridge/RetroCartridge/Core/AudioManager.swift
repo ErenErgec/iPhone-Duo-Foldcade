@@ -66,6 +66,15 @@ enum SynthChannel: Int, CaseIterable, Sendable {
     case effects
     /// Noise channel: crashes, thuds, shimmer.
     case noise
+    /// Music melody (`ChipMusic`), apart from the effects so they never cut it off.
+    case musicLead
+    /// Music bass.
+    case musicBass
+    /// Music drums (noise).
+    case musicDrums
+
+    /// The channels music plays on.
+    static let music: [SynthChannel] = [.musicLead, .musicBass, .musicDrums]
 }
 
 /// A playable sound: a note sequence bound to a channel.
@@ -76,6 +85,8 @@ struct SynthPatchDefinition: Sendable {
     var channel: SynthChannel
     var priority: Int
     var notes: [SynthNote]
+    /// Looping patches start over from their first note until stopped (music).
+    var loops: Bool = false
 }
 
 // MARK: - Note Names
@@ -405,10 +416,17 @@ enum SoundPack: String, CaseIterable, Identifiable, Codable, Sendable {
         self == .classic ? nil : ProductIdentifiers.retroCollectorPack
     }
 
-    /// A patch as this pack voices it.
+    /// A patch as this pack voices it. Looping patches (music) keep their
+    /// note lengths, so their parts stay in step.
     func voice(_ patch: SynthPatchDefinition) -> SynthPatchDefinition {
         var voiced = patch
-        voiced.notes = patch.notes.map { voiceNote($0) }
+        voiced.notes = patch.notes.map { note in
+            var result = voiceNote(note)
+            if patch.loops {
+                result.durationMs = note.durationMs
+            }
+            return result
+        }
         return voiced
     }
 
@@ -477,6 +495,7 @@ final class ToneGenerator: @unchecked Sendable {
         var noteCount: Int
         var channel: Int
         var priority: Int
+        var loops: Bool
     }
 
     /// Playback state of one channel. Only touched on the audio thread.
@@ -492,6 +511,9 @@ final class ToneGenerator: @unchecked Sendable {
         var gain = 0.0
         var lfsr: UInt16 = 1
         var noiseLevel = 1.0
+        /// Looping voices go back to `loopStart` after their last note.
+        var loops = false
+        var loopStart = 0
     }
 
     // MARK: Constants
@@ -544,10 +566,12 @@ final class ToneGenerator: @unchecked Sendable {
                 firstNote: noteCursor,
                 noteCount: definition.notes.count,
                 channel: definition.channel.rawValue,
-                priority: definition.priority
+                priority: definition.priority,
+                loops: definition.loops
             ))
             for (i, note) in definition.notes.enumerated() {
-                let frames = max(1, Int(note.durationMs / 1000.0 * sampleRate))
+                // Rounded, not truncated, so music notes land on whole samples
+                let frames = max(1, Int((note.durationMs / 1000.0 * sampleRate).rounded()))
                 let startIncrement = note.startHz / sampleRate
                 let endIncrement = note.endHz / sampleRate
                 // The last note always releases, so a patch never ends on an open gate.
@@ -593,6 +617,18 @@ final class ToneGenerator: @unchecked Sendable {
         }
     }
 
+    /// Queues a stop: the channel's voice fades out at the next buffer.
+    func stop(channel: Int) {
+        guard channel >= 0, channel < channelCount else { return }
+        os_unfair_lock_lock(lock)
+        if pendingCount < pendingCapacity {
+            // Stops travel in the same queue as negative entries
+            pending[pendingCount] = -(channel + 1)
+            pendingCount += 1
+        }
+        os_unfair_lock_unlock(lock)
+    }
+
     /// Queues a patch to start at the beginning of the next render buffer.
     func trigger(patchIndex: Int) {
         guard patchIndex >= 0, patchIndex < patches.count else { return }
@@ -620,7 +656,14 @@ final class ToneGenerator: @unchecked Sendable {
         os_unfair_lock_unlock(lock)
 
         for i in 0..<triggerCount {
-            start(patch: patches[incoming[i]])
+            let entry = incoming[i]
+            if entry < 0 {
+                // The gain slews down, so stopping doesn't click
+                let channel = -(entry + 1)
+                voices[channel].isActive = false
+            } else {
+                start(patch: patches[entry])
+            }
         }
 
         for frame in 0..<Int(frameCount) {
@@ -650,6 +693,8 @@ final class ToneGenerator: @unchecked Sendable {
         voice.priority = patch.priority
         voice.noteIndex = patch.firstNote
         voice.noteEnd = patch.firstNote + patch.noteCount
+        voice.loops = patch.loops
+        voice.loopStart = patch.firstNote
         voice.frameInNote = 0
         voice.increment = notes[patch.firstNote].startIncrement
         voices[patch.channel] = voice
@@ -676,7 +721,10 @@ final class ToneGenerator: @unchecked Sendable {
             if voice.frameInNote >= note.frames {
                 voice.noteIndex += 1
                 voice.frameInNote = 0
-                if voice.noteIndex >= voice.noteEnd {
+                if voice.noteIndex >= voice.noteEnd && voice.loops {
+                    voice.noteIndex = voice.loopStart
+                    voice.increment = notes[voice.noteIndex].startIncrement
+                } else if voice.noteIndex >= voice.noteEnd {
                     voice.isActive = false
                 } else {
                     voice.increment = notes[voice.noteIndex].startIncrement
@@ -735,14 +783,36 @@ final class AudioManager: @unchecked Sendable {
 
     @ObservationIgnored private let engine = AVAudioEngine()
     @ObservationIgnored private var sourceNode: AVAudioSourceNode?
+    /// One sound pack's patches: every sound effect, then every cartridge's
+    /// music (`ChipMusic.partsPerTrack` patches per cartridge).
+    private static let patchTable: [SynthPatchDefinition] =
+        SynthPatch.allCases.map(\.definition)
+        + GameType.allCases.flatMap { ChipMusic.patches(for: ChipMusic.track(for: $0)) }
+
     /// Every patch in every sound pack, pack by pack.
     @ObservationIgnored private let generator = ToneGenerator(
-        patches: SoundPack.allCases.flatMap { pack in SynthPatch.allCases.map { pack.voice($0.definition) } },
+        patches: SoundPack.allCases.flatMap { pack in AudioManager.patchTable.map { pack.voice($0) } },
         sampleRate: AudioManager.sampleRate
     )
 
-    /// The voicing used for game sounds. Set from the main thread.
-    @ObservationIgnored var soundPack: SoundPack = .classic
+    /// The voicing used for game sounds and music. Set from the main thread.
+    @ObservationIgnored var soundPack: SoundPack = .classic {
+        didSet {
+            // Restart the music in the new voice
+            if soundPack != oldValue, let music = currentMusic {
+                currentMusic = nil
+                playMusic(for: music)
+            }
+        }
+    }
+
+    /// The cartridge whose music is playing, nil for silence.
+    @ObservationIgnored private var currentMusic: GameType?
+
+    /// Where the current sound pack's patches start in the generator.
+    private var packOffset: Int {
+        (SoundPack.allCases.firstIndex(of: soundPack) ?? 0) * Self.patchTable.count
+    }
     /// Serial queue for audio session and engine calls that can block, kept
     /// off the main thread. The engine is only started or stopped on it.
     @ObservationIgnored private let audioQueue = DispatchQueue(label: "RetroCartridge.AudioManager", qos: .userInitiated)
@@ -804,11 +874,35 @@ final class AudioManager: @unchecked Sendable {
     /// next audio buffer.
     private func play(_ patches: SynthPatch...) {
         guard !isMuted else { return }
-        let packOffset = SoundPack.allCases.firstIndex(of: soundPack).map { $0 * SynthPatch.allCases.count } ?? 0
         for patch in patches {
             generator.trigger(patchIndex: packOffset + patch.rawValue)
         }
         // Restart the engine if an interruption or route change stopped it.
+        audioQueue.async { [self] in
+            startEngineIfNeeded()
+        }
+    }
+
+    // MARK: - Music
+
+    /// Loops a cartridge's theme, or stops the music for nil. Cheap to call
+    /// every frame: it only acts when the choice changes.
+    func playMusic(for game: GameType?) {
+        guard game != currentMusic else { return }
+        currentMusic = game
+
+        guard let game, let index = GameType.allCases.firstIndex(of: game) else {
+            for channel in SynthChannel.music {
+                generator.stop(channel: channel.rawValue)
+            }
+            return
+        }
+
+        // All three parts start on the same buffer, so they play in step
+        let first = packOffset + SynthPatch.allCases.count + index * ChipMusic.partsPerTrack
+        for part in 0..<ChipMusic.partsPerTrack {
+            generator.trigger(patchIndex: first + part)
+        }
         audioQueue.async { [self] in
             startEngineIfNeeded()
         }

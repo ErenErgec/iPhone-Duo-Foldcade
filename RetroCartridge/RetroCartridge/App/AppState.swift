@@ -100,6 +100,21 @@ final class AppState {
 
     private static let soundPackKey = "soundPack"
 
+    /// Whether cartridges play their music, persisted. On by default.
+    var isMusicOn: Bool = AppState.persistedMusicOn() {
+        didSet {
+            guard isMusicOn != oldValue else { return }
+            UserDefaults.standard.set(isMusicOn, forKey: Self.musicKey)
+        }
+    }
+
+    private static let musicKey = "musicOn"
+
+    private static func persistedMusicOn() -> Bool {
+        guard UserDefaults.standard.object(forKey: musicKey) != nil else { return true }
+        return UserDefaults.standard.bool(forKey: musicKey)
+    }
+
     private static func persistedSoundPack() -> SoundPack {
         UserDefaults.standard.string(forKey: soundPackKey)
             .flatMap(SoundPack.init(rawValue:)) ?? .classic

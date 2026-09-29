@@ -17,6 +17,7 @@ enum PauseMenuItem: Int, CaseIterable, Sendable {
     case resume
     case screen
     case palette
+    case music
     case eject
 
     var title: String {
@@ -24,6 +25,7 @@ enum PauseMenuItem: Int, CaseIterable, Sendable {
         case .resume: return "RESUME"
         case .screen: return "SCREEN"
         case .palette: return "PALETTE"
+        case .music: return "MUSIC"
         case .eject: return "EJECT"
         }
     }
@@ -75,6 +77,9 @@ enum PauseMenu {
                 return cycleScreen(by: step, appState: appState, modes: screenModes, current: currentScreen)
             case .palette:
                 return cyclePalette(by: step, appState: appState)
+            case .music:
+                appState.isMusicOn.toggle()
+                return .changed
             case .resume, .eject:
                 return .ignored
             }
@@ -88,6 +93,9 @@ enum PauseMenu {
                 return cycleScreen(by: 1, appState: appState, modes: screenModes, current: currentScreen)
             case .palette:
                 return cyclePalette(by: 1, appState: appState)
+            case .music:
+                appState.isMusicOn.toggle()
+                return .changed
             case .eject:
                 appState.ejectCartridge()
                 return .confirmed
@@ -131,6 +139,7 @@ struct PauseMenuPanel: View {
     let screenModeTitle: String
     let canChangeScreen: Bool
     let paletteTitle: String
+    let isMusicOn: Bool
     let blinkOn: Bool
     /// Base unit, 1/20 of the tube's shorter side.
     let u: CGFloat
@@ -177,6 +186,8 @@ struct PauseMenuPanel: View {
             return canChangeScreen ? "◀ \(screenModeTitle.uppercased()) ▶" : screenModeTitle.uppercased()
         case .palette:
             return "◀ \(paletteTitle.uppercased()) ▶"
+        case .music:
+            return isMusicOn ? "◀ ON ▶" : "◀ OFF ▶"
         case .resume, .eject:
             return nil
         }

@@ -742,4 +742,56 @@ final class RetroCartridgeTests: XCTestCase {
         let insets = OcclusionInsets.insets(for: bounds, avoiding: [huge])
         XCTAssertLessThanOrEqual(insets.top, 400 * OcclusionInsets.maximumShare)
     }
+
+    // MARK: - Music
+
+    func testNoteNamesBecomeFrequencies() {
+        XCTAssertEqual(ChipMusic.frequency(of: "A4") ?? 0, 440, accuracy: 0.001)
+        XCTAssertEqual(ChipMusic.frequency(of: "C4") ?? 0, 261.63, accuracy: 0.01)
+        XCTAssertEqual(ChipMusic.frequency(of: "Bb3") ?? 0, ChipMusic.frequency(of: "A#3") ?? 1, accuracy: 0.001)
+        XCTAssertNil(ChipMusic.frequency(of: "H2"))
+    }
+
+    func testEveryTrackLoopsInStep() {
+        for game in GameType.allCases {
+            let track = ChipMusic.track(for: game)
+            let length = track.drumBar.count * track.bars
+            XCTAssertEqual(track.drumBar.count, 16, game.rawValue)
+            XCTAssertEqual(ChipMusic.sixteenths(inScore: track.lead), length, game.rawValue)
+            XCTAssertEqual(ChipMusic.sixteenths(inScore: track.bass), length, game.rawValue)
+            // A sixteenth is a whole number of samples
+            XCTAssertEqual(661_500 % track.bpm, 0, game.rawValue)
+        }
+    }
+
+    func testEveryScoreTokenIsANoteOrRest() {
+        for game in GameType.allCases {
+            let track = ChipMusic.track(for: game)
+            for score in [track.lead, track.bass] {
+                let tokens = score.split(whereSeparator: { $0 == " " || $0 == "|" })
+                let notes = ChipMusic.notes(fromScore: score, bpm: track.bpm, waveform: .square, volume: 0.2)
+                XCTAssertEqual(notes.count, tokens.count, game.rawValue)
+            }
+        }
+    }
+
+    func testMusicPatchesLoopOnTheMusicChannels() {
+        let patches = ChipMusic.patches(for: ChipMusic.track(for: .snake))
+        XCTAssertEqual(patches.count, ChipMusic.partsPerTrack)
+        XCTAssertTrue(patches.allSatisfy(\.loops))
+        XCTAssertEqual(patches.map(\.channel), SynthChannel.music)
+        // Sound packs keep music lengths, so the parts stay in step
+        let arcade = SoundPack.arcade.voice(patches[0])
+        XCTAssertEqual(arcade.notes.map(\.durationMs), patches[0].notes.map(\.durationMs))
+    }
+
+    func testPauseMenuTogglesMusic() {
+        let appState = makePausedAppState()
+        let original = appState.isMusicOn
+        defer { appState.isMusicOn = original }
+
+        appState.pauseMenuSelection = .music
+        PauseMenu.handle(.buttonAPressed, appState: appState, screenModes: [.crt], currentScreen: .crt)
+        XCTAssertEqual(appState.isMusicOn, !original)
+    }
 }

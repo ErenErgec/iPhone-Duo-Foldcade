@@ -63,6 +63,7 @@
 		C3AB7BCC3E1F803FF7A48B6D /* GoldEditionSkin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CA7AF75FD419C264E66A1B6 /* GoldEditionSkin.swift */; };
 		094A9581F904E8F5EC3E7DF9 /* RecordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0B777D6058450A4862AE6B7 /* RecordsView.swift */; };
 		8E79ED25D9AAA2317A7D2C70 /* OcclusionAvoidance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 830382F6F2D6048BD2EF3AEE /* OcclusionAvoidance.swift */; };
+		C4BCD40E8E83BB13B8E3DF42 /* ChipMusic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ADE1ACC998C07CCDF807E12 /* ChipMusic.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -136,6 +137,7 @@
 		7CA7AF75FD419C264E66A1B6 /* GoldEditionSkin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoldEditionSkin.swift; sourceTree = "<group>"; };
 		A0B777D6058450A4862AE6B7 /* RecordsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordsView.swift; sourceTree = "<group>"; };
 		830382F6F2D6048BD2EF3AEE /* OcclusionAvoidance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OcclusionAvoidance.swift; sourceTree = "<group>"; };
+		1ADE1ACC998C07CCDF807E12 /* ChipMusic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChipMusic.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -241,6 +243,7 @@
 			isa = PBXGroup;
 			children = (
 				41630EE2C8E23B2EBA047508 /* AudioManager.swift */,
+				1ADE1ACC998C07CCDF807E12 /* ChipMusic.swift */,
 				C2EC463497578DFADD618FA7 /* HapticManager.swift */,
 				057CF93884D57447C526BAAB /* HingeEngine.swift */,
 				99CD56444E0BB80576F0C69C /* PostureManager.swift */,
@@ -479,6 +482,7 @@
 				A941B7ADC3D5B9979350D710 /* ClearIceSkin.swift in Sources */,
 				DCABA366CA692CE42077BAEC /* AtomicPurpleSkin.swift in Sources */,
 				B6AD0B14BB189F075875626E /* AudioManager.swift in Sources */,
+				C4BCD40E8E83BB13B8E3DF42 /* ChipMusic.swift in Sources */,
 				2061C3D92333D50207BB2984 /* BrickBreakerGame.swift in Sources */,
 				42E2B78F3434B46054A26EE6 /* CRTEffect.swift in Sources */,
 				2E31C09473DE7594D11015A0 /* GamePalette.swift in Sources */,

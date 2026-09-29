@@ -81,6 +81,15 @@ struct GameCanvasView: View {
                                 }
                             }
                             .onChange(of: timeline.date) { oldDate, newDate in
+                                // Music on the title screen and while playing; quiet when
+                                // paused, after a game over and while ejecting
+                                let wantsMusic: Bool
+                                switch activeGame.gameState {
+                                case .menu, .playing: wantsMusic = appState.isMusicOn && !appState.isEjecting
+                                case .paused, .gameOver: wantsMusic = false
+                                }
+                                audioManager.playMusic(for: wantsMusic ? activeGame.gameType : nil)
+
                                 // Ejecting: the game stays frozen while the tube powers off
                                 if let ejectStart = appState.ejectStart {
                                     if newDate.timeIntervalSince(ejectStart) >= powerOffDuration {
@@ -125,6 +134,9 @@ struct GameCanvasView: View {
                 .padding(inset)
             }
             .padding(inset)
+        }
+        .onDisappear {
+            audioManager.playMusic(for: nil)
         }
     }
 
@@ -198,7 +210,8 @@ struct GameCanvasView: View {
                     menuSelection: appState.pauseMenuSelection,
                     screenModeTitle: screenSettings.mode.title,
                     canChangeScreen: PauseMenu.availableScreenModes(store: storeManager).count > 1,
-                    paletteTitle: appState.paletteChoice.title
+                    paletteTitle: appState.paletteChoice.title,
+                    isMusicOn: appState.isMusicOn
                 )
             }
             .screenEffect(
@@ -297,6 +310,7 @@ private struct GameStatePanel: View {
     let screenModeTitle: String
     let canChangeScreen: Bool
     let paletteTitle: String
+    let isMusicOn: Bool
 
     private let phosphor = Color(hex: "#9CFFB8")
 
@@ -320,6 +334,7 @@ private struct GameStatePanel: View {
                         screenModeTitle: screenModeTitle,
                         canChangeScreen: canChangeScreen,
                         paletteTitle: paletteTitle,
+                        isMusicOn: isMusicOn,
                         blinkOn: blinkOn,
                         u: u
                     )
