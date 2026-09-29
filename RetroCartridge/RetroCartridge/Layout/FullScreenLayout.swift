@@ -59,14 +59,17 @@ public struct FullScreenLayout: View {
                 ConsoleShell(theme: theme)
                 
                 // Halves are measured on the full display so the split lands on
-                // the fold; each half then keeps clear of its own screen edges.
+                // the fold; each half then keeps clear of its own screen edges
+                // and of an active camera.
                 ZStack(alignment: .topLeading) {
                     GameCanvasView()
+                        .avoidingOcclusion()
                         .padding(split.firstHalfInsets(from: insets))
                         .frame(width: split.first.width, height: split.first.height)
                         .offset(x: split.first.minX, y: split.first.minY)
 
                     ControllerView()
+                        .avoidingOcclusion()
                         .padding(split.secondHalfInsets(from: insets))
                         .frame(width: split.second.width, height: split.second.height)
                         .offset(x: split.second.minX, y: split.second.minY)

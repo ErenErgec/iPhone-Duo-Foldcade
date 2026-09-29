@@ -99,6 +99,7 @@ struct OverlayPanel<Content: View>: View {
         .shadow(color: .black.opacity(0.6), radius: 30, y: 16)
         .padding(.horizontal, 24)
         .padding(.vertical, 28)
+        .avoidingOcclusion()
         .accessibilityElement(children: .contain)
         .accessibilityAddTraits(.isModal)
         .accessibilityAction(.escape, onClose)

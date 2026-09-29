@@ -711,4 +711,35 @@ final class RetroCartridgeTests: XCTestCase {
         XCTAssertTrue(appState.isStoreVisible)
         XCTAssertEqual(appState.storeHighlight, ProductIdentifiers.lifetimePro)
     }
+
+    // MARK: - Occlusion
+
+    func testNoRegionsNoInsets() {
+        let bounds = CGRect(x: 0, y: 0, width: 600, height: 400)
+        XCTAssertEqual(OcclusionInsets.insets(for: bounds, avoiding: []), EdgeInsets())
+        XCTAssertEqual(OcclusionInsets.insets(for: bounds, avoiding: [CGRect(x: 700, y: 0, width: 50, height: 50)]), EdgeInsets())
+    }
+
+    func testCameraAtTheTopPushesContentDown() {
+        let bounds = CGRect(x: 0, y: 0, width: 600, height: 400)
+        let camera = CGRect(x: 500, y: -10, width: 60, height: 50)
+        let insets = OcclusionInsets.insets(for: bounds, avoiding: [camera])
+        XCTAssertEqual(insets.top, 40)
+        XCTAssertEqual(insets.leading, 0)
+        XCTAssertEqual(insets.trailing, 0)
+        XCTAssertEqual(insets.bottom, 0)
+    }
+
+    func testCameraAtTheSidePushesContentInFromThatSide() {
+        let bounds = CGRect(x: 0, y: 0, width: 600, height: 400)
+        let camera = CGRect(x: 570, y: 150, width: 40, height: 60)
+        XCTAssertEqual(OcclusionInsets.insets(for: bounds, avoiding: [camera]).trailing, 30)
+    }
+
+    func testRegionsNeverPushMoreThanTheCap() {
+        let bounds = CGRect(x: 0, y: 0, width: 600, height: 400)
+        let huge = CGRect(x: -10, y: -10, width: 620, height: 300)
+        let insets = OcclusionInsets.insets(for: bounds, avoiding: [huge])
+        XCTAssertLessThanOrEqual(insets.top, 400 * OcclusionInsets.maximumShare)
+    }
 }
