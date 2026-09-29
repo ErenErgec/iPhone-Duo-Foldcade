@@ -223,4 +223,21 @@ final class RetroCartridgeTests: XCTestCase {
             XCTAssertEqual(mode.requiredProductID, ProductIdentifiers.lifetimePro)
         }
     }
+
+    // MARK: - Attract mode
+
+    func testAttractPilotPlaysEveryGame() {
+        for gameType in GameType.allCases {
+            let pilot = AttractPilot(type: gameType)
+            var bestScore = 0
+            // Thirty seconds at 60 FPS
+            for _ in 0..<1_800 {
+                pilot.step(deltaTime: 1.0 / 60)
+                bestScore = max(bestScore, pilot.game.score)
+                XCTAssertTrue(pilot.game.pendingSounds.isEmpty, "attract mode is silent")
+            }
+            XCTAssertGreaterThan(bestScore, 0, gameType.rawValue)
+            XCTAssertNotEqual(pilot.game.gameState, .menu, gameType.rawValue)
+        }
+    }
 }

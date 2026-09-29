@@ -4,8 +4,10 @@
 //
 // 5.4" outer display: a swipeable cartridge case. The display is locked to the
 // landscape orientation that puts the hinge on top (ConsoleHostingController).
-// The app name and the Skins / Store buttons live in the system toolbar.
-// The chosen cartridge is inserted automatically when the device is unfolded.
+// The app name and the Skins / Screen / Store buttons live in the system
+// toolbar. Behind the details, the selected cartridge plays itself faintly
+// (attract mode). The chosen cartridge is inserted automatically when the
+// device is unfolded.
 //
 
 import SwiftUI
@@ -37,6 +39,31 @@ public struct CoverScreenLayout: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
+        .background { attractMode }
+    }
+
+    /// The selected game playing itself behind the details. It spans the
+    /// display edge to edge like a background, faded toward the cartridge
+    /// and toward the toolbar column so neither loses contrast.
+    private var attractMode: some View {
+        AttractScreen(gameType: appState.selectedGameType)
+            .aspectRatio(10 / 9, contentMode: .fill)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .clipped()
+            .opacity(0.2)
+            .mask(
+                LinearGradient(
+                    stops: [
+                        .init(color: .clear, location: 0),
+                        .init(color: .black, location: 0.45),
+                        .init(color: .black, location: 0.8),
+                        .init(color: .clear, location: 1)
+                    ],
+                    startPoint: .leading,
+                    endPoint: .trailing
+                )
+            )
+            .ignoresSafeArea()
     }
     
     // MARK: - Pieces

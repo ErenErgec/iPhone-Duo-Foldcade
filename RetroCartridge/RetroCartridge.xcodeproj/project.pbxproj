@@ -47,6 +47,8 @@
 		FC7FA955E567C75F39AE9E9D /* ShellSurface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B3BC3C1A70B6689CC493AA /* ShellSurface.swift */; };
 		9BE04857F10CFE8F7F51BA70 /* ShellFinish.metal in Sources */ = {isa = PBXBuildFile; fileRef = 9385ACD366F7F593A0E3E1D5 /* ShellFinish.metal */; };
 		D9FAE47E35752387DA9FF746 /* CartridgeArt.swift in Sources */ = {isa = PBXBuildFile; fileRef = F572E5075EABCE30B220AF16 /* CartridgeArt.swift */; };
+		76827DBEEF4823E2E6DDDC1B /* AttractPilot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 880E3CC9E33A86EC6E951F9F /* AttractPilot.swift */; };
+		E8C268C93BD75A0BAA33D4E2 /* AttractScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B76AF2FF78603680C9FC0C0 /* AttractScreen.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -104,6 +106,8 @@
 		62B3BC3C1A70B6689CC493AA /* ShellSurface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellSurface.swift; sourceTree = "<group>"; };
 		9385ACD366F7F593A0E3E1D5 /* ShellFinish.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = ShellFinish.metal; sourceTree = "<group>"; };
 		F572E5075EABCE30B220AF16 /* CartridgeArt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartridgeArt.swift; sourceTree = "<group>"; };
+		880E3CC9E33A86EC6E951F9F /* AttractPilot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttractPilot.swift; sourceTree = "<group>"; };
+		7B76AF2FF78603680C9FC0C0 /* AttractScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttractScreen.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -130,6 +134,7 @@
 			children = (
 				D64F4B44DC2A3D30C7CBE63D /* Skins */,
 				A1C0DE0000000000000000A2 /* CartridgeView.swift */,
+				7B76AF2FF78603680C9FC0C0 /* AttractScreen.swift */,
 				F572E5075EABCE30B220AF16 /* CartridgeArt.swift */,
 				17441286342C035B63E9C511 /* ControllerView.swift */,
 				87FEA080C926760FB3C162F5 /* GameCanvasView.swift */,
@@ -255,6 +260,7 @@
 				A517D40FBA6FE62245965879 /* RetroRacer */,
 				DED774755CD87D1DF85B59D6 /* Snake */,
 				84E3D648292B168D294C0233 /* PixelGameEngine.swift */,
+				880E3CC9E33A86EC6E951F9F /* AttractPilot.swift */,
 				CEB7C8D18F05AF96EE9A28DD /* PixelGameProtocol.swift */,
 			);
 			path = Games;
@@ -393,6 +399,7 @@
 				7A7D41FBA09DA948C8CAA7C9 /* CRTView.metal in Sources */,
 				9BE04857F10CFE8F7F51BA70 /* ShellFinish.metal in Sources */,
 				A1C0DE0000000000000000A1 /* CartridgeView.swift in Sources */,
+				E8C268C93BD75A0BAA33D4E2 /* AttractScreen.swift in Sources */,
 				D9FAE47E35752387DA9FF746 /* CartridgeArt.swift in Sources */,
 				194F0E4D015A7188FC1A0C00 /* ClassicGreySkin.swift in Sources */,
 				720656CE84DDB80C10FD63A2 /* ControllerView.swift in Sources */,
@@ -410,6 +417,7 @@
 				D2DDD4CE661F117CAF47450B /* HapticManager.swift in Sources */,
 				762BE0DA9936473273BDB6B0 /* HingeEngine.swift in Sources */,
 				FC184BF79E8C70A9A2D41B64 /* PixelGameEngine.swift in Sources */,
+				76827DBEEF4823E2E6DDDC1B /* AttractPilot.swift in Sources */,
 				1F731E3550AFB142BAC4ADAE /* PixelGameProtocol.swift in Sources */,
 				349DA3AFA1F86A358B2BA421 /* PostureManager.swift in Sources */,
 				64B1FDE4D6A297AAF4F6DB35 /* ProgressStore.swift in Sources */,
