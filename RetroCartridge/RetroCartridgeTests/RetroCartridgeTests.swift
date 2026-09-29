@@ -498,4 +498,120 @@ final class RetroCartridgeTests: XCTestCase {
         XCTAssertTrue(game.coins.isEmpty)
         XCTAssertGreaterThanOrEqual(game.score, 10)
     }
+
+    // MARK: - New cartridges
+
+    func testEveryCartridgeHasItsOwnPaletteArtAndGame() {
+        for gameType in GameType.allCases {
+            let game = PixelGameEngine.createGame(type: gameType)
+            XCTAssertEqual(game.gameType, gameType)
+            XCTAssertEqual(game.palette, GamePalette.native(for: gameType))
+            XCTAssertEqual(PixelArt.label(for: gameType).rows.count, 16)
+        }
+    }
+
+    func testInvaderShotScores() {
+        let game = PixelInvadersGame()
+        game.handleInput(action: .buttonAPressed)
+        let target = game.invaderFrame(game.rows * game.columns - 1)
+        game.shot = PixelInvadersGame.Shot(x: Double(target.midX), y: Double(target.maxY) + 0.01)
+        game.update(deltaTime: 1.0 / 60)
+        XCTAssertFalse(game.alive[game.rows * game.columns - 1])
+        XCTAssertGreaterThan(game.score, 0)
+    }
+
+    func testFirstRevealIsNeverAMine() {
+        for seed in 0..<20 {
+            let game = MineSweepGame()
+            game.rng = GameRNG(seed: UInt64(seed))
+            game.handleInput(action: .buttonAPressed)
+            game.rng = GameRNG(seed: UInt64(seed))
+            game.reveal(game.cursor)
+            XCTAssertEqual(game.gameState, .playing)
+            XCTAssertEqual(game.mines.count, game.mineCount)
+            XCTAssertEqual(game.adjacentMines(game.cursor), 0)
+            XCTAssertGreaterThan(game.revealed.count, 1, "an empty cell opens its area")
+        }
+    }
+
+    func testEveryMazePelletIsReachable() {
+        let game = MazeMuncherGame()
+        var seen: Set<MazeMuncherGame.Tile> = [game.start]
+        var queue = [game.start]
+        while let tile = queue.popLast() {
+            for direction in MazeMuncherGame.Direction.allCases where game.isOpen(tile, toward: direction) {
+                let next = game.neighbor(of: tile, toward: direction)
+                if seen.insert(next).inserted { queue.append(next) }
+            }
+        }
+        XCTAssertTrue(game.pellets.isSubset(of: seen))
+        XCTAssertTrue(game.powerPellets.isSubset(of: seen))
+        XCTAssertTrue(seen.contains(game.ghostSpot))
+    }
+
+    func testFrogScoresForNewRows() {
+        let game = FrogHopGame()
+        game.handleInput(action: .buttonAPressed)
+        game.lanes.removeAll { $0.row == game.startRow - 1 }
+        game.handleInput(action: .dpadUpPressed)
+        XCTAssertEqual(game.frogRow, game.startRow - 1)
+        XCTAssertEqual(game.score, 10)
+        game.handleInput(action: .dpadDownPressed)
+        game.handleInput(action: .dpadUpPressed)
+        XCTAssertEqual(game.score, 10, "only new rows score")
+    }
+
+    func testFrogDrownsOffTheLogs() {
+        let game = FrogHopGame()
+        game.handleInput(action: .buttonAPressed)
+        game.frogRow = 2
+        game.lanes = game.lanes.map { lane in
+            var empty = lane
+            if lane.kind == .river { empty.count = 0 }
+            return empty
+        }
+        let lives = game.lives
+        game.update(deltaTime: 1.0 / 60)
+        XCTAssertEqual(game.lives, lives - 1)
+    }
+
+    func testGentleLandingOnAPadScores() {
+        let game = LunarHingeGame()
+        game.handleInput(action: .buttonAPressed)
+        let pad = game.pads[0]
+        game.x = pad.center
+        // Feet just touching the pad
+        game.y = pad.height - game.halfHeight + 0.0001
+        game.vx = 0
+        game.vy = 0.03
+        game.update(deltaTime: 1.0 / 60)
+        XCTAssertNotNil(game.landedPad)
+        XCTAssertGreaterThan(game.score, 0)
+        XCTAssertEqual(game.level, 2)
+    }
+
+    func testHardLandingCrashes() {
+        let game = LunarHingeGame()
+        game.handleInput(action: .buttonAPressed)
+        let pad = game.pads[0]
+        game.x = pad.center
+        game.y = pad.height - game.halfHeight + 0.0001
+        game.vy = 0.2
+        game.update(deltaTime: 1.0 / 60)
+        XCTAssertTrue(game.crashed)
+        XCTAssertEqual(game.lives, 2)
+    }
+
+    func testFoldingTheHingeThrusts() {
+        let game = LunarHingeGame()
+        game.handleInput(action: .buttonAPressed)
+        game.hingeDidChange(angle: 120)
+        XCTAssertEqual(game.hingeThrust, 0, "the first reading sets the rest angle")
+        game.hingeDidChange(angle: 105)
+        XCTAssertEqual(game.hingeThrust, 0.5, accuracy: 0.001)
+        game.hingeDidChange(angle: 60)
+        XCTAssertEqual(game.hingeThrust, 1)
+        game.hingeDidChange(angle: 150)
+        XCTAssertEqual(game.hingeThrust, 0, "opening further raises the rest angle")
+    }
 }

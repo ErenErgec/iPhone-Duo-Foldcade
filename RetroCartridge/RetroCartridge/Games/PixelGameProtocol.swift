@@ -116,3 +116,14 @@ extension PixelGameProtocol {
         return sounds
     }
 }
+
+// MARK: - Hinge input
+
+/// A game that can also be played by folding the device. Apple describes
+/// live hinge data as "ideal for driving interactions or effects", so a game
+/// may use it as input, but never as the only way to play: every hinge
+/// action has a button equivalent, so it works in every pose.
+protocol HingeControllable: AnyObject {
+    /// Called every frame with the hinge angle in degrees (180 = flat).
+    func hingeDidChange(angle: Double)
+}

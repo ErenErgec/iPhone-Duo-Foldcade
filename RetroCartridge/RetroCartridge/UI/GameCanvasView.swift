@@ -80,6 +80,9 @@ struct GameCanvasView: View {
                                     return
                                 }
 
+                                // Games played by folding get the live hinge angle
+                                (activeGame as? HingeControllable)?.hingeDidChange(angle: Double(hingeEngine.hingeAngle))
+
                                 let delta = newDate.timeIntervalSince(oldDate)
                                 activeGame.update(deltaTime: min(max(delta, 0), 0.05))
 

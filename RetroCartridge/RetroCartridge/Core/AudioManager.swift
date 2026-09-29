@@ -127,6 +127,22 @@ enum SynthPatch: Int, CaseIterable, Sendable {
     case lineClear1, lineClear2, lineClear3
     case lineClear4Lead, lineClear4Harmony, lineClear4Shimmer
 
+    // Pixel Invaders
+    case march1, march2, march3, march4
+    case explosionTone, explosionNoise
+
+    // Mine Sweep
+    case reveal, flag
+
+    // Maze Muncher
+    case chomp
+
+    // Frog Hop
+    case hop
+
+    // Lunar Hinge
+    case thrust
+
     var definition: SynthPatchDefinition {
         switch self {
         // MARK: System
@@ -306,6 +322,52 @@ enum SynthPatch: Int, CaseIterable, Sendable {
             return SynthPatchDefinition(channel: .noise, priority: 5, notes: [
                 .rest(385),
                 .tone(12000, 400, .noise, volume: 0.15, decays: true)
+            ])
+
+        // MARK: Pixel Invaders
+        case .march1, .march2, .march3, .march4:
+            // The descending four-note bass march
+            let notes = [98.0, 87.31, 77.78, 73.42]
+            let index = rawValue - SynthPatch.march1.rawValue
+            return SynthPatchDefinition(channel: .effects, priority: 0, notes: [
+                .tone(notes[index], 70, .triangle, volume: 0.55, decays: true)
+            ])
+        case .explosionTone:
+            return SynthPatchDefinition(channel: .effects, priority: 2, notes: [
+                .sweep(600, 120, 120, .pulse12, volume: 0.3)
+            ])
+        case .explosionNoise:
+            return SynthPatchDefinition(channel: .noise, priority: 2, notes: [
+                .sweep(4000, 800, 180, .noise, volume: 0.35)
+            ])
+
+        // MARK: Mine Sweep
+        case .reveal:
+            return SynthPatchDefinition(channel: .effects, priority: 1, notes: [
+                .sweep(Pitch.c5, Pitch.g5, 35, .pulse25, volume: 0.25)
+            ])
+        case .flag:
+            return SynthPatchDefinition(channel: .effects, priority: 1, notes: [
+                .tone(Pitch.g5, 30, .square, volume: 0.25), .tone(Pitch.c6, 50, .square, volume: 0.25, decays: true)
+            ])
+
+        // MARK: Maze Muncher
+        case .chomp:
+            return SynthPatchDefinition(channel: .effects, priority: 0, notes: [
+                .sweep(Pitch.g4, Pitch.c4, 45, .triangle, volume: 0.45, decays: false, legato: true),
+                .sweep(Pitch.c4, Pitch.g4, 45, .triangle, volume: 0.45)
+            ])
+
+        // MARK: Frog Hop
+        case .hop:
+            return SynthPatchDefinition(channel: .effects, priority: 1, notes: [
+                .sweep(Pitch.e5, Pitch.a5, 40, .pulse25, volume: 0.25)
+            ])
+
+        // MARK: Lunar Hinge
+        case .thrust:
+            return SynthPatchDefinition(channel: .noise, priority: 0, notes: [
+                .tone(600, 150, .noise, volume: 0.18, decays: true)
             ])
         }
     }
@@ -716,6 +778,15 @@ final class AudioManager: @unchecked Sendable {
             case 3: play(.lineClear3)
             default: play(.lineClear4Lead, .lineClear4Harmony, .lineClear4Shimmer)
             }
+        case .march(let step):
+            let beats: [SynthPatch] = [.march1, .march2, .march3, .march4]
+            play(beats[((step % 4) + 4) % 4])
+        case .explosion: play(.explosionTone, .explosionNoise)
+        case .reveal: play(.reveal)
+        case .flag: play(.flag)
+        case .chomp: play(.chomp)
+        case .hop: play(.hop)
+        case .thrust: play(.thrust)
         }
     }
 }

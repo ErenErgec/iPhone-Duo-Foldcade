@@ -51,6 +51,11 @@
 		E8C268C93BD75A0BAA33D4E2 /* AttractScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B76AF2FF78603680C9FC0C0 /* AttractScreen.swift */; };
 		FA3EEA4E93EEFCD8A1E1585E /* PauseMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC226AEA802B413476577317 /* PauseMenu.swift */; };
 		226C9958BD311D51C69DF289 /* GameRNG.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F8168463B5C2FBD8ADC7AF /* GameRNG.swift */; };
+		89F9D7FC6C686AE0327ED2CA /* PixelInvadersGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61543430623EE1BB69E39AA8 /* PixelInvadersGame.swift */; };
+		A5DA89ACA533B7245CC98D36 /* MineSweepGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B24F398684A7E6056EB5816 /* MineSweepGame.swift */; };
+		8211547AA7CA87F1BB4BFB57 /* MazeMuncherGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7755234F58958A63BBC40B /* MazeMuncherGame.swift */; };
+		FCFDD0725F5BA1DE5CFBCE60 /* FrogHopGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDCD5F70AB41D678905B27E7 /* FrogHopGame.swift */; };
+		644A994F3BAB2B5C94A2E02B /* LunarHingeGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4D26FD4458712A58DBE0B9D /* LunarHingeGame.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -112,6 +117,11 @@
 		7B76AF2FF78603680C9FC0C0 /* AttractScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttractScreen.swift; sourceTree = "<group>"; };
 		FC226AEA802B413476577317 /* PauseMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PauseMenu.swift; sourceTree = "<group>"; };
 		39F8168463B5C2FBD8ADC7AF /* GameRNG.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameRNG.swift; sourceTree = "<group>"; };
+		61543430623EE1BB69E39AA8 /* PixelInvadersGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelInvadersGame.swift; sourceTree = "<group>"; };
+		7B24F398684A7E6056EB5816 /* MineSweepGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineSweepGame.swift; sourceTree = "<group>"; };
+		6E7755234F58958A63BBC40B /* MazeMuncherGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MazeMuncherGame.swift; sourceTree = "<group>"; };
+		BDCD5F70AB41D678905B27E7 /* FrogHopGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrogHopGame.swift; sourceTree = "<group>"; };
+		A4D26FD4458712A58DBE0B9D /* LunarHingeGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LunarHingeGame.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -264,6 +274,11 @@
 				57FC423AF5673D4E968C6462 /* FallingBlocks */,
 				A517D40FBA6FE62245965879 /* RetroRacer */,
 				DED774755CD87D1DF85B59D6 /* Snake */,
+				2370B7F5579905531D92295E /* LunarHinge */,
+				23CEF2E3FD0A51B9731E4289 /* FrogHop */,
+				79AFAC10BF7A668C74488CF3 /* MazeMuncher */,
+				9B1BB326371004CF5D174FC6 /* MineSweep */,
+				8401E148172440519B5B698B /* PixelInvaders */,
 				84E3D648292B168D294C0233 /* PixelGameEngine.swift */,
 				39F8168463B5C2FBD8ADC7AF /* GameRNG.swift */,
 				880E3CC9E33A86EC6E951F9F /* AttractPilot.swift */,
@@ -303,6 +318,46 @@
 				9385ACD366F7F593A0E3E1D5 /* ShellFinish.metal */,
 			);
 			path = Rendering;
+			sourceTree = "<group>";
+		};
+		8401E148172440519B5B698B /* PixelInvaders */ = {
+			isa = PBXGroup;
+			children = (
+				61543430623EE1BB69E39AA8 /* PixelInvadersGame.swift */,
+			);
+			path = PixelInvaders;
+			sourceTree = "<group>";
+		};
+		9B1BB326371004CF5D174FC6 /* MineSweep */ = {
+			isa = PBXGroup;
+			children = (
+				7B24F398684A7E6056EB5816 /* MineSweepGame.swift */,
+			);
+			path = MineSweep;
+			sourceTree = "<group>";
+		};
+		79AFAC10BF7A668C74488CF3 /* MazeMuncher */ = {
+			isa = PBXGroup;
+			children = (
+				6E7755234F58958A63BBC40B /* MazeMuncherGame.swift */,
+			);
+			path = MazeMuncher;
+			sourceTree = "<group>";
+		};
+		23CEF2E3FD0A51B9731E4289 /* FrogHop */ = {
+			isa = PBXGroup;
+			children = (
+				BDCD5F70AB41D678905B27E7 /* FrogHopGame.swift */,
+			);
+			path = FrogHop;
+			sourceTree = "<group>";
+		};
+		2370B7F5579905531D92295E /* LunarHinge */ = {
+			isa = PBXGroup;
+			children = (
+				A4D26FD4458712A58DBE0B9D /* LunarHingeGame.swift */,
+			);
+			path = LunarHinge;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -435,6 +490,11 @@
 				FC25B1F7B1101CB92E34E387 /* SkinManager.swift in Sources */,
 				FC7FA955E567C75F39AE9E9D /* ShellSurface.swift in Sources */,
 				BF9619FE16D8D74E9C083144 /* SnakeGame.swift in Sources */,
+				644A994F3BAB2B5C94A2E02B /* LunarHingeGame.swift in Sources */,
+				FCFDD0725F5BA1DE5CFBCE60 /* FrogHopGame.swift in Sources */,
+				8211547AA7CA87F1BB4BFB57 /* MazeMuncherGame.swift in Sources */,
+				A5DA89ACA533B7245CC98D36 /* MineSweepGame.swift in Sources */,
+				89F9D7FC6C686AE0327ED2CA /* PixelInvadersGame.swift in Sources */,
 				063569A32C6915EE79689069 /* StoreManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

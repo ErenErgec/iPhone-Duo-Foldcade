@@ -58,6 +58,11 @@ struct GamePalette: Equatable, Sendable {
         case .retroRacer: return .retroRacer
         case .snake: return .snake
         case .fallingBlocks: return .fallingBlocks
+        case .pixelInvaders: return .pixelInvaders
+        case .mineSweep: return .mineSweep
+        case .mazeMuncher: return .mazeMuncher
+        case .frogHop: return .frogHop
+        case .lunarHinge: return .lunarHinge
         }
     }
 }

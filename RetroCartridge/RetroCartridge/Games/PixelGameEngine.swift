@@ -21,6 +21,16 @@ enum PixelGameEngine {
             game = RetroRacerGame()
         case .fallingBlocks:
             game = FallingBlocksGame()
+        case .pixelInvaders:
+            game = PixelInvadersGame()
+        case .mineSweep:
+            game = MineSweepGame()
+        case .mazeMuncher:
+            game = MazeMuncherGame()
+        case .frogHop:
+            game = FrogHopGame()
+        case .lunarHinge:
+            game = LunarHingeGame()
         }
         game.mode = mode
         game.reset()

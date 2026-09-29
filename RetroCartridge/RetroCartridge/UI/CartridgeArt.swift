@@ -26,6 +26,11 @@ struct PixelArt: Sendable {
         case .retroRacer: return .retroRacer
         case .snake: return .snake
         case .fallingBlocks: return .fallingBlocks
+        case .pixelInvaders: return .pixelInvaders
+        case .mineSweep: return .mineSweep
+        case .mazeMuncher: return .mazeMuncher
+        case .frogHop: return .frogHop
+        case .lunarHinge: return .lunarHinge
         }
     }
 
@@ -161,5 +166,105 @@ extension PixelArt {
         "0.33......11.655",
         "033.11.2.44.6665",
         "000011222.446665"
+    ])
+
+    /// Pixel Invaders: two invaders over a shield, a shot rising from the cannon.
+    static let pixelInvaders = PixelArt(rows: [
+        "................",
+        "..0..0..........",
+        "...00...........",
+        "..0000....1..1..",
+        ".00..00....11...",
+        "00000000..1111..",
+        "0.0..0.0.11..11.",
+        "........11111111",
+        "........1.1..1.1",
+        "................",
+        "...........H....",
+        "...........H....",
+        "..XXXX..........",
+        "..X..X.....P....",
+        "..........PPP...",
+        ".........PPPPP.."
+    ])
+
+    /// Mine Sweep: tiles with numbers, two flags and a mine.
+    static let mineSweep = PixelArt(rows: [
+        "GGG.GGG.....GGG.",
+        "GGG.GGG..0..GGG.",
+        "GGG.GGG.....GGG.",
+        "................",
+        "GXG.........GGG.",
+        "GXX..1...0..GGG.",
+        "GWG.........GGG.",
+        "................",
+        ".............Y..",
+        ".0...0......YYY.",
+        ".............Y..",
+        "................",
+        "GGG.GXG.....GGG.",
+        "GGG.GXX..0..GGG.",
+        "GGG.GWG.....GGG.",
+        "................"
+    ])
+
+    /// Maze Muncher: the muncher, a trail of pellets and a ghost.
+    static let mazeMuncher = PixelArt(rows: [
+        "XXXXXXXXXXXXXXXX",
+        "X..............X",
+        "X.........000..X",
+        "X........00000.X",
+        "X........0H0H0.X",
+        "X........00000.X",
+        "X..PPP...0.0.0.X",
+        "X.PPPP.........X",
+        "X.PPP...F.F.F..X",
+        "X.PPPP.........X",
+        "X..PPX.........X",
+        "X....X..XXXXX..X",
+        "X....X.........X",
+        "X....X.........X",
+        "X..............X",
+        "XXXXXXXXXXXXXXXX"
+    ])
+
+    /// Frog Hop: logs on the river, cars on the road, the frog at the start.
+    static let frogHop = PixelArt(rows: [
+        "................",
+        "GGGGGGGGGGGGGGGG",
+        "GGFFFFFFGGGGGGGG",
+        "GGGGGGGGGGGGGGGG",
+        "GGGGGGGGGFFFFFGG",
+        "GGGGGGGGGGGGGGGG",
+        "................",
+        "................",
+        ".XXXX...........",
+        ".XWXX...........",
+        "..........YYY...",
+        "..........YWY...",
+        "......H..H......",
+        ".......PP.......",
+        "......PPPP......",
+        "......P..P......"
+    ])
+
+    /// Lunar Hinge: the lander firing over its pad among the stars.
+    static let lunarHinge = PixelArt(rows: [
+        "........H.......",
+        ".H..............",
+        ".............H..",
+        "........PP......",
+        "....H..PPPP.....",
+        ".......PHHP.....",
+        "......PPPPPP..H.",
+        "......P....P....",
+        "........YY......",
+        ".........Y......",
+        "...........G....",
+        ".GG.......GGG...",
+        "GGGG..FFFFGGGG..",
+        "GGGGGGGGGGGGGGG.",
+        "GGGGGGGGGGGGGGGG",
+        "GGGGGGGGGGGGGGGG"
     ])
 }

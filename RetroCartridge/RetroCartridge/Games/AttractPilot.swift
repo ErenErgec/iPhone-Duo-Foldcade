@@ -26,6 +26,15 @@ final class AttractPilot {
         case left, right
     }
 
+    /// Whether the thrust (D-Pad up) is held, for Lunar Hinge.
+    private var thrusting = false
+
+    /// Time until the next decision, for games played in discrete moves.
+    private var decisionTimer: TimeInterval = 0
+
+    /// The pad Lunar Hinge is heading for this attempt.
+    private var lunarTarget: Double?
+
     // Falling Blocks plan for the current piece
     private var lastPieceY = Int.max
     private var targetColumn = 0
@@ -73,8 +82,42 @@ final class AttractPilot {
             steer(racer)
         case let blocks as FallingBlocksGame:
             steer(blocks, deltaTime: deltaTime)
+        case let invaders as PixelInvadersGame:
+            steer(invaders)
+        case let mines as MineSweepGame:
+            decide(every: 0.12, deltaTime: deltaTime) { steer(mines) }
+        case let maze as MazeMuncherGame:
+            steer(maze)
+        case let frog as FrogHopGame:
+            decide(every: 0.25, deltaTime: deltaTime) { steer(frog) }
+        case let lander as LunarHingeGame:
+            steer(lander)
         default:
             break
+        }
+    }
+
+    /// Runs a decision at a steady pace, like a player pressing buttons.
+    private func decide(every interval: TimeInterval, deltaTime: TimeInterval, _ decision: () -> Void) {
+        decisionTimer -= deltaTime
+        guard decisionTimer <= 0 else { return }
+        decisionTimer = interval
+        decision()
+    }
+
+    /// Presses or releases the thrust, only on change.
+    private func setThrust(_ on: Bool) {
+        guard on != thrusting else { return }
+        thrusting = on
+        game.handleInput(action: on ? .dpadUpPressed : .dpadUpReleased)
+    }
+
+    private func press(_ direction: MazeMuncherGame.Direction) {
+        switch direction {
+        case .up: game.handleInput(action: .dpadUpPressed)
+        case .down: game.handleInput(action: .dpadDownPressed)
+        case .left: game.handleInput(action: .dpadLeftPressed)
+        case .right: game.handleInput(action: .dpadRightPressed)
         }
     }
 
@@ -212,5 +255,197 @@ final class AttractPilot {
             game.handleInput(action: .dpadUpPressed)
             lastPieceY = Int.max
         }
+    }
+
+    // MARK: - Pixel Invaders
+
+    /// Lines up under the nearest invader and fires, stepping aside from
+    /// bombs about to land.
+    private func steer(_ game: PixelInvadersGame) {
+        if let bomb = game.bombs.first(where: { $0.y > 0.6 && abs($0.x - game.cannonX) < 0.07 }) {
+            hold(bomb.x > game.cannonX ? .left : .right)
+            return
+        }
+
+        let targets = game.alive.indices.filter { game.alive[$0] }.map { Double(game.invaderFrame($0).midX) }
+        guard let target = targets.min(by: { abs($0 - game.cannonX) < abs($1 - game.cannonX) }) else {
+            release()
+            return
+        }
+        if game.cannonX < target - 0.015 {
+            hold(.right)
+        } else if game.cannonX > target + 0.015 {
+            hold(.left)
+        } else {
+            release()
+            game.handleInput(action: .buttonAPressed)
+        }
+    }
+
+    // MARK: - Mine Sweep
+
+    /// Walks the cursor to the nearest safe hidden cell and reveals it. (The
+    /// pilot peeks at the mines; it's a demo, not a solver.)
+    private func steer(_ game: MineSweepGame) {
+        guard game.nextBoardTimer <= 0 else { return }
+        guard !game.mines.isEmpty else {
+            game.handleInput(action: .buttonAPressed)
+            return
+        }
+
+        var best: MineSweepGame.Cell?
+        var bestDistance = Int.max
+        for y in 0..<game.rows {
+            for x in 0..<game.columns {
+                let cell = MineSweepGame.Cell(x: x, y: y)
+                guard !game.revealed.contains(cell), !game.mines.contains(cell), !game.flagged.contains(cell) else { continue }
+                let distance = abs(cell.x - game.cursor.x) + abs(cell.y - game.cursor.y)
+                if distance < bestDistance {
+                    best = cell
+                    bestDistance = distance
+                }
+            }
+        }
+        guard let target = best else { return }
+
+        if target.x != game.cursor.x {
+            game.handleInput(action: target.x > game.cursor.x ? .dpadRightPressed : .dpadLeftPressed)
+        } else if target.y != game.cursor.y {
+            game.handleInput(action: target.y > game.cursor.y ? .dpadDownPressed : .dpadUpPressed)
+        } else {
+            game.handleInput(action: .buttonAPressed)
+        }
+    }
+
+    // MARK: - Maze Muncher
+
+    /// Takes the shortest path to the nearest pellet that avoids the ghosts'
+    /// reach, or chases frightened ghosts.
+    private func steer(_ game: MazeMuncherGame) {
+        let start = game.player.tile
+        let activeGhosts = game.ghosts.filter { $0.releaseTimer <= 0 && $0.respawnTimer <= 0 }.map(\.mover.tile)
+        let frightened = game.frightenedTimer > 1
+
+        var danger: Set<MazeMuncherGame.Tile> = []
+        if !frightened {
+            for ghost in activeGhosts {
+                danger.insert(ghost)
+                for direction in MazeMuncherGame.Direction.allCases where game.isOpen(ghost, toward: direction) {
+                    danger.insert(game.neighbor(of: ghost, toward: direction))
+                }
+            }
+        }
+        let goals = frightened && !activeGhosts.isEmpty
+            ? Set(activeGhosts)
+            : game.pellets.union(game.powerPellets)
+
+        // Breadth-first search, remembering each tile's first step
+        var firstStep: [MazeMuncherGame.Tile: MazeMuncherGame.Direction] = [:]
+        var queue: [MazeMuncherGame.Tile] = []
+        var head = 0
+        for direction in MazeMuncherGame.Direction.allCases where game.isOpen(start, toward: direction) {
+            let next = game.neighbor(of: start, toward: direction)
+            guard !danger.contains(next), firstStep[next] == nil else { continue }
+            firstStep[next] = direction
+            queue.append(next)
+        }
+        while head < queue.count {
+            let tile = queue[head]
+            head += 1
+            if goals.contains(tile), let direction = firstStep[tile] {
+                press(direction)
+                return
+            }
+            for direction in MazeMuncherGame.Direction.allCases where game.isOpen(tile, toward: direction) {
+                let next = game.neighbor(of: tile, toward: direction)
+                guard next != start, !danger.contains(next), firstStep[next] == nil else { continue }
+                firstStep[next] = firstStep[tile]
+                queue.append(next)
+            }
+        }
+    }
+
+    // MARK: - Frog Hop
+
+    /// Hops up when the next row is safe, heads for an empty home along the
+    /// top river lane, and backs off from traffic about to arrive.
+    private func steer(_ game: FrogHopGame) {
+        let center = game.frogX + 0.5
+
+        func isSafe(row: Int, x: Double) -> Bool {
+            if row == game.homeRow {
+                let column = Int((x - 0.5).rounded())
+                return game.homeColumns.contains(column) && !game.homes.contains(column) && abs(x - 0.5 - Double(column)) < 0.3
+            }
+            guard let lane = game.lane(atRow: row) else { return true }
+            var soon = lane
+            soon.phase += lane.speed * 0.35
+            switch lane.kind {
+            case .road:
+                return !game.covers(lane, x: x, margin: -0.35) && !game.covers(soon, x: x, margin: -0.35)
+            case .river:
+                return game.covers(lane, x: x, margin: 0.25)
+            }
+        }
+
+        if isSafe(row: game.frogRow - 1, x: center) {
+            game.handleInput(action: .dpadUpPressed)
+            return
+        }
+
+        // Along the top river lane, drift toward an empty home
+        if game.frogRow == game.homeRow + 1,
+           let home = game.homeColumns.filter({ !game.homes.contains($0) }).min(by: { abs(Double($0) - game.frogX) < abs(Double($1) - game.frogX) }) {
+            let step = Double(home) > game.frogX ? 1.0 : -1.0
+            if isSafe(row: game.frogRow, x: center + step) {
+                game.handleInput(action: step > 0 ? .dpadRightPressed : .dpadLeftPressed)
+            }
+            return
+        }
+
+        // Back off when staying put is about to go wrong
+        if !isSafe(row: game.frogRow, x: center), isSafe(row: game.frogRow + 1, x: center) {
+            game.handleInput(action: .dpadDownPressed)
+        }
+    }
+
+    // MARK: - Lunar Hinge
+
+    /// Flies to the nearest pad over the terrain in between, then descends
+    /// slowly enough to land. Uses the buttons, not the hinge.
+    private func steer(_ game: LunarHingeGame) {
+        guard game.outcomeTimer <= 0 else {
+            lunarTarget = nil
+            setThrust(false)
+            release()
+            return
+        }
+        let target = lunarTarget ?? game.pads.min(by: { abs($0.center - game.x) < abs($1.center - game.x) })?.center ?? 0.5
+        lunarTarget = target
+        guard let pad = game.pads.first(where: { $0.center == target }) else { return }
+
+        // Horizontal: the fastest speed that can still stop at the pad
+        let dx = target - game.x
+        let wantedVX = (dx < 0 ? -1.0 : 1.0) * min(0.08, (game.sideThrust * abs(dx)).squareRoot())
+        if game.vx < wantedVX - 0.003 {
+            hold(.right)
+        } else if game.vx > wantedVX + 0.003 {
+            hold(.left)
+        } else {
+            release()
+        }
+
+        // Vertical: clear the terrain on the way, then settle onto the pad
+        let wantedVY: Double
+        if abs(dx) < (pad.end - pad.start) / 2 - 0.02 {
+            let altitude = game.ground(at: game.x) - (game.y + game.halfHeight)
+            wantedVY = min(0.06, 0.015 + 0.3 * altitude)
+        } else {
+            let low = min(game.x, target)
+            let high = max(game.x, target)
+            let top = (0...20).map { game.ground(at: low + (high - low) * Double($0) / 20) }.min() ?? 0.6
+            wantedVY = max(-0.05, min(0.05, (top - 0.1 - game.y) * 0.8))
+        }
+        setThrust(game.vy > wantedVY)
     }
 }

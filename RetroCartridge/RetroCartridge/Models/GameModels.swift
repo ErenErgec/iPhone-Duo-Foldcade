@@ -238,6 +238,27 @@ struct CartridgeShell: Equatable, Sendable {
         bottomColor: Color(hex: "#4A0E78").opacity(0.65),
         isTranslucent: true
     )
+
+    /// Smoky see-through black plastic.
+    static let smoke = CartridgeShell(
+        topColor: Color(white: 0.2).opacity(0.6),
+        bottomColor: Color(white: 0.05).opacity(0.7),
+        isTranslucent: true
+    )
+
+    /// Clear green plastic.
+    static let clearGreen = CartridgeShell(
+        topColor: Color(hex: "#52B788").opacity(0.5),
+        bottomColor: Color(hex: "#1B4332").opacity(0.65),
+        isTranslucent: true
+    )
+
+    /// Gold plastic, for special editions.
+    static let gold = CartridgeShell(
+        topColor: Color(hex: "#F3D98B"),
+        bottomColor: Color(hex: "#B8860B"),
+        glowColor: Color(hex: "#FFD166")
+    )
 }
 
 /// Everything the library, cover and store know about a cartridge, kept in
@@ -273,6 +294,11 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
     case retroRacer = "Retro Racer"
     case snake = "Snake"
     case fallingBlocks = "Falling Blocks"
+    case pixelInvaders = "Pixel Invaders"
+    case mineSweep = "Mine Sweep"
+    case mazeMuncher = "Maze Muncher"
+    case frogHop = "Frog Hop"
+    case lunarHinge = "Lunar Hinge"
     
     var id: String { rawValue }
 
@@ -313,6 +339,51 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
                 labelColorHex: "#F7DC6F",
                 shell: .clearPurple,
                 modes: [.blocksMarathon, .blocksSprint, .blocksUltra, .daily]
+            )
+        case .pixelInvaders:
+            return CartridgeInfo(
+                subtitle: "Hold the line",
+                genre: "SHOOTER",
+                symbolName: "sparkles",
+                labelColorHex: "#C77DFF",
+                shell: .smoke,
+                modes: [.standard, .daily]
+            )
+        case .mineSweep:
+            return CartridgeInfo(
+                subtitle: "Flag every mine",
+                genre: "PUZZLE",
+                symbolName: "flag.fill",
+                labelColorHex: "#A8DADC",
+                shell: .grey,
+                modes: [.standard, .daily]
+            )
+        case .mazeMuncher:
+            return CartridgeInfo(
+                subtitle: "Pellets, ghosts, tunnels",
+                genre: "MAZE",
+                symbolName: "circle.grid.cross.fill",
+                labelColorHex: "#FFB703",
+                shell: .black,
+                modes: [.standard, .daily]
+            )
+        case .frogHop:
+            return CartridgeInfo(
+                subtitle: "Cross the road and river",
+                genre: "ACTION",
+                symbolName: "arrow.up.circle.fill",
+                labelColorHex: "#80ED99",
+                shell: .clearGreen,
+                modes: [.standard, .daily]
+            )
+        case .lunarHinge:
+            return CartridgeInfo(
+                subtitle: "Fold to fire the thrusters",
+                genre: "LANDER",
+                symbolName: "moon.stars.fill",
+                labelColorHex: "#E0E1DD",
+                shell: .gold,
+                modes: [.standard, .daily]
             )
         }
     }
@@ -384,10 +455,28 @@ enum GameSound: Equatable, Sendable {
     case hardDrop
     case lineClear(lines: Int)
 
+    // Pixel Invaders
+    /// One beat of the formation's four-note march, 0...3.
+    case march(step: Int)
+    case explosion
+
+    // Mine Sweep
+    case reveal
+    case flag
+
+    // Maze Muncher
+    case chomp
+
+    // Frog Hop
+    case hop
+
+    // Lunar Hinge
+    case thrust
+
     /// Whether the event is big enough to also fire the `.gameEvent` haptic.
     var isImpactful: Bool {
         switch self {
-        case .collision, .crash, .lifeLost, .lineClear, .gameOver:
+        case .collision, .crash, .lifeLost, .lineClear, .gameOver, .explosion:
             return true
         default:
             return false
