@@ -242,7 +242,7 @@ The update rate and precision are system policy; prefer `status` when you only n
 | Area | Implementation |
 | :--- | :--- |
 | Toolchain | Deployment target and SDK iOS 27.1 (Xcode 27.1+) |
-| Toolbar | `NavigationStack` root. `navigationTitle("Retro Cartridge")` plus `Label` items Skins/Screen/Store in a `.topBarTrailing` group, which go vertical in the side column. Hidden over a running console. The library's custom header buttons were removed. |
+| Toolbar | `NavigationStack` root. `navigationTitle("Retro Cartridge")` plus `Label` items in two `.topBarTrailing` groups: Skins/Screen (`.visibilityPriority(.high)`) and Store/Records, which go vertical in the side column. Hidden over a running console. The library's custom header buttons were removed. |
 | Hinge | `onHingeChange` → `HingeEngine.updateFromHardware(_:)` (real angle and status), with a fallback to the display posture. It drives the CRT curvature and the 90° chime. |
 | Appearance | The window forces the dark style so the title and glass bars read on the dark console |
 | Status bar | Visible, and part of the safe area. Each console half respects its own edge insets. |
@@ -256,6 +256,11 @@ The update rate and precision are system policy; prefer `status` when you only n
 
 **Decided on 2026-09-29 (Phase 2):**
 - **Lunar Hinge uses the hinge as input.** §8: "Hinge data is observed live, and is ideal for driving interactions or effects." Thrust grows as the device folds up to 30° past the most-open angle of the attempt, so it works from any starting pose; the smoothed `HingeEngine.hingeAngle` is used. §2 / HIG: "You don't want to tie functionality to a specific pose", so ▲ and A always thrust too. The hinge is still never used for layout.
+
+**Decided on 2026-09-29 (Phase 4, Duo polish):**
+- **Toolbar groups and priorities.** HIG: "Group related toolbar items instead of spacing them manually" and "Assign each item a visibility priority… starting with whole groups". Two `ToolbarItemGroup`s: Skins and Screen with `.visibilityPriority(.high)`, then Store and Records. Items overflow from bottom to top, so Records, the least used, goes first.
+- **Occlusion.** HIG: "For custom components, ReservedRegion… provide[s] a way to reposition content away from reserved regions"; "when the camera activates, the UI moves aside". `avoidingOcclusion()` pads the console halves and overlay panels in from the nearest edge by the reach of active `.occlusion` regions (`OcclusionInsets`). The cover needs nothing extra: its content stays in the safe area, and "When controls are on the side, the system automatically accounts for" the outer camera.
+- **`ArrangementView` evaluated, not adopted for the console.** Apple recommends it ("Consider an arrangement view when your layout already resembles one"), and the console is a split. But a split arrangement picks its axis and ratio itself and doesn't expose where it splits. The console needs the split exactly on the fold (verified 2026-09-23), with the shell continuous behind both halves and the hinge groove drawn on the split line. `FoldSplit` gets that from the same `.division` reserved region Apple offers custom layouts. The HIG phrasing is "prefer", so the custom layout stays. Revisit if `ArrangementView` gains a way to read or pin its split.
 
 **Verified by the user in Device Hub (2026-09-23):**
 - Closed with the hinge on top, the outer display comes up in landscape.

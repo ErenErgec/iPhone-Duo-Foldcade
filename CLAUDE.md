@@ -36,7 +36,8 @@ xcodebuild -project RetroCartridge/RetroCartridge.xcodeproj -scheme RetroCartrid
   - The outer display honors orientation masks. `ConsoleHostingController` locks it to `.landscapeLeft`, which puts the hinge on top.
   - The inner display ignores masks, per Apple. Its layout adapts to the system orientation instead: `FullScreenLayout` splits the console at the fold from `reservedRegions(kind: .division, options: .includeInactive)` (`FoldSplit`). That gives CRT above and controls below in portrait, and side by side in landscape.
   - Don't reintroduce `prefersInterfaceOrientationLocked` or counter-rotation (`FixedOrientation`, removed). Both only "worked" with the 27.0 SDK in legacy mode.
-- **Overlays:** the skin picker and store are in-hierarchy overlays (`LibraryOverlays` in `UI/OverlayPanel.swift`), shown on both displays, to keep the retro look.
+- **Overlays:** the skin picker, screen settings, records and store are in-hierarchy overlays (`LibraryOverlays` in `UI/OverlayPanel.swift`), shown on both displays, to keep the retro look.
+- **Occlusion:** custom interactive content outside the safe area (console halves, overlay panels) uses `.avoidingOcclusion()`, so an active camera pushes it aside. The console keeps `FoldSplit` rather than `ArrangementView` (DESIGN.md §10).
 - **Inner display split:** it must sit exactly on the fold. `FullScreenLayout.console` measures the full display (ignoring the safe area) and pads each half with the safe area insets of its own outer edges.
 - **Game Canvas redraw:** the `Canvas` in `UI/GameCanvasView.swift` must capture a per-frame value (`[frameDate = date]`). Otherwise SwiftUI treats the renderer as unchanged and the game looks frozen while it keeps running.
 - **Randomness:** games draw every random choice from their `rng` (`GameRNG`), reseeded with `makeRNG()` in `reset()`. Never call `.random()` without `using: &rng`, or daily rounds stop being the same for everyone.
@@ -56,7 +57,7 @@ xcodebuild -project RetroCartridge/RetroCartridge.xcodeproj -scheme RetroCartrid
 - **Hinge angle:** it comes from `onHingeChange` (iOS 27.1), forwarded to `HingeEngine.updateFromHardware(_:)`, with the display posture as a fallback. Use it for visuals (CRT, chime) and as game input (Apple: "ideal for driving interactions or effects"), never for layout; layout uses reserved regions.
   - Games that take it conform to `HingeControllable` (Lunar Hinge). Every hinge action needs a button equivalent, so the game works in every pose.
 - **System toolbar:** the root is wrapped in a `NavigationStack`. The app name is a `navigationTitle`, and Skins/Store are `Label` items (icon + title), so iPhone Duo can lay them out vertically in the side column. On the inner display in portrait they form a regular top bar.
-  - Items: Skins, Screen, Store in one `ToolbarItemGroup`. Skins and Screen replace each other; the store stacks above both.
+  - Items: two `ToolbarItemGroup`s, Skins and Screen (`.visibilityPriority(.high)`), then Store and Records. Skins, Screen and Records replace each other; the store stacks above them.
   - The toolbar is hidden over a running console (immersive, no bars).
   - Text-only or custom-view items stay horizontal.
 - **Appearance:** the window forces the dark style so system bars and titles read on the dark console.
@@ -75,6 +76,7 @@ xcodebuild -project RetroCartridge/RetroCartridge.xcodeproj -scheme RetroCartrid
   - Phase 0: role-based palettes, cartridge metadata, modes, `ProgressStore`, fold-aware library grid.
   - Phase 1: screen modes (CRT, LCD, Trinitron, Arcade) with tuning, skin finishes, cartridge shells and pixel-art labels, shelf, cover attract mode, insert and eject transitions, in-tube pause menu.
   - Phase 2: seeded games and daily rounds, mode picker, shared palettes, deeper original four games, five new cartridges (Pixel Invaders, Mine Sweep, Maze Muncher, Frog Hop, Lunar Hinge with hinge thrust), achievements, sound packs, four new skins.
+  - Phase 4: Records overlay, toolbar groups with visibility priorities, occlusion avoidance; `ArrangementView` evaluated and not adopted for the console.
   - Phase 3: store aligned with its contents (six free cartridges; Maze Muncher and Frog Hop in the Collector Pack; Lunar Hinge, Gold Edition, screen modes and tuning in Lifetime Pro), derived store copy, locked-item highlighting.
 - **Not yet verified:**
   - the unit tests on the Duo simulator after Phases 1–3;
@@ -83,7 +85,7 @@ xcodebuild -project RetroCartridge/RetroCartridge.xcodeproj -scheme RetroCartrid
   - sound effects and the four sound packs by ear;
   - StoreKit purchases end to end (run from Xcode with `Products.storekit` selected in the scheme);
   - anything on real iPhone Duo hardware (ships 2026-10-23).
-- **Possible next steps:** run the tests and check the plan in Device Hub, check sound and purchases, a cartridge designer (a finger-drawn 16×16 label editor was discussed and deferred), and Apple's recommendations not yet adopted, such as `ArrangementView`, the occlusion reserved region for the outer camera, and `visibilityPriority` for toolbar overflow (the toolbar now has three items).
+- **Possible next steps:** run the tests and check the plan in Device Hub (including the toolbar overflow on the outer display and the console with the inner camera active), check sound and purchases, and a cartridge designer (a finger-drawn 16×16 label editor was discussed and deferred).
 
 ## Conventions
 

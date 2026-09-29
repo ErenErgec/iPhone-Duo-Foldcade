@@ -36,9 +36,10 @@ See [DESIGN.md](DESIGN.md) for Apple's guidance and our measurements.
 1. **Full screen:** built with the iOS 27.1 SDK, so the app extends to every edge of both displays, including under the status bar and camera column.
 2. **Outer display:** locked to the landscape orientation that puts the hinge on top. iPhone Duo honors orientation locks on the outer display.
 3. **Inner display:** iPhone Duo doesn't honor orientation locks here, so the console adapts. It splits exactly at the fold, using the fold's reserved region: CRT above and controls below in portrait (the laptop/clamshell pose), side by side in landscape (book pose).
-4. **Vertical controls:** the app name, **Skins**, **Screen** and **Store** are standard toolbar items. iPhone Duo lays them out vertically in the column beside the camera and status bar, or as a top bar on the inner display in portrait. A running console hides the bars for an immersive screen.
-5. **Hinge:** `onHingeChange` (iOS 27.1) drives the CRT curvature and an 8-bit chime with a haptic click when the hinge passes 90°. It is used for visuals only; layout uses reserved regions.
-6. **Display detection by size:** `PostureManager` / `DuoDisplay` tell the outer display (≈678×466 pt) from the inner one (≈669×951 pt).
+4. **Vertical controls:** the app name, **Skins**, **Screen**, **Store** and **Records** are standard toolbar items, in two groups with visibility priorities for overflow. iPhone Duo lays them out vertically in the column beside the camera and status bar, or as a top bar on the inner display in portrait. A running console hides the bars for an immersive screen.
+5. **Hinge:** `onHingeChange` (iOS 27.1) drives the CRT curvature, an 8-bit chime with a haptic click when the hinge passes 90°, and Lunar Hinge's thrust (with a button equivalent). It is never used for layout; layout uses reserved regions.
+6. **Camera:** the console halves and overlay panels move aside from an active camera using `.occlusion` reserved regions (`avoidingOcclusion()`).
+7. **Display detection by size:** `PostureManager` / `DuoDisplay` tell the outer display (≈678×466 pt) from the inner one (≈669×951 pt).
 
 ---
 
@@ -65,6 +66,7 @@ Every game also has a **Daily** mode: the same round for everyone that day (seed
 - **Attract mode:** on the cover screen, the selected cartridge plays itself faintly behind the details (`AttractPilot`), silently and at 30 FPS. It stays still with Reduce Motion.
 - **High scores** are saved per game and mode (`ProgressStore`).
 - **Achievements:** five per cartridge (first points, a level goal, a score goal, a daily round, every mode). New ones are announced on the bezel; cartridge labels show earned stars.
+- **Records:** the Records toolbar item shows every cartridge's best score per mode (today's for Daily) and its achievements.
 - **Palettes:** Original, DMG Green, Pocket Grey, Virtual Red and Neon Night recolor any game (PALETTE in the pause menu).
 - **Sound:** every game plays chiptune effects from `AudioManager`, a 3-channel sequenced synth (pulse/triangle/noise) that renders on the audio thread. Big events also trigger a haptic. Sound packs (Classic, Pocket, Arcade, Mellow) re-voice every sound; pick one in the skin picker.
 
@@ -138,7 +140,8 @@ RetroCartridge/
 │   ├── Layout/
 │   │   ├── AdaptiveConsoleLayout.swift # Cover vs inner routing, system toolbar, fold/unfold, hinge
 │   │   ├── CoverScreenLayout.swift    # Outer display: cartridge carousel
-│   │   └── FullScreenLayout.swift     # Inner display: library, console split at the fold (FoldSplit)
+│   │   ├── FullScreenLayout.swift     # Inner display: library, console split at the fold (FoldSplit)
+│   │   └── OcclusionAvoidance.swift   # Moves custom content aside from an active camera
 │   ├── Rendering/
 │   │   ├── CRTView.metal              # Screen-mode layer-effect shader (CRT, LCD, Trinitron, Arcade)
 │   │   ├── CRTEffect.swift            # SwiftUI bridge for the shader
@@ -152,6 +155,7 @@ RetroCartridge/
 │   │   ├── AttractScreen.swift        # Cover attract mode (a game playing itself)
 │   │   ├── PauseMenu.swift            # In-tube pause menu (input logic + on-screen display)
 │   │   ├── ScreenSettingsView.swift   # Screen mode picker and tuning overlay
+│   │   ├── RecordsView.swift          # High scores per mode and achievements overlay
 │   │   ├── SkinPickerView.swift       # Skin picker overlay
 │   │   ├── StoreView.swift            # Store overlay
 │   │   ├── OverlayPanel.swift         # Overlay panel chrome + LibraryOverlays (skin picker, store host)
