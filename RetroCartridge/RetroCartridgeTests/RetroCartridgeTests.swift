@@ -99,7 +99,8 @@ final class RetroCartridgeTests: XCTestCase {
     private func makeDefaults() -> UserDefaults {
         let suiteName = "RetroCartridgeTests.\(UUID().uuidString)"
         let defaults = UserDefaults(suiteName: suiteName)!
-        addTeardownBlock { defaults.removePersistentDomain(forName: suiteName) }
+        // Capture only the Sendable suite name: UserDefaults isn't Sendable.
+        addTeardownBlock { UserDefaults.standard.removePersistentDomain(forName: suiteName) }
         return defaults
     }
 
