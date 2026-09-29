@@ -112,7 +112,7 @@ struct ScreenSettingsView: View {
                     .padding(.top, 4)
 
                 VStack(spacing: 5) {
-                    Text(mode.title.uppercased())
+                    Text(mode.title.localizedUppercase)
                         .font(.system(size: 13, weight: .heavy, design: .monospaced))
                         .tracking(1.5)
                         .foregroundStyle(.white)
@@ -132,7 +132,7 @@ struct ScreenSettingsView: View {
         }
         .buttonStyle(CartridgePressStyle())
         .accessibilityLabel(mode.title)
-        .accessibilityValue(isSelected ? "In use" : (isUnlocked ? "Unlocked" : "Locked, part of Lifetime Pro"))
+        .accessibilityValue(isSelected ? String(localized: "In use") : (isUnlocked ? String(localized: "Unlocked") : String(localized: "Locked, part of Lifetime Pro")))
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 
@@ -174,21 +174,21 @@ struct ScreenSettingsView: View {
 
                 if canTune {
                     Button(action: resetTuning) {
-                        RetroCapsuleLabel(title: "RESET", systemImage: "arrow.counterclockwise", tint: RetroPalette.phosphor)
+                        RetroCapsuleLabel(title: String(localized: "RESET"), systemImage: "arrow.counterclockwise", tint: RetroPalette.phosphor)
                     }
                     .buttonStyle(CartridgePressStyle())
                     .disabled(appState.screenSettings.hasStandardTuning)
                     .opacity(appState.screenSettings.hasStandardTuning ? 0.4 : 1)
                 } else {
                     Button(action: openStore) {
-                        RetroCapsuleLabel(title: "LIFETIME PRO", systemImage: "lock.fill", tint: RetroPalette.amber)
+                        RetroCapsuleLabel(title: String(localized: "LIFETIME PRO"), systemImage: "lock.fill", tint: RetroPalette.amber)
                     }
                     .buttonStyle(CartridgePressStyle())
                 }
             }
 
             VStack(spacing: 12) {
-                tuningSlider("CURVATURE", value: $appState.screenSettings.curvature)
+                tuningSlider(String(localized: "CURVATURE"), value: $appState.screenSettings.curvature)
                     .disabled(!mode.hasCurvature)
                     .opacity(mode.hasCurvature ? 1 : 0.4)
                 tuningSlider(mode.linesTitle, value: $appState.screenSettings.scanlines)
@@ -223,8 +223,8 @@ struct ScreenSettingsView: View {
 
             Slider(value: value, in: 0...1)
                 .tint(RetroPalette.phosphor)
-                .accessibilityLabel(title.capitalized)
-                .accessibilityValue(String(format: "%.1f times", value.wrappedValue * 2))
+                .accessibilityLabel(title.localizedCapitalized)
+                .accessibilityValue(String(localized: "\(String(format: "%.1f", value.wrappedValue * 2)) times"))
         }
     }
 }

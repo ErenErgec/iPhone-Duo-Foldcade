@@ -23,8 +23,29 @@ struct Achievement: Identifiable, Hashable, Sendable {
 
     let game: GameType
     let goal: Goal
-    let title: String
-    let detail: String
+
+    /// Name shown when earned, e.g. "HIGH SCORER". Looked up when read, so
+    /// checking achievements every frame costs no string lookups.
+    var title: String {
+        switch goal {
+        case .score(1): return String(localized: "OFF THE MARK")
+        case .score: return String(localized: "HIGH SCORER")
+        case .level(let level): return String(localized: "LEVEL \(level)")
+        case .finishDaily: return String(localized: "DAILY PLAYER")
+        case .finishEveryMode: return String(localized: "EXPLORER")
+        }
+    }
+
+    /// What the player has to do, in words.
+    var detail: String {
+        switch goal {
+        case .score(1): return String(localized: "Score your first points")
+        case .score(let target): return String(localized: "Score \(target) in one round")
+        case .level(let level): return String(localized: "Reach level \(level)")
+        case .finishDaily: return String(localized: "Finish a daily round")
+        case .finishEveryMode: return String(localized: "Finish a round in every mode")
+        }
+    }
 
     /// Stable id, used as the persistence key. Never change a shipped one.
     var id: String {
@@ -41,11 +62,11 @@ struct Achievement: Identifiable, Hashable, Sendable {
     static func all(for game: GameType) -> [Achievement] {
         let info = game.info
         return [
-            Achievement(game: game, goal: .score(1), title: "OFF THE MARK", detail: "Score your first points"),
-            Achievement(game: game, goal: .level(info.levelGoal), title: "LEVEL \(info.levelGoal)", detail: "Reach level \(info.levelGoal)"),
-            Achievement(game: game, goal: .score(info.scoreGoal), title: "HIGH SCORER", detail: "Score \(info.scoreGoal) in one round"),
-            Achievement(game: game, goal: .finishDaily, title: "DAILY PLAYER", detail: "Finish a daily round"),
-            Achievement(game: game, goal: .finishEveryMode, title: "EXPLORER", detail: "Finish a round in every mode")
+            Achievement(game: game, goal: .score(1)),
+            Achievement(game: game, goal: .level(info.levelGoal)),
+            Achievement(game: game, goal: .score(info.scoreGoal)),
+            Achievement(game: game, goal: .finishDaily),
+            Achievement(game: game, goal: .finishEveryMode)
         ]
     }
 }

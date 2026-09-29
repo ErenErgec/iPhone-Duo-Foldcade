@@ -83,11 +83,11 @@ enum PaletteChoice: String, CaseIterable, Identifiable, Codable, Sendable {
     /// Name shown in the pause menu.
     var title: String {
         switch self {
-        case .original: return "Original"
-        case .dmgGreen: return "DMG Green"
-        case .pocketGrey: return "Pocket Grey"
-        case .virtualRed: return "Virtual Red"
-        case .neonNight: return "Neon Night"
+        case .original: return String(localized: "Original")
+        case .dmgGreen: return String(localized: "DMG Green")
+        case .pocketGrey: return String(localized: "Pocket Grey")
+        case .virtualRed: return String(localized: "Virtual Red")
+        case .neonNight: return String(localized: "Neon Night")
         }
     }
 

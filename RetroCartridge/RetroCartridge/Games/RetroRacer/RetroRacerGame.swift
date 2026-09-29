@@ -284,7 +284,7 @@ extension GamePalette {
 
 extension GameMode {
     /// Retro Racer's standard rules.
-    static let racerDay = GameMode(id: "standard", title: "Day", summary: "Dodge traffic, grab coins.")
+    static let racerDay = GameMode(id: "standard", title: String(localized: "Day"), summary: String(localized: "Dodge traffic, grab coins."))
 
-    static let racerNight = GameMode(id: "night", title: "Night", summary: "Only your headlights to see by.")
+    static let racerNight = GameMode(id: "night", title: String(localized: "Night"), summary: String(localized: "Only your headlights to see by."))
 }

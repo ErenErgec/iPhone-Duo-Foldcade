@@ -282,7 +282,7 @@ final class FallingBlocksGame: PixelGameProtocol {
 
     /// The next pieces, smaller, stacked beside the well.
     private func drawPreview(in context: inout GraphicsContext, left: Double, top: Double, cellSize: Double) {
-        context.draw(label("NEXT", size: cellSize * 0.7), at: CGPoint(x: left, y: top), anchor: .leading)
+        context.draw(label(String(localized: "NEXT", comment: "Falling Blocks HUD: the next piece"), size: cellSize * 0.7), at: CGPoint(x: left, y: top), anchor: .leading)
 
         let mini = cellSize * 0.6
         var y = top + cellSize
@@ -304,7 +304,10 @@ final class FallingBlocksGame: PixelGameProtocol {
         let seconds = mode == .blocksUltra ? max(0, ultraDuration - elapsed) : elapsed
         let time = String(format: "%d:%02d", Int(seconds) / 60, Int(seconds) % 60)
 
-        let rows: [(String, String)] = [("LINES", lines), ("TIME", time)]
+        let rows: [(String, String)] = [
+            (String(localized: "LINES", comment: "Falling Blocks HUD"), lines),
+            (String(localized: "TIME", comment: "Falling Blocks HUD"), time)
+        ]
         var y = top
         for (title, value) in rows {
             context.draw(label(title, size: cellSize * 0.6), at: CGPoint(x: right, y: y), anchor: .trailing)
@@ -425,9 +428,9 @@ extension GamePalette {
 
 extension GameMode {
     /// Falling Blocks' standard rules.
-    static let blocksMarathon = GameMode(id: "standard", title: "Marathon", summary: "Endless, faster every ten lines.")
+    static let blocksMarathon = GameMode(id: "standard", title: String(localized: "Marathon"), summary: String(localized: "Endless, faster every ten lines."))
 
-    static let blocksSprint = GameMode(id: "sprint", title: "Sprint", summary: "Clear 40 lines fast. Time left is bonus.")
+    static let blocksSprint = GameMode(id: "sprint", title: String(localized: "Sprint"), summary: String(localized: "Clear 40 lines fast. Time left is bonus."))
 
-    static let blocksUltra = GameMode(id: "ultra", title: "Ultra", summary: "Score all you can in two minutes.")
+    static let blocksUltra = GameMode(id: "ultra", title: String(localized: "Ultra"), summary: String(localized: "Score all you can in two minutes."))
 }

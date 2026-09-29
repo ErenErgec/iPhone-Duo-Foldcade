@@ -34,7 +34,10 @@ enum ProductIdentifiers {
 
     // MARK: - Fallback catalog
 
-    /// Name shown when the StoreKit product couldn't be loaded.
+    /// Name shown when the StoreKit product couldn't be loaded, and spoken
+    /// by VoiceOver. Product names stay in English in every language, and
+    /// capitalizing the uppercase short name would misspell them in Turkish
+    /// ("LIFETIME" → "Lıfetıme").
     static func fallbackDisplayName(for productID: String) -> String {
         switch productID {
         case retroCollectorPack: return "Retro Collector Pack"
@@ -46,8 +49,8 @@ enum ProductIdentifiers {
     /// Short uppercase name for lock labels, e.g. "COLLECTOR PACK".
     static func shortName(for productID: String) -> String {
         switch productID {
-        case retroCollectorPack: return "COLLECTOR PACK"
-        case lifetimePro: return "LIFETIME PRO"
+        case retroCollectorPack: return String(localized: "COLLECTOR PACK")
+        case lifetimePro: return String(localized: "LIFETIME PRO")
         default: return fallbackDisplayName(for: productID).uppercased()
         }
     }
@@ -110,27 +113,29 @@ enum ProductIdentifiers {
             let modeCount = screenModes(unlockedBy: productID).count
 
             var parts = exclusiveCartridges.map(\.rawValue)
-            parts += exclusiveSkins.map { "the \($0.rawValue) skin" }
+            parts += exclusiveSkins.map { String(localized: "the \($0.rawValue) skin") }
             if modeCount > 0 {
-                parts.append("\(modeCount) screen modes with tuning")
+                parts.append(String(localized: "\(modeCount) screen modes with tuning"))
             }
-            parts.append("all future content")
-            return "Everything in the Collector Pack, plus \(list(parts))."
+            parts.append(String(localized: "all future content"))
+            return String(localized: "Everything in the Collector Pack, plus \(list(parts)).")
         }
 
         var parts: [String] = []
         let skinCount = skins(unlockedBy: productID).count
         let cartridgeCount = cartridges(unlockedBy: productID).count
         let packCount = soundPacks(unlockedBy: productID).count
-        if skinCount > 0 { parts.append("\(skinCount) skins") }
-        if cartridgeCount > 0 { parts.append("\(cartridgeCount) cartridges") }
-        if packCount > 0 { parts.append("\(packCount) sound packs") }
-        return parts.isEmpty ? "" : list(parts) + "."
+        if skinCount > 0 { parts.append(String(localized: "\(skinCount) skins")) }
+        if cartridgeCount > 0 { parts.append(String(localized: "\(cartridgeCount) cartridges")) }
+        if packCount > 0 { parts.append(String(localized: "\(packCount) sound packs")) }
+        return parts.isEmpty ? "" : String(localized: "\(list(parts)).", comment: "A product summary sentence")
     }
 
-    /// "a", "a and b", "a, b and c".
+    /// "a", "a and b", "a, b and c", with the conjunction in the reader's
+    /// language (Turkish "ve").
     private static func list(_ items: [String]) -> String {
         guard items.count > 1 else { return items.first ?? "" }
-        return items.dropLast().joined(separator: ", ") + " and " + items[items.count - 1]
+        let and = String(localized: " and ", comment: "Joins the last two items of a list, with spaces")
+        return items.dropLast().joined(separator: ", ") + and + items[items.count - 1]
     }
 }

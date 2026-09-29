@@ -53,8 +53,8 @@ struct OverlayBackdrop: View {
 /// A dark, rounded console-accessory panel with a title bar and a close
 /// button. Content that doesn't fit vertically scrolls.
 struct OverlayPanel<Content: View>: View {
-    let title: String
-    let subtitle: String
+    let title: LocalizedStringKey
+    let subtitle: LocalizedStringKey
     let onClose: () -> Void
     @ViewBuilder let content: Content
 

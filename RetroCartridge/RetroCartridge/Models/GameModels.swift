@@ -110,20 +110,20 @@ enum ScreenMode: String, CaseIterable, Identifiable, Codable, Sendable {
     /// Name shown in the screen picker.
     var title: String {
         switch self {
-        case .crt: return "Color CRT"
-        case .lcd: return "Pocket LCD"
-        case .trinitron: return "Trinitron"
-        case .arcade: return "Arcade Monitor"
+        case .crt: return String(localized: "Color CRT")
+        case .lcd: return String(localized: "Pocket LCD")
+        case .trinitron: return String(localized: "Trinitron")
+        case .arcade: return String(localized: "Arcade Monitor")
         }
     }
 
     /// One-line description for the screen picker.
     var summary: String {
         switch self {
-        case .crt: return "Curved tube, soft glow"
-        case .lcd: return "Four shades of green"
-        case .trinitron: return "Flat and sharp, RGB grille"
-        case .arcade: return "Deep lines, big bloom"
+        case .crt: return String(localized: "Curved tube, soft glow")
+        case .lcd: return String(localized: "Four shades of green")
+        case .trinitron: return String(localized: "Flat and sharp, RGB grille")
+        case .arcade: return String(localized: "Deep lines, big bloom")
         }
     }
 
@@ -151,10 +151,10 @@ enum ScreenMode: String, CaseIterable, Identifiable, Codable, Sendable {
     var hasCurvature: Bool { self != .lcd }
 
     /// Name of the line-strength tuning control.
-    var linesTitle: String { self == .lcd ? "PIXEL GRID" : "SCANLINES" }
+    var linesTitle: String { self == .lcd ? String(localized: "PIXEL GRID") : String(localized: "SCANLINES") }
 
     /// Name of the bleed tuning control.
-    var bleedTitle: String { self == .lcd ? "PIXEL SHADOW" : "COLOR BLEED" }
+    var bleedTitle: String { self == .lcd ? String(localized: "PIXEL SHADOW") : String(localized: "COLOR BLEED") }
 
     /// The IAP product that unlocks the mode, nil when it is free.
     var requiredProductID: String? {
@@ -200,9 +200,9 @@ struct GameMode: Hashable, Identifiable, Sendable {
     /// a high score that starts over every day.
     var isDaily: Bool = false
 
-    static let standard = GameMode(id: "standard", title: "Standard", summary: "The classic rules.")
+    static let standard = GameMode(id: "standard", title: String(localized: "Standard"), summary: String(localized: "The classic rules."))
 
-    static let daily = GameMode(id: "daily", title: "Daily", summary: "Today's round, same for everyone.", isDaily: true)
+    static let daily = GameMode(id: "daily", title: String(localized: "Daily"), summary: String(localized: "Today's round, same for everyone."), isDaily: true)
 
     static func == (lhs: GameMode, rhs: GameMode) -> Bool {
         lhs.id == rhs.id
@@ -323,8 +323,8 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
         switch self {
         case .brickBreaker:
             return CartridgeInfo(
-                subtitle: "Twelve walls, four power-ups",
-                genre: "ARCADE",
+                subtitle: String(localized: "Twelve walls, four power-ups"),
+                genre: String(localized: "ARCADE", comment: "Genre printed on a cartridge label"),
                 symbolName: "square.grid.3x2.fill",
                 labelColorHex: "#FF6B6B",
                 modes: [.standard, .daily],
@@ -333,8 +333,8 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
             )
         case .retroRacer:
             return CartridgeInfo(
-                subtitle: "8-bit highway dodge",
-                genre: "RACING",
+                subtitle: String(localized: "8-bit highway dodge"),
+                genre: String(localized: "RACING", comment: "Genre printed on a cartridge label"),
                 symbolName: "car.fill",
                 labelColorHex: "#4ECDC4",
                 shell: .black,
@@ -344,8 +344,8 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
             )
         case .snake:
             return CartridgeInfo(
-                subtitle: "Neon grid serpent",
-                genre: "ACTION",
+                subtitle: String(localized: "Neon grid serpent"),
+                genre: String(localized: "ACTION", comment: "Genre printed on a cartridge label"),
                 symbolName: "scribble.variable",
                 labelColorHex: "#45B7D1",
                 shell: .glow,
@@ -355,8 +355,8 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
             )
         case .fallingBlocks:
             return CartridgeInfo(
-                subtitle: "Block stacking puzzle",
-                genre: "PUZZLE",
+                subtitle: String(localized: "Block stacking puzzle"),
+                genre: String(localized: "PUZZLE", comment: "Genre printed on a cartridge label"),
                 symbolName: "square.stack.3d.down.right.fill",
                 labelColorHex: "#F7DC6F",
                 shell: .clearPurple,
@@ -366,8 +366,8 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
             )
         case .pixelInvaders:
             return CartridgeInfo(
-                subtitle: "Hold the line",
-                genre: "SHOOTER",
+                subtitle: String(localized: "Hold the line"),
+                genre: String(localized: "SHOOTER", comment: "Genre printed on a cartridge label"),
                 symbolName: "sparkles",
                 labelColorHex: "#C77DFF",
                 shell: .smoke,
@@ -377,8 +377,8 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
             )
         case .mineSweep:
             return CartridgeInfo(
-                subtitle: "Flag every mine",
-                genre: "PUZZLE",
+                subtitle: String(localized: "Flag every mine"),
+                genre: String(localized: "PUZZLE", comment: "Genre printed on a cartridge label"),
                 symbolName: "flag.fill",
                 labelColorHex: "#A8DADC",
                 shell: .grey,
@@ -388,8 +388,8 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
             )
         case .mazeMuncher:
             return CartridgeInfo(
-                subtitle: "Pellets, ghosts, tunnels",
-                genre: "MAZE",
+                subtitle: String(localized: "Pellets, ghosts, tunnels"),
+                genre: String(localized: "MAZE", comment: "Genre printed on a cartridge label"),
                 symbolName: "circle.grid.cross.fill",
                 labelColorHex: "#FFB703",
                 shell: .black,
@@ -400,8 +400,8 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
             )
         case .frogHop:
             return CartridgeInfo(
-                subtitle: "Cross the road and river",
-                genre: "ACTION",
+                subtitle: String(localized: "Cross the road and river"),
+                genre: String(localized: "ACTION", comment: "Genre printed on a cartridge label"),
                 symbolName: "arrow.up.circle.fill",
                 labelColorHex: "#80ED99",
                 shell: .clearGreen,
@@ -412,8 +412,8 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
             )
         case .lunarHinge:
             return CartridgeInfo(
-                subtitle: "Fold to fire the thrusters",
-                genre: "LANDER",
+                subtitle: String(localized: "Fold to fire the thrusters"),
+                genre: String(localized: "LANDER", comment: "Genre printed on a cartridge label"),
                 symbolName: "moon.stars.fill",
                 labelColorHex: "#E0E1DD",
                 shell: .gold,

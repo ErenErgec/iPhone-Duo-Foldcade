@@ -111,7 +111,7 @@ struct SkinPickerView: View {
         }
         .buttonStyle(CartridgePressStyle())
         .accessibilityLabel(skin.rawValue)
-        .accessibilityValue(isSelected ? "Equipped" : (isUnlocked ? "Unlocked" : "Locked, part of \(productName(for: skin).capitalized)"))
+        .accessibilityValue(isSelected ? String(localized: "Equipped") : (isUnlocked ? String(localized: "Unlocked") : String(localized: "Locked, part of \(ProductIdentifiers.fallbackDisplayName(for: skin.requiredProductID ?? ""))")))
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 
@@ -178,7 +178,7 @@ struct SkinPickerView: View {
             audioManager.playGameSound(.levelUp)
         } label: {
             RetroCapsuleLabel(
-                title: pack.title.uppercased(),
+                title: pack.title.localizedUppercase,
                 systemImage: isUnlocked ? (isSelected ? "checkmark" : "speaker.wave.2.fill") : "lock.fill",
                 tint: isUnlocked ? RetroPalette.phosphor : RetroPalette.amber,
                 filled: isSelected
@@ -186,7 +186,7 @@ struct SkinPickerView: View {
         }
         .buttonStyle(CartridgePressStyle())
         .accessibilityLabel("\(pack.title) sound pack")
-        .accessibilityValue(isSelected ? "In use" : (isUnlocked ? "Unlocked" : "Locked"))
+        .accessibilityValue(isSelected ? String(localized: "In use") : (isUnlocked ? String(localized: "Unlocked") : String(localized: "Locked")))
     }
 
     // MARK: - Upsell
@@ -210,7 +210,7 @@ struct SkinPickerView: View {
                     .multilineTextAlignment(.leading)
                     .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 8)
-                RetroCapsuleLabel(title: "STORE", systemImage: "bag.fill", tint: RetroPalette.phosphor, filled: true)
+                RetroCapsuleLabel(title: String(localized: "STORE"), systemImage: "bag.fill", tint: RetroPalette.phosphor, filled: true)
             }
             .padding(14)
             .background(

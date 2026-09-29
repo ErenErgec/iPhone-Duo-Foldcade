@@ -22,11 +22,11 @@ enum PauseMenuItem: Int, CaseIterable, Sendable {
 
     var title: String {
         switch self {
-        case .resume: return "RESUME"
-        case .screen: return "SCREEN"
-        case .palette: return "PALETTE"
-        case .music: return "MUSIC"
-        case .eject: return "EJECT"
+        case .resume: return String(localized: "RESUME", comment: "Pause menu row")
+        case .screen: return String(localized: "SCREEN", comment: "Pause menu row")
+        case .palette: return String(localized: "PALETTE", comment: "Pause menu row")
+        case .music: return String(localized: "MUSIC", comment: "Pause menu row")
+        case .eject: return String(localized: "EJECT", comment: "Pause menu row")
         }
     }
 }
@@ -176,18 +176,18 @@ struct PauseMenuPanel: View {
         )
         .padding(u)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Paused. \(selection.title.capitalized) selected. Screen: \(screenModeTitle). Palette: \(paletteTitle).")
+        .accessibilityLabel("Paused. \(selection.title.localizedCapitalized) selected. Screen: \(screenModeTitle). Palette: \(paletteTitle).")
     }
 
     /// The setting shown at the end of a row, with arrows when it can change.
     private func value(of item: PauseMenuItem) -> String? {
         switch item {
         case .screen:
-            return canChangeScreen ? "◀ \(screenModeTitle.uppercased()) ▶" : screenModeTitle.uppercased()
+            return canChangeScreen ? "◀ \(screenModeTitle.localizedUppercase) ▶" : screenModeTitle.localizedUppercase
         case .palette:
-            return "◀ \(paletteTitle.uppercased()) ▶"
+            return "◀ \(paletteTitle.localizedUppercase) ▶"
         case .music:
-            return isMusicOn ? "◀ ON ▶" : "◀ OFF ▶"
+            return "◀ \(isMusicOn ? String(localized: "ON") : String(localized: "OFF")) ▶"
         case .resume, .eject:
             return nil
         }

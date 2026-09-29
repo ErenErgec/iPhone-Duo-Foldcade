@@ -162,7 +162,7 @@ public struct FullScreenLayout: View {
     private var collectionCounter: some View {
         let owned = GameType.allCases.filter { storeManager.isUnlocked($0) }.count
         return RetroCapsuleLabel(
-            title: "COLLECTION \(owned)/\(GameType.allCases.count)",
+            title: String(localized: "COLLECTION \(owned)/\(GameType.allCases.count)"),
             systemImage: "square.stack.fill",
             tint: RetroPalette.phosphor
         )
@@ -193,7 +193,7 @@ public struct FullScreenLayout: View {
             .buttonStyle(CartridgePressStyle())
             .opacity(insertingGame != nil && !isInserting ? 0.35 : 1)
             .accessibilityLabel(game.rawValue)
-            .accessibilityValue(isLocked ? "Locked, part of \(ProductIdentifiers.shortName(for: game.info.requiredProductID ?? "").capitalized)" : game.subtitle)
+            .accessibilityValue(isLocked ? String(localized: "Locked, part of \(ProductIdentifiers.fallbackDisplayName(for: game.info.requiredProductID ?? ""))") : game.subtitle)
 
             // Neighboring planks meet across the grid spacing into one shelf
             ShelfLedge()

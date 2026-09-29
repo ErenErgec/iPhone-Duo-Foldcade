@@ -404,10 +404,10 @@ enum SoundPack: String, CaseIterable, Identifiable, Codable, Sendable {
 
     var title: String {
         switch self {
-        case .classic: return "Classic"
-        case .pocket: return "Pocket"
-        case .arcade: return "Arcade"
-        case .mellow: return "Mellow"
+        case .classic: return String(localized: "Classic", comment: "Sound pack name")
+        case .pocket: return String(localized: "Pocket", comment: "Sound pack name")
+        case .arcade: return String(localized: "Arcade", comment: "Sound pack name")
+        case .mellow: return String(localized: "Mellow", comment: "Sound pack name")
         }
     }
 

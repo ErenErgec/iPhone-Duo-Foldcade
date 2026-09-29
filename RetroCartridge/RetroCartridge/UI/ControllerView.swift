@@ -212,15 +212,15 @@ extension View {
     /// played directly (touches pass straight through for real-time play) or
     /// activated with a double tap, which presses and releases it.
     func consoleControl(
-        _ name: String,
-        hint: String? = nil,
+        _ name: LocalizedStringKey,
+        hint: LocalizedStringKey = "",
         press: @escaping () -> Void,
         release: @escaping () -> Void = {}
     ) -> some View {
         self
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(name)
-            .accessibilityHint(hint ?? "")
+            .accessibilityHint(hint)
             .accessibilityAddTraits([.isButton, .allowsDirectInteraction])
             .accessibilityAction {
                 press()

@@ -1,0 +1,1966 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    " and " : {
+      "comment" : "Joins the last two items of a list, with spaces",
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " ve "
+          }
+        }
+      }
+    },
+    "%@ screen" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ ekranı"
+          }
+        }
+      }
+    },
+    "%@ sound pack" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ ses paketi"
+          }
+        }
+      }
+    },
+    "%@ times" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ kat"
+          }
+        }
+      }
+    },
+    "%@, unavailable" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, kullanılamıyor"
+          }
+        }
+      }
+    },
+    "%lld cartridges" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld kartuş"
+          }
+        }
+      }
+    },
+    "%lld KM/H" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld KM/S"
+          }
+        }
+      }
+    },
+    "%lld of %lld achievements" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld/%2$lld başarım"
+          }
+        }
+      }
+    },
+    "%lld of %lld achievements earned" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld/%2$lld başarım kazanıldı"
+          }
+        }
+      }
+    },
+    "%lld of %lld cartridges in your collection" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Koleksiyonunda %1$lld/%2$lld kartuş var"
+          }
+        }
+      }
+    },
+    "%lld screen modes with tuning" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ince ayarlı %lld ekran modu"
+          }
+        }
+      }
+    },
+    "%lld skins" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld kaplama"
+          }
+        }
+      }
+    },
+    "%lld sound packs" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld ses paketi"
+          }
+        }
+      }
+    },
+    "8-bit highway dodge" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "8 bit otoyol kaçışı"
+          }
+        }
+      }
+    },
+    "A button" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A düğmesi"
+          }
+        }
+      }
+    },
+    "Achievement earned: %@" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başarım kazanıldı: %@"
+          }
+        }
+      }
+    },
+    "Achievement earned: %@. %@." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başarım kazanıldı: %1$@. %2$@."
+          }
+        }
+      }
+    },
+    "ACHIEVEMENTS" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BAŞARIMLAR"
+          }
+        }
+      }
+    },
+    "ACTION" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AKSİYON"
+          }
+        }
+      }
+    },
+    "all future content" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "gelecekteki tüm içerik"
+          }
+        }
+      }
+    },
+    "ALL FUTURE SKINS & CARTRIDGES" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GELECEKTEKİ TÜM KAPLAMALAR VE KARTUŞLAR"
+          }
+        }
+      }
+    },
+    "APP STORE UNAVAILABLE" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "APP STORE KULLANILAMIYOR"
+          }
+        }
+      }
+    },
+    "Arcade" : {
+      "comment" : "Sound pack name",
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atari"
+          }
+        }
+      }
+    },
+    "ARCADE" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ATARİ"
+          }
+        }
+      }
+    },
+    "Arcade Monitor" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atari Monitörü"
+          }
+        }
+      }
+    },
+    "B button" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "B düğmesi"
+          }
+        }
+      }
+    },
+    "Block stacking puzzle" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blok dizme bulmacası"
+          }
+        }
+      }
+    },
+    "BUY %@" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ SATIN AL"
+          }
+        }
+      }
+    },
+    "Buy %@ for %@" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ ürününü %2$@ karşılığında satın al"
+          }
+        }
+      }
+    },
+    "CARTRIDGE" : {
+      "shouldTranslate" : false
+    },
+    "CARTRIDGE SHOP" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KARTUŞ DÜKKANI"
+          }
+        }
+      }
+    },
+    "CARTRIDGES" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KARTUŞLAR"
+          }
+        }
+      }
+    },
+    "CARTRIDGES, SKINS & UPGRADES" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KARTUŞLAR, KAPLAMALAR VE YÜKSELTMELER"
+          }
+        }
+      }
+    },
+    "CHOOSE A CARTRIDGE" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BİR KARTUŞ SEÇ"
+          }
+        }
+      }
+    },
+    "CHOOSE YOUR DISPLAY" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "EKRANINI SEÇ"
+          }
+        }
+      }
+    },
+    "CHOOSE YOUR SHELL" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KASANI SEÇ"
+          }
+        }
+      }
+    },
+    "Classic" : {
+      "comment" : "Sound pack name",
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klasik"
+          }
+        }
+      }
+    },
+    "Clear 40 lines fast. Time left is bonus." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "40 satırı hızla temizle. Kalan süre bonus olur."
+          }
+        }
+      }
+    },
+    "Close" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kapat"
+          }
+        }
+      }
+    },
+    "COLLECTION %lld/%lld" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KOLEKSİYON %1$lld/%2$lld"
+          }
+        }
+      }
+    },
+    "COLLECTOR PACK" : {
+      "shouldTranslate" : false
+    },
+    "COLOR BLEED" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RENK TAŞMASI"
+          }
+        }
+      }
+    },
+    "Color CRT" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Renkli CRT"
+          }
+        }
+      }
+    },
+    "CONSOLE SKINS" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KONSOL KAPLAMALARI"
+          }
+        }
+      }
+    },
+    "CRASHED" : {
+      "comment" : "Lunar Hinge HUD",
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ÇAKILDIN"
+          }
+        }
+      }
+    },
+    "Cross the road and river" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yolu ve nehri geç"
+          }
+        }
+      }
+    },
+    "CURVATURE" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KAVİS"
+          }
+        }
+      }
+    },
+    "Curved tube, soft glow" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kavisli tüp, yumuşak parıltı"
+          }
+        }
+      }
+    },
+    "Daily" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Günlük"
+          }
+        }
+      }
+    },
+    "DAILY PLAYER" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GÜNLÜK OYUNCU"
+          }
+        }
+      }
+    },
+    "Day" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gündüz"
+          }
+        }
+      }
+    },
+    "Deep lines, big bloom" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Derin çizgiler, güçlü parlama"
+          }
+        }
+      }
+    },
+    "Directional pad" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yön tuşları"
+          }
+        }
+      }
+    },
+    "Dismiss error" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hatayı kapat"
+          }
+        }
+      }
+    },
+    "DMG Green" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DMG Yeşili"
+          }
+        }
+      }
+    },
+    "Dodge traffic, grab coins." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trafikten kaç, altınları topla."
+          }
+        }
+      }
+    },
+    "Down" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aşağı"
+          }
+        }
+      }
+    },
+    "Earned" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kazanıldı"
+          }
+        }
+      }
+    },
+    "EJECT" : {
+      "comment" : "Pause menu row",
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ÇIKAR"
+          }
+        }
+      }
+    },
+    "Ejects the cartridge." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kartuşu çıkarır."
+          }
+        }
+      }
+    },
+    "Endless, faster every ten lines." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sonsuz, her on satırda hızlanır."
+          }
+        }
+      }
+    },
+    "Equipped" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Takılı"
+          }
+        }
+      }
+    },
+    "EQUIPPED" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TAKILI"
+          }
+        }
+      }
+    },
+    "EVERYTHING IN THE COLLECTOR PACK" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "COLLECTOR PACK'TEKİ HER ŞEY"
+          }
+        }
+      }
+    },
+    "Everything in the Collector Pack, plus %@." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Collector Pack'teki her şey, ayrıca %@."
+          }
+        }
+      }
+    },
+    "EXPLORER" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KAŞİF"
+          }
+        }
+      }
+    },
+    "Failed to restore purchases: %@" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Satın almalar geri yüklenemedi: %@"
+          }
+        }
+      }
+    },
+    "Finish a daily round" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir günlük tur bitir"
+          }
+        }
+      }
+    },
+    "Finish a round in every mode" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Her modda bir tur bitir"
+          }
+        }
+      }
+    },
+    "Flag every mine" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Her mayını işaretle"
+          }
+        }
+      }
+    },
+    "Flat and sharp, RGB grille" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Düz ve keskin, RGB ızgara"
+          }
+        }
+      }
+    },
+    "FOLD OR HOLD ▲ TO THRUST" : {
+      "comment" : "Lunar Hinge HUD hint",
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İTİŞ İÇİN KATLA YA DA ▲ BASILI TUT"
+          }
+        }
+      }
+    },
+    "Fold to fire the thrusters" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İticileri ateşlemek için katla"
+          }
+        }
+      }
+    },
+    "Four shades of green" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dört ton yeşil"
+          }
+        }
+      }
+    },
+    "FUEL" : {
+      "comment" : "Lunar Hinge HUD",
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "YAKIT"
+          }
+        }
+      }
+    },
+    "GAME OVER" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OYUN BİTTİ"
+          }
+        }
+      }
+    },
+    "Game over. Score %lld. Press A to play again." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oyun bitti. Skor %lld. Yeniden oynamak için A'ya bas."
+          }
+        }
+      }
+    },
+    "Go through a wall, come out the other side." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duvardan gir, öbür taraftan çık."
+          }
+        }
+      }
+    },
+    "HI" : {
+      "comment" : "Bezel readout: high score",
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "REKOR"
+          }
+        }
+      }
+    },
+    "HI %lld" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "REKOR %lld"
+          }
+        }
+      }
+    },
+    "HIGH SCORER" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "REKORTMEN"
+          }
+        }
+      }
+    },
+    "HIGH SCORES & ACHIEVEMENTS" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "EN YÜKSEK SKORLAR VE BAŞARIMLAR"
+          }
+        }
+      }
+    },
+    "HINGE" : {
+      "comment" : "Lunar Hinge HUD: the hinge angle",
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MENTEŞE"
+          }
+        }
+      }
+    },
+    "Hold the line" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hattı koru"
+          }
+        }
+      }
+    },
+    "IN PRO" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PRO'DA"
+          }
+        }
+      }
+    },
+    "In use" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kullanımda"
+          }
+        }
+      }
+    },
+    "IN USE" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KULLANIMDA"
+          }
+        }
+      }
+    },
+    "Included with Lifetime Pro" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lifetime Pro'ya dahil"
+          }
+        }
+      }
+    },
+    "LANDED ×%lld" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İNİŞ ×%lld"
+          }
+        }
+      }
+    },
+    "LANDER" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İNİŞ"
+          }
+        }
+      }
+    },
+    "Left" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sol"
+          }
+        }
+      }
+    },
+    "LEVEL %lld" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SEVİYE %lld"
+          }
+        }
+      }
+    },
+    "LIFETIME PRO" : {
+      "shouldTranslate" : false
+    },
+    "LINES" : {
+      "comment" : "Falling Blocks HUD",
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SATIR"
+          }
+        }
+      }
+    },
+    "Locked" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kilitli"
+          }
+        }
+      }
+    },
+    "Locked, part of %@" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kilitli, %@ içinde"
+          }
+        }
+      }
+    },
+    "Locked, part of Lifetime Pro" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kilitli, Lifetime Pro içinde"
+          }
+        }
+      }
+    },
+    "LV" : {
+      "comment" : "Bezel readout: level",
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SV"
+          }
+        }
+      }
+    },
+    "Marathon" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maraton"
+          }
+        }
+      }
+    },
+    "Maze" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Labirent"
+          }
+        }
+      }
+    },
+    "MAZE" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LABİRENT"
+          }
+        }
+      }
+    },
+    "Mellow" : {
+      "comment" : "Sound pack name",
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yumuşak"
+          }
+        }
+      }
+    },
+    "MUSIC" : {
+      "comment" : "Pause menu row",
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MÜZİK"
+          }
+        }
+      }
+    },
+    "Neon grid serpent" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neon ızgarada yılan"
+          }
+        }
+      }
+    },
+    "Neon Night" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neon Gece"
+          }
+        }
+      }
+    },
+    "NEW HIGH SCORE!" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "YENİ REKOR!"
+          }
+        }
+      }
+    },
+    "NEXT" : {
+      "comment" : "Falling Blocks HUD: the next piece",
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SIRADAKİ"
+          }
+        }
+      }
+    },
+    "Night" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gece"
+          }
+        }
+      }
+    },
+    "NO PREVIOUS PURCHASES FOUND" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ÖNCEKİ SATIN ALMA BULUNAMADI"
+          }
+        }
+      }
+    },
+    "Not earned" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kazanılmadı"
+          }
+        }
+      }
+    },
+    "off" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kapalı"
+          }
+        }
+      }
+    },
+    "OFF" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KAPALI"
+          }
+        }
+      }
+    },
+    "OFF THE MARK" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İLK ADIM"
+          }
+        }
+      }
+    },
+    "ON" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AÇIK"
+          }
+        }
+      }
+    },
+    "on" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "açık"
+          }
+        }
+      }
+    },
+    "ONE-TIME PURCHASE" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TEK SEFERLİK SATIN ALMA"
+          }
+        }
+      }
+    },
+    "One-time purchases, billed through the App Store." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tek seferlik satın almalar, App Store üzerinden faturalandırılır."
+          }
+        }
+      }
+    },
+    "Only your headlights to see by." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Önünü yalnızca farların aydınlatır."
+          }
+        }
+      }
+    },
+    "Original" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Orijinal"
+          }
+        }
+      }
+    },
+    "OWNED" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ALINDI"
+          }
+        }
+      }
+    },
+    "PALETTE" : {
+      "comment" : "Pause menu row",
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PALET"
+          }
+        }
+      }
+    },
+    "PAUSED" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DURAKLATILDI"
+          }
+        }
+      }
+    },
+    "Paused. %@ selected. Screen %@, palette %@, music %@." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duraklatıldı. %1$@ seçili. Ekran %2$@, palet %3$@, müzik %4$@."
+          }
+        }
+      }
+    },
+    "Paused. %@ selected. Screen: %@. Palette: %@." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duraklatıldı. %1$@ seçili. Ekran: %2$@. Palet: %3$@."
+          }
+        }
+      }
+    },
+    "Pauses or resumes the game." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oyunu duraklatır ya da sürdürür."
+          }
+        }
+      }
+    },
+    "Pellets, ghosts, tunnels" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yemler, hayaletler, tüneller"
+          }
+        }
+      }
+    },
+    "PIXEL GRID" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PİKSEL IZGARASI"
+          }
+        }
+      }
+    },
+    "PIXEL SHADOW" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PİKSEL GÖLGESİ"
+          }
+        }
+      }
+    },
+    "Playing. Score %lld, level %lld." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oyunda. Skor %1$lld, seviye %2$lld."
+          }
+        }
+      }
+    },
+    "Pocket" : {
+      "comment" : "Sound pack name",
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cep"
+          }
+        }
+      }
+    },
+    "Pocket Grey" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cep Grisi"
+          }
+        }
+      }
+    },
+    "Pocket LCD" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cep LCD"
+          }
+        }
+      }
+    },
+    "POWER" : {
+      "shouldTranslate" : false
+    },
+    "PRESS A TO RETRY" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TEKRAR İÇİN A'YA BAS"
+          }
+        }
+      }
+    },
+    "PRESS A TO START" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BAŞLAMAK İÇİN A'YA BAS"
+          }
+        }
+      }
+    },
+    "Purchase failed: %@" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Satın alma başarısız: %@"
+          }
+        }
+      }
+    },
+    "Purchase pending approval. It will unlock once approved." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Satın alma onay bekliyor. Onaylanınca kilidi açılacak."
+          }
+        }
+      }
+    },
+    "Purchased" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Satın alındı"
+          }
+        }
+      }
+    },
+    "PURCHASES RESTORED" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SATIN ALMALAR GERİ YÜKLENDİ"
+          }
+        }
+      }
+    },
+    "Purchasing" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Satın alınıyor"
+          }
+        }
+      }
+    },
+    "PUZZLE" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BULMACA"
+          }
+        }
+      }
+    },
+    "RACING" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "YARIŞ"
+          }
+        }
+      }
+    },
+    "Reach level %lld" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld. seviyeye ulaş"
+          }
+        }
+      }
+    },
+    "Records" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rekorlar"
+          }
+        }
+      }
+    },
+    "RECORDS" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "REKORLAR"
+          }
+        }
+      }
+    },
+    "RESET" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SIFIRLA"
+          }
+        }
+      }
+    },
+    "RESTORE PURCHASES" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SATIN ALMALARI GERİ YÜKLE"
+          }
+        }
+      }
+    },
+    "RESUME" : {
+      "comment" : "Pause menu row",
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DEVAM"
+          }
+        }
+      }
+    },
+    "RETRO" : {
+      "shouldTranslate" : false
+    },
+    "Retro Cartridge" : {
+      "shouldTranslate" : false
+    },
+    "RETRO CARTRIDGE" : {
+      "shouldTranslate" : false
+    },
+    "RETRY" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TEKRAR DENE"
+          }
+        }
+      }
+    },
+    "Right" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sağ"
+          }
+        }
+      }
+    },
+    "SCANLINES" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TARAMA ÇİZGİLERİ"
+          }
+        }
+      }
+    },
+    "SCORE" : {
+      "comment" : "Bezel readout",
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SKOR"
+          }
+        }
+      }
+    },
+    "SCORE %lld" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SKOR %lld"
+          }
+        }
+      }
+    },
+    "Score %lld in one round" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tek turda %lld puan yap"
+          }
+        }
+      }
+    },
+    "Score %lld, level %lld, high score %lld" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skor %1$lld, seviye %2$lld, rekor %3$lld"
+          }
+        }
+      }
+    },
+    "Score all you can in two minutes." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İki dakikada alabildiğin kadar puan al."
+          }
+        }
+      }
+    },
+    "Score your first points" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İlk puanlarını al"
+          }
+        }
+      }
+    },
+    "Screen" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ekran"
+          }
+        }
+      }
+    },
+    "SCREEN" : {
+      "comment" : "Pause menu row",
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "EKRAN"
+          }
+        }
+      }
+    },
+    "SCREEN MODES" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "EKRAN MODLARI"
+          }
+        }
+      }
+    },
+    "Select" : {
+      "shouldTranslate" : false
+    },
+    "SHOOTER" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NİŞANCI"
+          }
+        }
+      }
+    },
+    "Showing standard prices. Check your connection and try again." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Standart fiyatlar gösteriliyor. Bağlantını kontrol edip yeniden dene."
+          }
+        }
+      }
+    },
+    "Skins" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaplamalar"
+          }
+        }
+      }
+    },
+    "SKINS" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KAPLAMALAR"
+          }
+        }
+      }
+    },
+    "SOMETHING WENT WRONG" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BİR ŞEYLER TERS GİTTİ"
+          }
+        }
+      }
+    },
+    "SOUND PACK" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SES PAKETİ"
+          }
+        }
+      }
+    },
+    "SOUND PACKS" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SES PAKETLERİ"
+          }
+        }
+      }
+    },
+    "Sprint" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sürat"
+          }
+        }
+      }
+    },
+    "Standard" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Standart"
+          }
+        }
+      }
+    },
+    "Start" : {
+      "shouldTranslate" : false
+    },
+    "START RESUMES" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "START İLE DEVAM"
+          }
+        }
+      }
+    },
+    "Store" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mağaza"
+          }
+        }
+      }
+    },
+    "STORE" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MAĞAZA"
+          }
+        }
+      }
+    },
+    "TAP TO EQUIP" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TAKMAK İÇİN DOKUN"
+          }
+        }
+      }
+    },
+    "TAP TO USE" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KULLANMAK İÇİN DOKUN"
+          }
+        }
+      }
+    },
+    "the %@ skin" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ kaplaması"
+          }
+        }
+      }
+    },
+    "The App Store didn't return any products." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Store hiç ürün döndürmedi."
+          }
+        }
+      }
+    },
+    "The classic rules." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klasik kurallar."
+          }
+        }
+      }
+    },
+    "The purchase couldn't be verified." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Satın alma doğrulanamadı."
+          }
+        }
+      }
+    },
+    "The walls are deadly." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duvarlar öldürür."
+          }
+        }
+      }
+    },
+    "TIME" : {
+      "comment" : "Falling Blocks HUD",
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SÜRE"
+          }
+        }
+      }
+    },
+    "Title screen, %@ mode. Press A to start." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başlık ekranı, %@ modu. Başlamak için A'ya bas."
+          }
+        }
+      }
+    },
+    "TODAY" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BUGÜN"
+          }
+        }
+      }
+    },
+    "Today's round, same for everyone." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bugünün turu, herkes için aynı."
+          }
+        }
+      }
+    },
+    "Touch and drag to steer, or use the actions for a single step." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yön vermek için dokunup sürükle ya da tek adım için eylemleri kullan."
+          }
+        }
+      }
+    },
+    "Trinitron" : {
+      "shouldTranslate" : false
+    },
+    "TUNING" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İNCE AYAR"
+          }
+        }
+      }
+    },
+    "Twelve walls, four power-ups" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On iki duvar, dört güçlendirme"
+          }
+        }
+      }
+    },
+    "Ultra" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra"
+          }
+        }
+      }
+    },
+    "UNFOLD TO PLAY" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OYNAMAK İÇİN AÇ"
+          }
+        }
+      }
+    },
+    "UNLOCK %lld SKINS WITH THE COLLECTOR PACK" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "COLLECTOR PACK İLE %lld KAPLAMANIN KİLİDİNİ AÇ"
+          }
+        }
+      }
+    },
+    "Unlocked" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kilidi açık"
+          }
+        }
+      }
+    },
+    "UNLOCKS WHAT YOU TAPPED" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DOKUNDUĞUNUN KİLİDİNİ AÇAR"
+          }
+        }
+      }
+    },
+    "Up" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yukarı"
+          }
+        }
+      }
+    },
+    "Virtual Red" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sanal Kırmızı"
+          }
+        }
+      }
+    },
+    "Walls inside the field." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alanın içinde duvarlar var."
+          }
+        }
+      }
+    },
+    "Wrap" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geçişli"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

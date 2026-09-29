@@ -68,7 +68,7 @@ final class StoreManager {
                     < (ProductIdentifiers.displayOrder.firstIndex(of: $1.id) ?? .max)
             }
             if loaded.isEmpty {
-                productLoadError = "The App Store didn't return any products."
+                productLoadError = String(localized: "The App Store didn't return any products.")
             }
         } catch {
             productLoadError = error.localizedDescription
@@ -89,18 +89,18 @@ final class StoreManager {
             switch result {
             case .success(let verificationResult):
                 if case .unverified = verificationResult {
-                    errorMessage = "The purchase couldn't be verified."
+                    errorMessage = String(localized: "The purchase couldn't be verified.")
                 }
                 await handle(transactionResult: verificationResult)
             case .pending:
-                errorMessage = "Purchase pending approval. It will unlock once approved."
+                errorMessage = String(localized: "Purchase pending approval. It will unlock once approved.")
             case .userCancelled:
                 break
             @unknown default:
                 break
             }
         } catch {
-            errorMessage = "Purchase failed: \(error.localizedDescription)"
+            errorMessage = String(localized: "Purchase failed: \(error.localizedDescription)")
         }
     }
 
@@ -114,7 +114,7 @@ final class StoreManager {
             try await AppStore.sync()
             await updatePurchasedProducts()
         } catch {
-            errorMessage = "Failed to restore purchases: \(error.localizedDescription)"
+            errorMessage = String(localized: "Failed to restore purchases: \(error.localizedDescription)")
         }
     }
 

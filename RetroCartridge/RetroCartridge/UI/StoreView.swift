@@ -67,8 +67,8 @@ struct StoreView: View {
         banner(
             icon: "wifi.exclamationmark",
             tint: RetroPalette.amber,
-            title: "APP STORE UNAVAILABLE",
-            message: "Showing standard prices. Check your connection and try again."
+            title: String(localized: "APP STORE UNAVAILABLE"),
+            message: String(localized: "Showing standard prices. Check your connection and try again.")
         ) {
             Button {
                 Task { await storeManager.loadProducts() }
@@ -78,7 +78,7 @@ struct StoreView: View {
                         .tint(RetroPalette.amber)
                         .frame(width: 76, height: 34)
                 } else {
-                    RetroCapsuleLabel(title: "RETRY", systemImage: "arrow.clockwise", tint: RetroPalette.amber)
+                    RetroCapsuleLabel(title: String(localized: "RETRY"), systemImage: "arrow.clockwise", tint: RetroPalette.amber)
                 }
             }
             .buttonStyle(CartridgePressStyle())
@@ -90,7 +90,7 @@ struct StoreView: View {
         banner(
             icon: "exclamationmark.triangle.fill",
             tint: RetroPalette.alert,
-            title: "SOMETHING WENT WRONG",
+            title: String(localized: "SOMETHING WENT WRONG"),
             message: message
         ) {
             Button {
@@ -158,6 +158,8 @@ struct StoreView: View {
                 .frame(width: 58)
 
                 VStack(alignment: .leading, spacing: 6) {
+                    // Product names are English in every language, so they're
+                    // uppercased by English rules ("LIFETIME", not "LİFETİME").
                     Text((product?.displayName ?? ProductIdentifiers.fallbackDisplayName(for: productID)).uppercased())
                         .font(.system(size: 16, weight: .black, design: .monospaced))
                         .tracking(1.5)
@@ -249,7 +251,7 @@ struct StoreView: View {
             if !soundPacks.isEmpty {
                 section("SOUND PACKS", tint: tint) {
                     ForEach(soundPacks) { pack in
-                        RetroCapsuleLabel(title: pack.title.uppercased(), systemImage: "speaker.wave.2.fill", tint: tint)
+                        RetroCapsuleLabel(title: pack.title.localizedUppercase, systemImage: "speaker.wave.2.fill", tint: tint)
                     }
                 }
             }
@@ -257,10 +259,10 @@ struct StoreView: View {
             if !screenModes.isEmpty {
                 section("SCREEN MODES", tint: tint) {
                     ForEach(screenModes) { mode in
-                        RetroCapsuleLabel(title: mode.title.uppercased(), systemImage: "tv", tint: tint)
+                        RetroCapsuleLabel(title: mode.title.localizedUppercase, systemImage: "tv", tint: tint)
                     }
                     if ProductIdentifiers.unlocksScreenTuning(productID) {
-                        RetroCapsuleLabel(title: "TUNING", systemImage: "slider.horizontal.3", tint: tint)
+                        RetroCapsuleLabel(title: String(localized: "TUNING"), systemImage: "slider.horizontal.3", tint: tint)
                     }
                 }
             }
@@ -275,7 +277,7 @@ struct StoreView: View {
     }
 
     /// A titled row of unlocked items that scrolls when it doesn't fit.
-    private func section<Items: View>(_ title: String, tint: Color, @ViewBuilder items: () -> Items) -> some View {
+    private func section<Items: View>(_ title: LocalizedStringKey, tint: Color, @ViewBuilder items: () -> Items) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
                 .font(.system(size: 10, weight: .heavy, design: .monospaced))
@@ -299,7 +301,7 @@ struct StoreView: View {
             .fixedSize(horizontal: false, vertical: true)
     }
 
-    private func perk(_ text: String) -> some View {
+    private func perk(_ text: LocalizedStringKey) -> some View {
         Label(text, systemImage: "plus")
             .font(.system(size: 10, weight: .bold, design: .monospaced))
             .foregroundStyle(.white.opacity(0.7))
@@ -315,10 +317,10 @@ struct StoreView: View {
         let price = product?.displayPrice ?? ProductIdentifiers.fallbackDisplayPrice(for: productID)
 
         if isOwned {
-            RetroCapsuleLabel(title: "OWNED", systemImage: "checkmark", tint: RetroPalette.phosphor)
+            RetroCapsuleLabel(title: String(localized: "OWNED"), systemImage: "checkmark", tint: RetroPalette.phosphor)
                 .accessibilityLabel("Purchased")
         } else if isIncluded {
-            RetroCapsuleLabel(title: "IN PRO", systemImage: "checkmark", tint: RetroPalette.phosphor)
+            RetroCapsuleLabel(title: String(localized: "IN PRO"), systemImage: "checkmark", tint: RetroPalette.phosphor)
                 .accessibilityLabel("Included with Lifetime Pro")
         } else if isPurchasing {
             ProgressView()
@@ -331,7 +333,7 @@ struct StoreView: View {
                 hapticManager.playHaptic(.buttonPress)
                 Task { await storeManager.purchase(product) }
             } label: {
-                RetroCapsuleLabel(title: "BUY \(price)", tint: RetroPalette.phosphor, filled: true)
+                RetroCapsuleLabel(title: String(localized: "BUY \(price)"), tint: RetroPalette.phosphor, filled: true)
                     .frame(minWidth: 96)
             }
             .buttonStyle(CartridgePressStyle())
@@ -386,7 +388,7 @@ struct StoreView: View {
             .buttonStyle(CartridgePressStyle())
             .disabled(storeManager.isRestoring)
 
-            Text(restoreNote ?? "One-time purchases, billed through the App Store.")
+            Text(restoreNote ?? String(localized: "One-time purchases, billed through the App Store."))
                 .font(.system(size: 10, weight: .medium, design: .monospaced))
                 .tracking(0.5)
                 .foregroundStyle(restoreNote == nil ? .white.opacity(0.35) : RetroPalette.phosphor.opacity(0.9))
@@ -402,8 +404,8 @@ struct StoreView: View {
         guard storeManager.errorMessage == nil else { return }
         withAnimation(.easeInOut(duration: 0.2)) {
             restoreNote = storeManager.purchasedProductIDs.isEmpty
-                ? "NO PREVIOUS PURCHASES FOUND"
-                : "PURCHASES RESTORED"
+                ? String(localized: "NO PREVIOUS PURCHASES FOUND")
+                : String(localized: "PURCHASES RESTORED")
         }
     }
 }

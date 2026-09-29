@@ -794,4 +794,34 @@ final class RetroCartridgeTests: XCTestCase {
         PauseMenu.handle(.buttonAPressed, appState: appState, screenModes: [.crt], currentScreen: .crt)
         XCTAssertEqual(appState.isMusicOn, !original)
     }
+
+    // MARK: - Localization
+
+    /// The Turkish strings from the String Catalog, as the app bundle ships them.
+    private func turkishBundle() throws -> Bundle {
+        let path = try XCTUnwrap(Bundle.main.path(forResource: "tr", ofType: "lproj"), "No Turkish localization in the app bundle")
+        return try XCTUnwrap(Bundle(path: path))
+    }
+
+    func testTurkishTranslationsShip() throws {
+        let turkish = try turkishBundle()
+        func tr(_ key: String) -> String { turkish.localizedString(forKey: key, value: nil, table: nil) }
+
+        XCTAssertEqual(tr("GAME OVER"), "OYUN BİTTİ")
+        XCTAssertEqual(tr("Skins"), "Kaplamalar")
+        XCTAssertEqual(tr("SCORE %lld"), "SKOR %lld")
+        XCTAssertEqual(tr(" and "), " ve ")
+        // Names and silkscreen stay in English
+        XCTAssertEqual(tr("LIFETIME PRO"), "LIFETIME PRO")
+        XCTAssertEqual(tr("POWER"), "POWER")
+    }
+
+    func testTurkishCasingKeepsTheDots() {
+        let turkish = Locale(identifier: "tr")
+        // Mode titles are uppercased with the user's locale: i → İ
+        XCTAssertEqual("Geçişli".uppercased(with: turkish), "GEÇİŞLİ")
+        // Product names are English everywhere and uppercased by English rules
+        XCTAssertEqual(ProductIdentifiers.fallbackDisplayName(for: ProductIdentifiers.lifetimePro).uppercased(), "LIFETIME PRO")
+        XCTAssertEqual(ProductIdentifiers.shortName(for: "com.example.unknown"), "COM.EXAMPLE.UNKNOWN")
+    }
 }

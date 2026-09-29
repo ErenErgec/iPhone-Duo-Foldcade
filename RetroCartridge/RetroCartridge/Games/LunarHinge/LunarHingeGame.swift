@@ -317,7 +317,7 @@ final class LunarHingeGame: PixelGameProtocol, HingeControllable {
         let margin = size.width * 0.03
 
         // Fuel gauge
-        context.draw(hudText("FUEL", size: unit, color: palette.playerHighlight.opacity(0.7)), at: CGPoint(x: margin, y: margin), anchor: .topLeading)
+        context.draw(hudText(String(localized: "FUEL", comment: "Lunar Hinge HUD"), size: unit, color: palette.playerHighlight.opacity(0.7)), at: CGPoint(x: margin, y: margin), anchor: .topLeading)
         let gauge = CGRect(x: margin, y: margin + unit * 1.4, width: size.width * 0.22, height: unit * 0.6)
         context.stroke(Path(gauge), with: .color(palette.playerHighlight.opacity(0.4)), lineWidth: 1)
         context.fill(Path(CGRect(x: gauge.minX, y: gauge.minY, width: gauge.width * min(1, fuel / 150), height: gauge.height)),
@@ -331,7 +331,7 @@ final class LunarHingeGame: PixelGameProtocol, HingeControllable {
 
         // Hinge thrust meter
         let meter = CGRect(x: size.width - margin - unit * 0.8, y: margin + unit * 1.4, width: unit * 0.8, height: size.height * 0.2)
-        context.draw(hudText("HINGE", size: unit * 0.8, color: palette.playerHighlight.opacity(0.7)), at: CGPoint(x: meter.maxX, y: margin), anchor: .topTrailing)
+        context.draw(hudText(String(localized: "HINGE", comment: "Lunar Hinge HUD: the hinge angle"), size: unit * 0.8, color: palette.playerHighlight.opacity(0.7)), at: CGPoint(x: meter.maxX, y: margin), anchor: .topTrailing)
         context.stroke(Path(meter), with: .color(palette.playerHighlight.opacity(0.4)), lineWidth: 1)
         let filled = meter.height * hingeThrust
         context.fill(Path(CGRect(x: meter.minX, y: meter.maxY - filled, width: meter.width, height: filled)), with: .color(palette.hazardAlt))
@@ -339,11 +339,11 @@ final class LunarHingeGame: PixelGameProtocol, HingeControllable {
         // Messages
         let middle = CGPoint(x: size.width / 2, y: size.height * 0.3)
         if let pad = landedPad {
-            context.draw(hudText("LANDED ×\(pad.multiplier)", size: unit * 1.6, color: palette.pickup), at: middle)
+            context.draw(hudText(String(localized: "LANDED ×\(pad.multiplier)"), size: unit * 1.6, color: palette.pickup), at: middle)
         } else if crashed {
-            context.draw(hudText("CRASHED", size: unit * 1.6, color: palette.hazard), at: middle)
+            context.draw(hudText(String(localized: "CRASHED", comment: "Lunar Hinge HUD"), size: unit * 1.6, color: palette.hazard), at: middle)
         } else if hintTimer > 0 {
-            context.draw(hudText("FOLD OR HOLD ▲ TO THRUST", size: unit, color: palette.playerHighlight.opacity(0.85)), at: middle)
+            context.draw(hudText(String(localized: "FOLD OR HOLD ▲ TO THRUST", comment: "Lunar Hinge HUD hint"), size: unit, color: palette.playerHighlight.opacity(0.85)), at: middle)
         }
     }
 

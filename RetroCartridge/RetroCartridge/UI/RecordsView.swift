@@ -139,7 +139,7 @@ struct RecordsView: View {
             ForEach(game.modes) { mode in
                 let best = appState.progress.highScore(for: game, mode: mode)
                 HStack(spacing: 6) {
-                    Text((mode.isDaily ? "TODAY" : mode.title).uppercased())
+                    Text((mode.isDaily ? String(localized: "TODAY") : mode.title).localizedUppercase)
                         .foregroundStyle(.white.opacity(0.45))
                     Text(best > 0 ? "\(best)" : "—")
                         .foregroundStyle(best > 0 ? RetroPalette.phosphor : Color.white.opacity(0.3))
@@ -169,7 +169,7 @@ struct RecordsView: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
                 .accessibilityElement(children: .combine)
-                .accessibilityValue(isEarned ? "Earned" : "Not earned")
+                .accessibilityValue(isEarned ? String(localized: "Earned") : String(localized: "Not earned"))
             }
         }
     }

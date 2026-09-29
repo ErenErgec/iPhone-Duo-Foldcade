@@ -121,7 +121,7 @@ struct GameCanvasView: View {
                                     toastUntil = newDate.addingTimeInterval(2.5)
                                     audioManager.playGameSound(.powerUp)
                                     hapticManager.playHaptic(.gameEvent)
-                                    AccessibilityNotification.Announcement("Achievement earned: \(earned.title.capitalized)").post()
+                                    AccessibilityNotification.Announcement(String(localized: "Achievement earned: \(earned.title.localizedCapitalized)")).post()
                                 }
 
                                 // Persist the score as soon as a round ends, since pressing A
@@ -246,15 +246,17 @@ struct GameCanvasView: View {
     private func screenDescription(for game: any PixelGameProtocol) -> String {
         switch game.gameState {
         case .menu:
-            return "Title screen, \(game.mode.title) mode. Press A to start."
+            return String(localized: "Title screen, \(game.mode.title) mode. Press A to start.")
         case .playing:
-            return "Playing. Score \(game.score), level \(game.level)."
+            return String(localized: "Playing. Score \(game.score), level \(game.level).")
         case .paused:
-            return "Paused. \(appState.pauseMenuSelection.title.capitalized) selected. "
-                + "Screen \(screenSettings.mode.title), palette \(appState.paletteChoice.title), "
-                + "music \(appState.isMusicOn ? "on" : "off")."
+            let selection = appState.pauseMenuSelection.title.localizedCapitalized
+            let screen = screenSettings.mode.title
+            let palette = appState.paletteChoice.title
+            let music = appState.isMusicOn ? String(localized: "on") : String(localized: "off")
+            return String(localized: "Paused. \(selection) selected. Screen \(screen), palette \(palette), music \(music).")
         case .gameOver(let score):
-            return "Game over. Score \(score). Press A to play again."
+            return String(localized: "Game over. Score \(score). Press A to play again.")
         }
     }
 }
@@ -283,7 +285,7 @@ private struct BezelReadout: View {
         .accessibilityLabel("Score \(score), level \(level), high score \(highScore)")
     }
 
-    private func item(_ label: String, _ value: String) -> some View {
+    private func item(_ label: LocalizedStringKey, _ value: String) -> some View {
         HStack(spacing: fontSize * 0.4) {
             Text(label)
                 .foregroundStyle(Color.white.opacity(0.35))
@@ -308,14 +310,14 @@ private struct AchievementToast: View {
             Text("★ \(achievement.title)")
                 .foregroundStyle(gold)
                 .shadow(color: gold.opacity(0.6), radius: 3)
-            Text(achievement.detail.uppercased())
+            Text(achievement.detail.localizedUppercase)
                 .foregroundStyle(Color.white.opacity(0.55))
         }
         .font(.system(size: fontSize, weight: .bold, design: .monospaced))
         .lineLimit(1)
         .minimumScaleFactor(0.6)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("Achievement earned: \(achievement.title.capitalized). \(achievement.detail).")
+        .accessibilityLabel("Achievement earned: \(achievement.title.localizedCapitalized). \(achievement.detail).")
     }
 }
 
@@ -350,8 +352,8 @@ private struct GameStatePanel: View {
                     panel(
                         u: u,
                         title: title.uppercased(),
-                        lines: hasModes ? ["◀ \(mode.title.uppercased()) ▶", mode.summary.uppercased()] : [],
-                        prompt: "PRESS A TO START"
+                        lines: hasModes ? ["◀ \(mode.title.localizedUppercase) ▶", mode.summary.localizedUppercase] : [],
+                        prompt: String(localized: "PRESS A TO START")
                     )
                 case .paused:
                     PauseMenuPanel(
@@ -366,10 +368,12 @@ private struct GameStatePanel: View {
                 case .gameOver(let finalScore):
                     panel(
                         u: u,
-                        title: "GAME OVER",
-                        lines: (finalScore > 0 && finalScore >= highScore ? ["NEW HIGH SCORE!", "\(finalScore)"] : ["SCORE \(finalScore)"])
-                            + (hasModes ? ["◀ \(mode.title.uppercased()) ▶"] : []),
-                        prompt: "PRESS A TO RETRY"
+                        title: String(localized: "GAME OVER"),
+                        lines: (finalScore > 0 && finalScore >= highScore
+                                ? [String(localized: "NEW HIGH SCORE!"), "\(finalScore)"]
+                                : [String(localized: "SCORE \(finalScore)")])
+                            + (hasModes ? ["◀ \(mode.title.localizedUppercase) ▶"] : []),
+                        prompt: String(localized: "PRESS A TO RETRY")
                     )
                 case .playing:
                     EmptyView()

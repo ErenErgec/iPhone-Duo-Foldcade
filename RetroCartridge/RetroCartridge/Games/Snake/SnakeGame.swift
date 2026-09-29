@@ -297,11 +297,11 @@ final class SnakeGame: PixelGameProtocol {
 
 extension GameMode {
     /// Snake's standard rules.
-    static let snakeClassic = GameMode(id: "standard", title: "Classic", summary: "The walls are deadly.")
+    static let snakeClassic = GameMode(id: "standard", title: String(localized: "Classic"), summary: String(localized: "The walls are deadly."))
 
-    static let snakeWrap = GameMode(id: "wrap", title: "Wrap", summary: "Go through a wall, come out the other side.")
+    static let snakeWrap = GameMode(id: "wrap", title: String(localized: "Wrap"), summary: String(localized: "Go through a wall, come out the other side."))
 
-    static let snakeMaze = GameMode(id: "maze", title: "Maze", summary: "Walls inside the field.")
+    static let snakeMaze = GameMode(id: "maze", title: String(localized: "Maze"), summary: String(localized: "Walls inside the field."))
 }
 
 // MARK: - Palette
