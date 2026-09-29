@@ -61,21 +61,29 @@ xcodebuild -project RetroCartridge/RetroCartridge.xcodeproj -scheme RetroCartrid
   - Text-only or custom-view items stay horizontal.
 - **Appearance:** the window forces the dark style so system bars and titles read on the dark console.
 
-## Project status (2026-09-28)
+## Project status (2026-09-29)
 
-- **Git:** PR #1 (`gameplay-fixes`) was merged into `main` on 2026-09-28; `main` is the working branch. The GitHub repo is private. Commit and push only when the user asks; they usually test in Device Hub first.
-- **Done and verified by the user on the simulator:**
+- **Git:** `main` is the working branch; PR #1 (`gameplay-fixes`) was merged on 2026-09-28. The design and variety plan (Phases 0–3 below) is on `claude/festive-dirac-8zepxk`, in review as a PR into `main`. The GitHub repo is private. Commit and push only when the user asks; they usually test in Device Hub first.
+- **Done and verified by the user on the simulator (before the plan):**
   - games running at 60 FPS;
   - CRT shader;
   - Game Boy–style console, cartridge library, cover carousel;
   - Duo-native layout (outer display locked landscape, inner display adaptive fold split);
   - vertical toolbar;
   - real hinge angle and 90° chime.
+- **Design and variety plan, built by the user after every phase (runtime not yet checked):**
+  - Phase 0: role-based palettes, cartridge metadata, modes, `ProgressStore`, fold-aware library grid.
+  - Phase 1: screen modes (CRT, LCD, Trinitron, Arcade) with tuning, skin finishes, cartridge shells and pixel-art labels, shelf, cover attract mode, insert and eject transitions, in-tube pause menu.
+  - Phase 2: seeded games and daily rounds, mode picker, shared palettes, deeper original four games, five new cartridges (Pixel Invaders, Mine Sweep, Maze Muncher, Frog Hop, Lunar Hinge with hinge thrust), achievements, sound packs, four new skins.
+  - Phase 3: store aligned with its contents (six free cartridges; Maze Muncher and Frog Hop in the Collector Pack; Lunar Hinge, Gold Edition, screen modes and tuning in Lifetime Pro), derived store copy, locked-item highlighting.
 - **Not yet verified:**
-  - sound effects by ear (only rendered offline);
+  - the unit tests on the Duo simulator after Phases 1–3;
+  - the plan's visuals and interactions in Device Hub, in both inner-display orientations and on the cover;
+  - Lunar Hinge played by folding (the simulator may not deliver hinge readings; ▲ / A always thrust);
+  - sound effects and the four sound packs by ear;
   - StoreKit purchases end to end (run from Xcode with `Products.storekit` selected in the scheme);
   - anything on real iPhone Duo hardware (ships 2026-10-23).
-- **Possible next steps:** check sound and volume, test purchases, and consider Apple's recommendations not yet adopted, such as `ArrangementView`, the occlusion reserved region for the outer camera, and `visibilityPriority` for toolbar overflow.
+- **Possible next steps:** run the tests and check the plan in Device Hub, check sound and purchases, a cartridge designer (a finger-drawn 16×16 label editor was discussed and deferred), and Apple's recommendations not yet adopted, such as `ArrangementView`, the occlusion reserved region for the outer camera, and `visibilityPriority` for toolbar overflow (the toolbar now has three items).
 
 ## Conventions
 
