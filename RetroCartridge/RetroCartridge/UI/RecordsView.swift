@@ -28,6 +28,17 @@ struct RecordsView: View {
                 ForEach(GameType.allCases) { game in
                     cartridgeRow(game)
                 }
+
+                Button {
+                    hapticManager.playHaptic(.buttonPress)
+                    withAnimation(LibraryOverlays.animation) {
+                        appState.showIntro()
+                    }
+                } label: {
+                    RetroCapsuleLabel(title: String(localized: "HOW TO PLAY"), systemImage: "questionmark.circle.fill", tint: RetroPalette.phosphor)
+                }
+                .buttonStyle(CartridgePressStyle())
+                .padding(.top, 4)
             }
         }
     }

@@ -989,6 +989,53 @@ final class RetroCartridgeTests: XCTestCase {
         }
     }
 
+    // MARK: - Intro
+
+    func testIntroPicturesAreValidLabels() {
+        XCTAssertEqual(IntroPage.allCases.count, 5)
+        for page in IntroPage.allCases {
+            XCTAssertFalse(page.title.isEmpty)
+            XCTAssertFalse(page.text.isEmpty)
+            if let art = page.art {
+                XCTAssertTrue(art.isValid, page.title)
+                for pixel in art.rows.joined() where pixel != "." {
+                    XCTAssertNotNil(PixelArt.color(for: pixel, in: .intro), "\(page.title): \(pixel)")
+                }
+            }
+        }
+    }
+
+    func testIntroShowsUntilSeenAndCanBeReplayed() {
+        let defaults = UserDefaults.standard
+        let original = defaults.object(forKey: "hasSeenIntro")
+        defer { defaults.set(original, forKey: "hasSeenIntro") }
+
+        defaults.removeObject(forKey: "hasSeenIntro")
+        let appState = AppState(progress: ProgressStore(defaults: makeDefaults()), labels: LabelStore(defaults: makeDefaults()))
+        XCTAssertTrue(appState.isIntroVisible)
+
+        appState.finishIntro()
+        XCTAssertFalse(appState.isIntroVisible)
+        XCTAssertFalse(AppState(progress: ProgressStore(defaults: makeDefaults())).isIntroVisible)
+
+        appState.isRecordsVisible = true
+        appState.showIntro()
+        XCTAssertTrue(appState.isIntroVisible)
+        XCTAssertFalse(appState.isRecordsVisible)
+    }
+
+    func testStartingAGameHidesTheIntroWithoutMarkingItSeen() {
+        let defaults = UserDefaults.standard
+        let original = defaults.object(forKey: "hasSeenIntro")
+        defer { defaults.set(original, forKey: "hasSeenIntro") }
+
+        defaults.removeObject(forKey: "hasSeenIntro")
+        let appState = AppState(progress: ProgressStore(defaults: makeDefaults()))
+        appState.startGame(type: .snake)
+        XCTAssertFalse(appState.isIntroVisible)
+        XCTAssertFalse(appState.hasSeenIntro)
+    }
+
     // MARK: - Text size and Bold Text
 
     func testOverlayTextFollowsTheTextSize() {

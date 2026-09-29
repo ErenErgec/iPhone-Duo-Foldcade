@@ -106,6 +106,7 @@ Every game also has a **Daily** mode: the same round for everyone that day (seed
   - Cyberpunk Neon: glossy black with a breathing neon edge that follows the display's corners;
   - 90's Arcade Cabinet: wood-grain laminate.
 - **Cartridges:** each game has its own plastic (grey, off-white, black, glow-in-the-dark, clear over its circuit board) and a 16×16 pixel-art label drawn in the game's palette. The library stands them on a shelf with a collection counter; locked cartridges look dusty and open the store.
+- **Intro:** the first launch opens a five-page *How to Play* on whichever display the app opens on: picking a cartridge, unfolding, the controls, ejecting and customizing. Unfolding waits for it; its last button inserts the cartridge. **How to Play** in Records shows it again.
 - **Label designer:** **Labels** in the system toolbar (or *Design Label* in a cartridge's context menu) opens a 16×16 editor in the cartridge's palette: draw and fill, erase, mirror, undo, clear, or go back to the original. Every stroke is saved and the new label shows everywhere the cartridge appears.
 
 - **Accessibility:**
@@ -170,6 +171,7 @@ RetroCartridge/
 │   │   ├── ScreenSettingsView.swift   # Screen mode picker and tuning overlay
 │   │   ├── RecordsView.swift          # High scores per mode and achievements overlay
 │   │   ├── LabelDesignerView.swift    # 16×16 cartridge label editor overlay
+│   │   ├── IntroView.swift            # First-launch How to Play pages
 │   │   ├── RetroTypography.swift      # retroFont: Dynamic Type and Bold Text for overlay text
 │   │   ├── SkinPickerView.swift       # Skin picker overlay
 │   │   ├── StoreView.swift            # Store overlay

@@ -283,6 +283,16 @@
         }
       }
     },
+    "BACK" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GERİ"
+          }
+        }
+      }
+    },
     "Beat the computer. Three misses and you're out." : {
       "localizations" : {
         "tr" : {
@@ -486,6 +496,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "KONSOL KAPLAMALARI"
+          }
+        }
+      }
+    },
+    "CONTROLS" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KONTROLLER"
           }
         }
       }
@@ -722,22 +742,22 @@
         }
       }
     },
-    "Equipped" : {
-      "localizations" : {
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Takılı"
-          }
-        }
-      }
-    },
     "EQUIPPED" : {
       "localizations" : {
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "TAKILI"
+          }
+        }
+      }
+    },
+    "Equipped" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Takılı"
           }
         }
       }
@@ -1006,6 +1026,16 @@
         }
       }
     },
+    "HOW TO PLAY" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NASIL OYNANIR"
+          }
+        }
+      }
+    },
     "IN PRO" : {
       "localizations" : {
         "tr" : {
@@ -1096,6 +1126,16 @@
         }
       }
     },
+    "LET'S PLAY" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HADİ OYNA"
+          }
+        }
+      }
+    },
     "LEVEL %lld" : {
       "localizations" : {
         "tr" : {
@@ -1157,6 +1197,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "SV"
+          }
+        }
+      }
+    },
+    "MAKE IT YOURS" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KENDİNE GÖRE AYARLA"
           }
         }
       }
@@ -1324,12 +1374,12 @@
         }
       }
     },
-    "off" : {
+    "Off" : {
       "localizations" : {
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "kapalı"
+            "value" : "Kapalı"
           }
         }
       }
@@ -1344,12 +1394,12 @@
         }
       }
     },
-    "Off" : {
+    "off" : {
       "localizations" : {
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kapalı"
+            "value" : "kapalı"
           }
         }
       }
@@ -1374,22 +1424,22 @@
         }
       }
     },
-    "ON" : {
-      "localizations" : {
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AÇIK"
-          }
-        }
-      }
-    },
     "on" : {
       "localizations" : {
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "açık"
+          }
+        }
+      }
+    },
+    "ON" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AÇIK"
           }
         }
       }
@@ -1420,6 +1470,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Önünü yalnızca farların aydınlatır."
+          }
+        }
+      }
+    },
+    "Open the device and the cartridge goes in, with the screen on one side of the fold and the controls on the other. Fold it again to pause." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cihazı aç, kartuş yerine otursun: ekran katlama çizgisinin bir yanında, kontroller öbür yanında olur. Duraklatmak için yeniden katla."
           }
         }
       }
@@ -1460,6 +1520,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ALINDI"
+          }
+        }
+      }
+    },
+    "Page %lld of %lld" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayfa %1$lld / %2$lld"
           }
         }
       }
@@ -1555,6 +1625,16 @@
         }
       }
     },
+    "Play with the D-Pad and A / B. A starts a round, ◀ ▶ on the title screen switch modes, and Start pauses. The pause menu changes the screen, the palette and the music." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yön tuşları ve A / B ile oyna. A turu başlatır, başlık ekranında ◀ ▶ mod değiştirir, Start duraklatır. Duraklatma menüsünden ekranı, paleti ve müziği değiştirebilirsin."
+          }
+        }
+      }
+    },
     "Player color" : {
       "localizations" : {
         "tr" : {
@@ -1625,6 +1705,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "BAŞLAMAK İÇİN A'YA BAS"
+          }
+        }
+      }
+    },
+    "Press Select to eject the cartridge. The screen powers off and the shelf comes back." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kartuşu çıkarmak için Select'e bas. Ekran kapanır ve raf geri gelir."
           }
         }
       }
@@ -1719,22 +1809,22 @@
         }
       }
     },
-    "RECORDS" : {
-      "localizations" : {
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "REKORLAR"
-          }
-        }
-      }
-    },
     "Records" : {
       "localizations" : {
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Rekorlar"
+          }
+        }
+      }
+    },
+    "RECORDS" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "REKORLAR"
           }
         }
       }
@@ -1773,11 +1863,21 @@
     "RETRO" : {
       "shouldTranslate" : false
     },
+    "Retro Cartridge" : {
+      "shouldTranslate" : false
+    },
     "RETRO CARTRIDGE" : {
       "shouldTranslate" : false
     },
-    "Retro Cartridge" : {
-      "shouldTranslate" : false
+    "Retro Cartridge turns iPhone Duo into a handheld console. Pick a cartridge: swipe through them on the cover, or tap one on the shelf." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retro Cartridge, iPhone Duo'yu bir el konsoluna dönüştürür. Bir kartuş seç: kapakta kaydırarak göz at ya da raftakilerden birine dokun."
+          }
+        }
+      }
     },
     "RETRY" : {
       "localizations" : {
@@ -1960,6 +2060,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kaplamalar"
+          }
+        }
+      }
+    },
+    "Skins, Screen and Labels in the toolbar restyle the console, the display and your cartridge art. Records keeps your scores and achievements." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Araç çubuğundaki Kaplamalar, Ekran ve Etiketler konsolu, ekranı ve kartuş çizimini değiştirir. Rekorlar skorlarını ve başarımlarını tutar."
           }
         }
       }
@@ -2337,6 +2447,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Alanın içinde duvarlar var."
+          }
+        }
+      }
+    },
+    "WELCOME" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HOŞ GELDİN"
           }
         }
       }

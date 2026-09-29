@@ -120,22 +120,17 @@ extension PixelArt {
     }
 }
 
-// MARK: - Label artwork view
+// MARK: - Pixel art view
 
-/// Draws a cartridge's label in its game's palette, pixels kept square and
-/// centered: the player's own label when they drew one, else the built-in art.
-struct CartridgeArt: View {
-    let game: GameType
-
-    @Environment(AppState.self) private var appState
+/// Draws pixel art in a palette, pixels kept square and centered.
+struct PixelArtView: View {
+    let art: PixelArt
+    let palette: GamePalette
 
     var body: some View {
-        let art = appState.labels.art(for: game)
-        let palette = GamePalette.native(for: game)
-
-        // Capturing the art makes each label's renderer distinct, so an
-        // edited label redraws (see `GameCanvasView`).
-        Canvas { [art] context, size in
+        // Capturing the art makes each drawing's renderer distinct, so
+        // changed art redraws (see `GameCanvasView`).
+        Canvas { [art, palette] context, size in
             context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(palette.background))
 
             let count = CGFloat(max(art.rows.count, art.rows.map(\.count).max() ?? 0))
@@ -158,6 +153,20 @@ struct CartridgeArt: View {
             }
         }
         .accessibilityHidden(true)
+    }
+}
+
+// MARK: - Label artwork view
+
+/// Draws a cartridge's label in its game's palette: the player's own label
+/// when they drew one, else the built-in art.
+struct CartridgeArt: View {
+    let game: GameType
+
+    @Environment(AppState.self) private var appState
+
+    var body: some View {
+        PixelArtView(art: appState.labels.art(for: game), palette: .native(for: game))
     }
 }
 

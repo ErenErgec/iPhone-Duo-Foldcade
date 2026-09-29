@@ -58,6 +58,7 @@ xcodebuild -project RetroCartridge/RetroCartridge.xcodeproj -scheme RetroCartrid
   - Game titles, skin names, product names and the console silkscreen (RETRO CARTRIDGE, POWER, SELECT, START) stay in English (`shouldTranslate: false`).
   - Xcode adds new keys to the catalog when building; add their Turkish text before committing.
 - **Cartridge labels:** `PixelArt` rows are 16×16 characters naming palette roles (key in `CartridgeArt.swift`); a test enforces the size and characters. Draw labels with `CartridgeArt`, which shows the player's own label from `appState.labels` (`LabelStore`) when there is one; never read `PixelArt.label(for:)` directly for display.
+- **Intro:** `IntroView` sits above every overlay while `appState.isIntroVisible`. It opens by itself until `hasSeenIntro`; closing it at any point marks it seen. While it shows, unfolding doesn't insert the cartridge (its last page does), and `startGame` only hides it. Tests that touch `hasSeenIntro` restore the user's value.
 - **Overlay text:** use `retroFont(_:weight:)` for text in overlays and the library, never a fixed `.font(.system(size:))`, so it follows Dynamic Type and Bold Text. The console's printed text (bezel, tube, silkscreen, cartridge labels) stays fixed and scales with the console.
 - **Motion:** decorative motion (neon pulse, attract mode, insert slide, console jolt) is skipped with Reduce Motion.
 - **Library grid:** `LibraryGridMetrics` uses an even column count when the display has a fold (HIG: "prefer an even number of columns"). The fold is read with `.includeInactive`, so folding never reflows the grid. Cartridge width comes from the container, not a fixed size.
@@ -72,7 +73,7 @@ xcodebuild -project RetroCartridge/RetroCartridge.xcodeproj -scheme RetroCartrid
 
 ## Project status (2026-09-29)
 
-- **Git:** `main` is the working branch; PR #1 (`gameplay-fixes`) was merged on 2026-09-28. The design and variety plan (Phases 0–6 below) is on `claude/festive-dirac-8zepxk`, in review as a PR into `main`. The GitHub repo is private. Commit and push only when the user asks; they usually test in Device Hub first.
+- **Git:** `main` is the working branch; PR #1 (`gameplay-fixes`) was merged on 2026-09-28. The design and variety plan (Phases 0–7 below) is on `claude/festive-dirac-8zepxk`, in review as a PR into `main`. The GitHub repo is private. Commit and push only when the user asks; they usually test in Device Hub first.
 - **Done and verified by the user on the simulator (before the plan):**
   - games running at 60 FPS;
   - CRT shader;
@@ -87,7 +88,8 @@ xcodebuild -project RetroCartridge/RetroCartridge.xcodeproj -scheme RetroCartrid
   - Phase 4: Records overlay, toolbar groups with visibility priorities, occlusion avoidance; `ArrangementView` evaluated and not adopted for the console.
   - Phase 3: store aligned with its contents (six free cartridges at the time; Maze Muncher and Frog Hop in the Collector Pack; Lunar Hinge, Gold Edition, screen modes and tuning in Lifetime Pro), derived store copy, locked-item highlighting.
   - Phase 5: a looping chiptune theme per cartridge (MUSIC in the pause menu), VoiceOver play and Reduce Transparency, Turkish localization.
-  - Phase 6 (not yet built): label designer (Labels toolbar item), three new cartridges (Paddle Duel and Tower Stack free, Astro Drift in the Collector Pack), overlay text following Dynamic Type and Bold Text.
+  - Phase 7 (not yet built): first-launch How to Play intro, replayable from Records.
+  - Phase 6: label designer (Labels toolbar item), three new cartridges (Paddle Duel and Tower Stack free, Astro Drift in the Collector Pack), overlay text following Dynamic Type and Bold Text.
 - **Not yet verified:**
   - the unit tests on the Duo simulator after Phases 1–3;
   - the plan's visuals and interactions in Device Hub, in both inner-display orientations and on the cover;
@@ -95,6 +97,7 @@ xcodebuild -project RetroCartridge/RetroCartridge.xcodeproj -scheme RetroCartrid
   - sound effects, music and the four sound packs by ear (music was checked only by rendering it offline);
   - the label designer on both displays (drawing inside the scrolling panel on the cover), and the three new cartridges;
   - the overlays at large and accessibility text sizes and with Bold Text;
+  - the intro on a fresh install (delete the app first), on the cover and after unfolding;
   - VoiceOver play on the console, and the app in Turkish (set the simulator's language, or the scheme's App Language, to Turkish);
   - StoreKit purchases end to end (run from Xcode with `Products.storekit` selected in the scheme);
   - anything on real iPhone Duo hardware (ships 2026-10-23).

@@ -152,6 +152,43 @@ final class AppState {
 
     /// Whether the label designer overlay is visible. The store stacks above it.
     var isLabelDesignerVisible: Bool = false
+
+    // MARK: - Intro
+
+    /// Whether the how-to-play intro is showing, above every other overlay.
+    /// It opens by itself until the player has been through it once.
+    var isIntroVisible: Bool = !AppState.persistedHasSeenIntro()
+
+    /// Whether the player has finished or closed the intro, persisted.
+    var hasSeenIntro: Bool = AppState.persistedHasSeenIntro() {
+        didSet {
+            guard hasSeenIntro != oldValue else { return }
+            UserDefaults.standard.set(hasSeenIntro, forKey: Self.hasSeenIntroKey)
+        }
+    }
+
+    private static let hasSeenIntroKey = "hasSeenIntro"
+
+    private static func persistedHasSeenIntro() -> Bool {
+        UserDefaults.standard.bool(forKey: hasSeenIntroKey)
+    }
+
+    /// Opens the intro again, in place of the other overlays. Call inside
+    /// `withAnimation`.
+    func showIntro() {
+        isSkinSelectorVisible = false
+        isScreenSettingsVisible = false
+        isRecordsVisible = false
+        isLabelDesignerVisible = false
+        isStoreVisible = false
+        isIntroVisible = true
+    }
+
+    /// Closes the intro for good. Call inside `withAnimation`.
+    func finishIntro() {
+        isIntroVisible = false
+        hasSeenIntro = true
+    }
     
     // MARK: - High Scores (Persisted)
     
@@ -185,6 +222,9 @@ final class AppState {
         isScreenSettingsVisible = false
         isRecordsVisible = false
         isLabelDesignerVisible = false
+        // Hidden, not marked as seen: a game only starts under the intro
+        // from its own last page, which marks it
+        isIntroVisible = false
     }
 
     /// When the eject began: the tube powers off, then `GameCanvasView`

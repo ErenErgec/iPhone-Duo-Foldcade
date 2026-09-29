@@ -71,6 +71,7 @@
 		E3FB6A958F58EA7BAA1CF206 /* AstroDriftGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5CF407C8D04FEA17626A26E /* AstroDriftGame.swift */; };
 		82123C208BBEF773FB99F809 /* TowerStackGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F10CA15DEED39E74627C2A2 /* TowerStackGame.swift */; };
 		EED56E78A65BA6925A502187 /* RetroTypography.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9944041C46D1D384FB8790AB /* RetroTypography.swift */; };
+		253D56C875375CE799361A3C /* IntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40F89D1BB0C93C18E1661B2 /* IntroView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -152,6 +153,7 @@
 		F5CF407C8D04FEA17626A26E /* AstroDriftGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AstroDriftGame.swift; sourceTree = "<group>"; };
 		9F10CA15DEED39E74627C2A2 /* TowerStackGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TowerStackGame.swift; sourceTree = "<group>"; };
 		9944041C46D1D384FB8790AB /* RetroTypography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetroTypography.swift; sourceTree = "<group>"; };
+		F40F89D1BB0C93C18E1661B2 /* IntroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -188,6 +190,7 @@
 				FF3E442A1B8BB71C6A604E74 /* ScreenSettingsView.swift */,
 				A0B777D6058450A4862AE6B7 /* RecordsView.swift */,
 				F7E70AF52E2FA8E338FCE243 /* LabelDesignerView.swift */,
+				F40F89D1BB0C93C18E1661B2 /* IntroView.swift */,
 				57E0BB0000000000000000F1 /* OverlayPanel.swift */,
 				9944041C46D1D384FB8790AB /* RetroTypography.swift */,
 			);
@@ -553,6 +556,7 @@
 				F730C9995B3369A64BB9AF11 /* ScreenSettingsView.swift in Sources */,
 				094A9581F904E8F5EC3E7DF9 /* RecordsView.swift in Sources */,
 				D2DAAEB38E69A008A43CEB05 /* LabelDesignerView.swift in Sources */,
+				253D56C875375CE799361A3C /* IntroView.swift in Sources */,
 				57E0BB0000000000000000B1 /* OverlayPanel.swift in Sources */,
 				EED56E78A65BA6925A502187 /* RetroTypography.swift in Sources */,
 				677B8DF4217D3EED21CB1C41 /* GameModels.swift in Sources */,

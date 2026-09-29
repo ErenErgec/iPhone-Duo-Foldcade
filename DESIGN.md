@@ -272,6 +272,10 @@ The update rate and precision are system policy; prefer `status` when you only n
 - **VoiceOver drawing.** The grid takes direct touches (`.allowsDirectInteraction`), as the console controls do; swatches are named by the role of their color.
 - **Dynamic Type and Bold Text.** Overlay and library text follows the body style's size steps and gets heavier with Bold Text; at accessibility sizes one-line text wraps instead of shrinking. The console's printed text is part of the hardware and scales with the console, not the text size.
 
+**Decided on 2026-09-29 (Phase 7, intro):**
+- **An in-hierarchy intro, not a sheet,** like the other overlays: it opens on whichever display the app starts on and keeps the retro look. It's short (five pages), can be closed at any point, and can be replayed from Records.
+- **Unfolding waits for the intro.** It explains unfolding, so a cartridge going in mid-read would cut it off. While it shows, unfolding only moves it to the inner display. Its last button inserts the selected cartridge.
+
 **Verified by the user in Device Hub (2026-09-23):**
 - Closed with the hinge on top, the outer display comes up in landscape.
 - Opened like a laptop, the CRT is above and the controls are below, with the split on the fold.

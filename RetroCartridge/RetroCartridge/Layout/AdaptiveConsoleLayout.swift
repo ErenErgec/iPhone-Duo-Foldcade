@@ -68,7 +68,9 @@ public struct AdaptiveConsoleLayout: View {
             if wasCompact && !isCompact && !appState.isGameActive {
                 // Unfolded: insert the cartridge chosen on the cover screen,
                 // unless it's locked (the library then shows it on the shelf)
-                guard storeManager.isUnlocked(appState.selectedGameType) else { return }
+                // or the intro is still explaining things (its last page
+                // inserts the cartridge)
+                guard storeManager.isUnlocked(appState.selectedGameType), !appState.isIntroVisible else { return }
                 appState.startGame(type: appState.selectedGameType)
             } else if isCompact {
                 // Folded: keep the session but pause it (app continuity)
