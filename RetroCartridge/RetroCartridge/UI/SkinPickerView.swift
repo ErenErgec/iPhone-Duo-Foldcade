@@ -98,7 +98,7 @@ struct SkinPickerView: View {
 
                 VStack(spacing: 5) {
                     Text(skin.rawValue.uppercased())
-                        .font(.system(size: 13, weight: .heavy, design: .monospaced))
+                        .retroFont(13, weight: .heavy)
                         .tracking(1.5)
                         .foregroundStyle(.white)
                         .lineLimit(1)
@@ -134,7 +134,7 @@ struct SkinPickerView: View {
                     .foregroundStyle(RetroPalette.amber)
             }
         }
-        .font(.system(size: 11, weight: .bold, design: .monospaced))
+        .retroFont(11, weight: .bold)
         .tracking(1)
         .labelStyle(.titleAndIcon)
         .lineLimit(1)
@@ -147,7 +147,7 @@ struct SkinPickerView: View {
     private var soundPacks: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("SOUND PACK")
-                .font(.system(size: 12, weight: .heavy, design: .monospaced))
+                .retroFont(12, weight: .heavy)
                 .tracking(2.5)
                 .foregroundStyle(RetroPalette.phosphor.opacity(0.85))
 
@@ -203,7 +203,7 @@ struct SkinPickerView: View {
                     .font(.system(size: 16, weight: .bold))
                     .foregroundStyle(RetroPalette.amber)
                 Text("UNLOCK \(ProductIdentifiers.skins(unlockedBy: ProductIdentifiers.retroCollectorPack).count) SKINS WITH THE COLLECTOR PACK")
-                    .font(.system(size: 12, weight: .bold, design: .monospaced))
+                    .retroFont(12, weight: .bold)
                     .tracking(1)
                     .foregroundStyle(.white.opacity(0.75))
                     .lineLimit(2)

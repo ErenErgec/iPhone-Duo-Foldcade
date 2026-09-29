@@ -117,14 +117,14 @@ struct OverlayPanel<Content: View>: View {
                         .frame(width: 7, height: 7)
                         .shadow(color: RetroPalette.phosphor.opacity(0.8), radius: 4)
                     Text(title)
-                        .font(.system(size: 20, weight: .black, design: .monospaced))
+                        .retroFont(20, weight: .black, maxScale: 1.5, wraps: false)
                         .tracking(3)
                         .foregroundStyle(.white)
                         .lineLimit(1)
                         .minimumScaleFactor(0.7)
                 }
                 Text(subtitle)
-                    .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                    .retroFont(11, weight: .semibold)
                     .tracking(3)
                     .foregroundStyle(.white.opacity(0.45))
                     .lineLimit(1)
@@ -161,10 +161,10 @@ struct RetroCapsuleLabel: View {
         HStack(spacing: 6) {
             if let systemImage {
                 Image(systemName: systemImage)
-                    .font(.system(size: 11, weight: .heavy))
+                    .retroFont(11, weight: .heavy, design: .default)
             }
             Text(title)
-                .font(.system(size: 12, weight: .heavy, design: .monospaced))
+                .retroFont(12, weight: .heavy)
                 .tracking(2)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)

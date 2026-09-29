@@ -133,11 +133,11 @@ public struct FullScreenLayout: View {
         VStack(spacing: 36) {
             VStack(spacing: 10) {
                 Text("RETRO CARTRIDGE")
-                    .font(.system(size: 34, weight: .black, design: .monospaced))
+                    .retroFont(34, weight: .black, maxScale: 1.35, wraps: false)
                     .tracking(4)
                     .foregroundStyle(.white)
                 Text("CHOOSE A CARTRIDGE")
-                    .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                    .retroFont(13, weight: .semibold)
                     .tracking(4)
                     .foregroundStyle(.white.opacity(0.45))
                 collectionCounter
@@ -216,7 +216,7 @@ public struct FullScreenLayout: View {
                         .foregroundStyle(.white.opacity(0.5))
                 }
             }
-            .font(.system(size: 12, weight: .medium, design: .monospaced))
+            .retroFont(12, weight: .medium)
             .lineLimit(1)
             .minimumScaleFactor(0.7)
             .padding(.top, 10)

@@ -123,11 +123,11 @@ struct StoreView: View {
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
-                    .font(.system(size: 12, weight: .heavy, design: .monospaced))
+                    .retroFont(12, weight: .heavy)
                     .tracking(1.5)
                     .foregroundStyle(tint)
                 Text(message)
-                    .font(.system(size: 12, weight: .medium, design: .monospaced))
+                    .retroFont(12, weight: .medium)
                     .foregroundStyle(.white.opacity(0.65))
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -161,7 +161,7 @@ struct StoreView: View {
                     // Product names are English in every language, so they're
                     // uppercased by English rules ("LIFETIME", not "LİFETİME").
                     Text((product?.displayName ?? ProductIdentifiers.fallbackDisplayName(for: productID)).uppercased())
-                        .font(.system(size: 16, weight: .black, design: .monospaced))
+                        .retroFont(16, weight: .black)
                         .tracking(1.5)
                         .foregroundStyle(.white)
                         .lineLimit(1)
@@ -169,14 +169,14 @@ struct StoreView: View {
 
                     if isHighlighted {
                         Label("UNLOCKS WHAT YOU TAPPED", systemImage: "arrow.down.circle.fill")
-                            .font(.system(size: 10, weight: .heavy, design: .monospaced))
+                            .retroFont(10, weight: .heavy)
                             .tracking(1)
                             .foregroundStyle(tint)
                             .labelStyle(.titleAndIcon)
                     }
 
                     Text(ProductIdentifiers.summary(for: productID))
-                        .font(.system(size: 12, weight: .medium, design: .monospaced))
+                        .retroFont(12, weight: .medium)
                         .foregroundStyle(.white.opacity(0.55))
                         .fixedSize(horizontal: false, vertical: true)
                 }
@@ -280,7 +280,7 @@ struct StoreView: View {
     private func section<Items: View>(_ title: LocalizedStringKey, tint: Color, @ViewBuilder items: () -> Items) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
-                .font(.system(size: 10, weight: .heavy, design: .monospaced))
+                .retroFont(10, weight: .heavy)
                 .tracking(2.5)
                 .foregroundStyle(tint.opacity(0.85))
 
@@ -294,7 +294,7 @@ struct StoreView: View {
 
     private func itemName(_ name: String) -> some View {
         Text(name.uppercased())
-            .font(.system(size: 9, weight: .bold, design: .monospaced))
+            .retroFont(9, weight: .bold)
             .foregroundStyle(.white.opacity(0.6))
             .lineLimit(2)
             .multilineTextAlignment(.center)
@@ -303,7 +303,7 @@ struct StoreView: View {
 
     private func perk(_ text: LocalizedStringKey) -> some View {
         Label(text, systemImage: "plus")
-            .font(.system(size: 10, weight: .bold, design: .monospaced))
+            .retroFont(10, weight: .bold)
             .foregroundStyle(.white.opacity(0.7))
             .lineLimit(1)
             .minimumScaleFactor(0.7)
@@ -347,7 +347,7 @@ struct StoreView: View {
                     .controlSize(.small)
                     .tint(.white)
                 Text(price)
-                    .font(.system(size: 12, weight: .heavy, design: .monospaced))
+                    .retroFont(12, weight: .heavy)
                     .foregroundStyle(.white.opacity(0.5))
             }
             .frame(minWidth: 96, minHeight: 36)
@@ -376,7 +376,7 @@ struct StoreView: View {
                             .font(.system(size: 12, weight: .heavy))
                     }
                     Text("RESTORE PURCHASES")
-                        .font(.system(size: 12, weight: .heavy, design: .monospaced))
+                        .retroFont(12, weight: .heavy)
                         .tracking(2)
                 }
                 .foregroundStyle(.white.opacity(0.8))
@@ -389,7 +389,7 @@ struct StoreView: View {
             .disabled(storeManager.isRestoring)
 
             Text(restoreNote ?? String(localized: "One-time purchases, billed through the App Store."))
-                .font(.system(size: 10, weight: .medium, design: .monospaced))
+                .retroFont(10, weight: .medium)
                 .tracking(0.5)
                 .foregroundStyle(restoreNote == nil ? .white.opacity(0.35) : RetroPalette.phosphor.opacity(0.9))
                 .multilineTextAlignment(.center)

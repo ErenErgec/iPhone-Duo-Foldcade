@@ -93,18 +93,18 @@ public struct CoverScreenLayout: View {
 
         return VStack(alignment: alignment, spacing: 8) {
             Text(selected.rawValue.uppercased())
-                .font(.system(size: 24, weight: .black, design: .monospaced))
+                .retroFont(24, weight: .black, maxScale: 1.35, wraps: false)
                 .foregroundStyle(.white)
                 .lineLimit(1)
                 .minimumScaleFactor(0.6)
             Text(selected.subtitle)
-                .font(.system(size: 14, weight: .medium, design: .monospaced))
+                .retroFont(14, weight: .medium, maxScale: 1.35, wraps: false)
                 .foregroundStyle(.white.opacity(0.5))
 
             let best = appState.highScore(for: selected)
             if best > 0 {
                 Text("HI \(best)")
-                    .font(.system(size: 13, weight: .bold, design: .monospaced))
+                    .retroFont(13, weight: .bold, maxScale: 1.35, wraps: false)
                     .foregroundStyle(Color(hex: selected.cartridgeColorHex))
                     .padding(.top, 2)
             }
@@ -133,7 +133,7 @@ public struct CoverScreenLayout: View {
             Image(systemName: isLocked ? "lock.fill" : "arrow.up.and.down")
                 .font(.system(size: 14, weight: .bold))
             Text(isLocked ? ProductIdentifiers.shortName(for: appState.selectedGameType.info.requiredProductID ?? "") : String(localized: "UNFOLD TO PLAY"))
-                .font(.system(size: 15, weight: .heavy, design: .monospaced))
+                .retroFont(15, weight: .heavy, maxScale: 1.35, wraps: false)
                 .tracking(3)
         }
         .foregroundStyle(.white)

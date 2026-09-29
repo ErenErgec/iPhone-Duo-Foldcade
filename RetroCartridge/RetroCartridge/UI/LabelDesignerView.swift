@@ -98,7 +98,7 @@ struct LabelDesignerView: View {
 
             VStack(alignment: .leading, spacing: 8) {
                 Text(current.rawValue.uppercased())
-                    .font(.system(size: 16, weight: .black, design: .monospaced))
+                    .retroFont(16, weight: .black)
                     .tracking(1.5)
                     .foregroundStyle(.white)
                     .lineLimit(1)
@@ -295,7 +295,7 @@ struct LabelDesignerView: View {
     private func section<Content: View>(_ title: LocalizedStringKey, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
-                .font(.system(size: 12, weight: .heavy, design: .monospaced))
+                .retroFont(12, weight: .heavy)
                 .tracking(2.5)
                 .foregroundStyle(RetroPalette.phosphor.opacity(0.85))
             content()

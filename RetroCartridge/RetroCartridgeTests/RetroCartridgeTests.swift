@@ -4,6 +4,7 @@
 // Unit tests for app state, display detection and game metadata.
 
 import XCTest
+import SwiftUI
 @testable import RetroCartridge
 
 final class RetroCartridgeTests: XCTestCase {
@@ -986,6 +987,24 @@ final class RetroCartridgeTests: XCTestCase {
                 XCTAssertNotNil(PixelArt.color(for: pixel, in: palette), "\(gameType.rawValue): \(pixel)")
             }
         }
+    }
+
+    // MARK: - Text size and Bold Text
+
+    func testOverlayTextFollowsTheTextSize() {
+        XCTAssertEqual(RetroType.scale(for: .large), 1)
+        XCTAssertLessThan(RetroType.scale(for: .xSmall), 1)
+        // Each size is larger than the one before
+        let sizes = DynamicTypeSize.allCases.map(RetroType.scale(for:))
+        XCTAssertEqual(sizes, sizes.sorted())
+        XCTAssertEqual(Set(sizes).count, sizes.count)
+    }
+
+    func testBoldTextMakesTextOneStepHeavier() {
+        XCTAssertEqual(RetroType.weight(.medium, isBold: false), .medium)
+        XCTAssertEqual(RetroType.weight(.medium, isBold: true), .semibold)
+        XCTAssertEqual(RetroType.weight(.heavy, isBold: true), .black)
+        XCTAssertEqual(RetroType.weight(.black, isBold: true), .black)
     }
 
     // MARK: - Localization

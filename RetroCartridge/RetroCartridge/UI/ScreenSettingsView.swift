@@ -113,14 +113,14 @@ struct ScreenSettingsView: View {
 
                 VStack(spacing: 5) {
                     Text(mode.title.localizedUppercase)
-                        .font(.system(size: 13, weight: .heavy, design: .monospaced))
+                        .retroFont(13, weight: .heavy)
                         .tracking(1.5)
                         .foregroundStyle(.white)
                         .lineLimit(1)
                         .minimumScaleFactor(0.6)
 
                     Text(mode.summary)
-                        .font(.system(size: 11, weight: .medium, design: .monospaced))
+                        .retroFont(11, weight: .medium)
                         .foregroundStyle(.white.opacity(0.5))
                         .lineLimit(1)
                         .minimumScaleFactor(0.7)
@@ -149,7 +149,7 @@ struct ScreenSettingsView: View {
                     .foregroundStyle(RetroPalette.amber)
             }
         }
-        .font(.system(size: 11, weight: .bold, design: .monospaced))
+        .retroFont(11, weight: .bold)
         .tracking(1)
         .labelStyle(.titleAndIcon)
         .lineLimit(1)
@@ -166,7 +166,7 @@ struct ScreenSettingsView: View {
         return VStack(alignment: .leading, spacing: 14) {
             HStack {
                 Text("TUNING")
-                    .font(.system(size: 12, weight: .heavy, design: .monospaced))
+                    .retroFont(12, weight: .heavy)
                     .tracking(2.5)
                     .foregroundStyle(RetroPalette.phosphor.opacity(0.85))
 
@@ -218,7 +218,7 @@ struct ScreenSettingsView: View {
                 Text(String(format: "%.1f×", value.wrappedValue * 2))
                     .foregroundStyle(RetroPalette.phosphor)
             }
-            .font(.system(size: 11, weight: .bold, design: .monospaced))
+            .retroFont(11, weight: .bold)
             .tracking(1)
 
             Slider(value: value, in: 0...1)

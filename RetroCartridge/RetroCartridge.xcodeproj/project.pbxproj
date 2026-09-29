@@ -70,6 +70,7 @@
 		C5B94E7F4A51B2E0C4BAD57A /* PaddleDuelGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 271CCAB8E7E61B65A90BD01C /* PaddleDuelGame.swift */; };
 		E3FB6A958F58EA7BAA1CF206 /* AstroDriftGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5CF407C8D04FEA17626A26E /* AstroDriftGame.swift */; };
 		82123C208BBEF773FB99F809 /* TowerStackGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F10CA15DEED39E74627C2A2 /* TowerStackGame.swift */; };
+		EED56E78A65BA6925A502187 /* RetroTypography.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9944041C46D1D384FB8790AB /* RetroTypography.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -150,6 +151,7 @@
 		271CCAB8E7E61B65A90BD01C /* PaddleDuelGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddleDuelGame.swift; sourceTree = "<group>"; };
 		F5CF407C8D04FEA17626A26E /* AstroDriftGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AstroDriftGame.swift; sourceTree = "<group>"; };
 		9F10CA15DEED39E74627C2A2 /* TowerStackGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TowerStackGame.swift; sourceTree = "<group>"; };
+		9944041C46D1D384FB8790AB /* RetroTypography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetroTypography.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -187,6 +189,7 @@
 				A0B777D6058450A4862AE6B7 /* RecordsView.swift */,
 				F7E70AF52E2FA8E338FCE243 /* LabelDesignerView.swift */,
 				57E0BB0000000000000000F1 /* OverlayPanel.swift */,
+				9944041C46D1D384FB8790AB /* RetroTypography.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -551,6 +554,7 @@
 				094A9581F904E8F5EC3E7DF9 /* RecordsView.swift in Sources */,
 				D2DAAEB38E69A008A43CEB05 /* LabelDesignerView.swift in Sources */,
 				57E0BB0000000000000000B1 /* OverlayPanel.swift in Sources */,
+				EED56E78A65BA6925A502187 /* RetroTypography.swift in Sources */,
 				677B8DF4217D3EED21CB1C41 /* GameModels.swift in Sources */,
 				D2DDD4CE661F117CAF47450B /* HapticManager.swift in Sources */,
 				762BE0DA9936473273BDB6B0 /* HingeEngine.swift in Sources */,

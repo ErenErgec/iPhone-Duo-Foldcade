@@ -48,12 +48,12 @@ struct RecordsView: View {
         return VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Text("ACHIEVEMENTS")
-                    .font(.system(size: 12, weight: .heavy, design: .monospaced))
+                    .retroFont(12, weight: .heavy)
                     .tracking(2.5)
                     .foregroundStyle(RetroPalette.phosphor.opacity(0.85))
                 Spacer(minLength: 8)
                 Text("\(earned)/\(total)")
-                    .font(.system(size: 14, weight: .black, design: .monospaced))
+                    .retroFont(14, weight: .black)
                     .foregroundStyle(Self.gold)
             }
             ProgressView(value: Double(earned), total: Double(max(total, 1)))
@@ -99,7 +99,7 @@ struct RecordsView: View {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(alignment: .firstTextBaseline) {
                     Text(game.rawValue.uppercased())
-                        .font(.system(size: 14, weight: .heavy, design: .monospaced))
+                        .retroFont(14, weight: .heavy)
                         .tracking(1.2)
                         .foregroundStyle(.white)
                         .lineLimit(1)
@@ -107,13 +107,13 @@ struct RecordsView: View {
                     Spacer(minLength: 8)
                     if let productID {
                         Label(ProductIdentifiers.shortName(for: productID), systemImage: "lock.fill")
-                            .font(.system(size: 10, weight: .bold, design: .monospaced))
+                            .retroFont(10, weight: .bold)
                             .foregroundStyle(RetroPalette.amber)
                             .labelStyle(.titleAndIcon)
                             .lineLimit(1)
                     } else {
                         Text("\(tally.earned)/\(tally.total) ★")
-                            .font(.system(size: 12, weight: .bold, design: .monospaced))
+                            .retroFont(12, weight: .bold)
                             .foregroundStyle(tally.earned > 0 ? Self.gold : Color.white.opacity(0.35))
                     }
                 }
@@ -144,7 +144,7 @@ struct RecordsView: View {
                     Text(best > 0 ? "\(best)" : "—")
                         .foregroundStyle(best > 0 ? RetroPalette.phosphor : Color.white.opacity(0.3))
                 }
-                .font(.system(size: 11, weight: .bold, design: .monospaced))
+                .retroFont(11, weight: .bold)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
             }
@@ -160,10 +160,10 @@ struct RecordsView: View {
                 let isEarned = appState.progress.hasEarned(achievement.id)
                 VStack(alignment: .leading, spacing: 2) {
                     Text("\(isEarned ? "★" : "☆") \(achievement.title)")
-                        .font(.system(size: 11, weight: .heavy, design: .monospaced))
+                        .retroFont(11, weight: .heavy)
                         .foregroundStyle(isEarned ? Self.gold : Color.white.opacity(0.5))
                     Text(achievement.detail)
-                        .font(.system(size: 10, weight: .medium, design: .monospaced))
+                        .retroFont(10, weight: .medium)
                         .foregroundStyle(.white.opacity(isEarned ? 0.6 : 0.35))
                 }
                 .lineLimit(1)
