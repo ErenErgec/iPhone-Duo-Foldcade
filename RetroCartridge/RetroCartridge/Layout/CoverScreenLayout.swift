@@ -12,6 +12,7 @@ import SwiftUI
 
 public struct CoverScreenLayout: View {
     @Environment(AppState.self) private var appState
+    @Environment(StoreManager.self) private var storeManager
     @State private var blink: Bool = false
 
     public init() {}
@@ -48,7 +49,8 @@ public struct CoverScreenLayout: View {
                 CartridgeView(
                     game: game,
                     highScore: appState.highScore(for: game),
-                    isSelected: game == appState.selectedGameType
+                    isSelected: game == appState.selectedGameType,
+                    isLocked: !storeManager.isUnlocked(game)
                 )
                 .frame(width: cartridgeWidth)
                 .padding(.vertical, 20)
@@ -97,10 +99,12 @@ public struct CoverScreenLayout: View {
     }
 
     private var unfoldPrompt: some View {
-        HStack(spacing: 10) {
-            Image(systemName: "arrow.up.and.down")
+        let isLocked = !storeManager.isUnlocked(appState.selectedGameType)
+
+        return HStack(spacing: 10) {
+            Image(systemName: isLocked ? "lock.fill" : "arrow.up.and.down")
                 .font(.system(size: 14, weight: .bold))
-            Text("UNFOLD TO PLAY")
+            Text(isLocked ? "UNLOCK IN STORE" : "UNFOLD TO PLAY")
                 .font(.system(size: 15, weight: .heavy, design: .monospaced))
                 .tracking(3)
         }

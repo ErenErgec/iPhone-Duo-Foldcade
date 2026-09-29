@@ -46,6 +46,7 @@
 		F730C9995B3369A64BB9AF11 /* ScreenSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF3E442A1B8BB71C6A604E74 /* ScreenSettingsView.swift */; };
 		FC7FA955E567C75F39AE9E9D /* ShellSurface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B3BC3C1A70B6689CC493AA /* ShellSurface.swift */; };
 		9BE04857F10CFE8F7F51BA70 /* ShellFinish.metal in Sources */ = {isa = PBXBuildFile; fileRef = 9385ACD366F7F593A0E3E1D5 /* ShellFinish.metal */; };
+		D9FAE47E35752387DA9FF746 /* CartridgeArt.swift in Sources */ = {isa = PBXBuildFile; fileRef = F572E5075EABCE30B220AF16 /* CartridgeArt.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -102,6 +103,7 @@
 		FF3E442A1B8BB71C6A604E74 /* ScreenSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenSettingsView.swift; sourceTree = "<group>"; };
 		62B3BC3C1A70B6689CC493AA /* ShellSurface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellSurface.swift; sourceTree = "<group>"; };
 		9385ACD366F7F593A0E3E1D5 /* ShellFinish.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = ShellFinish.metal; sourceTree = "<group>"; };
+		F572E5075EABCE30B220AF16 /* CartridgeArt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartridgeArt.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -128,6 +130,7 @@
 			children = (
 				D64F4B44DC2A3D30C7CBE63D /* Skins */,
 				A1C0DE0000000000000000A2 /* CartridgeView.swift */,
+				F572E5075EABCE30B220AF16 /* CartridgeArt.swift */,
 				17441286342C035B63E9C511 /* ControllerView.swift */,
 				87FEA080C926760FB3C162F5 /* GameCanvasView.swift */,
 				57E0BB0000000000000000F3 /* StoreView.swift */,
@@ -390,6 +393,7 @@
 				7A7D41FBA09DA948C8CAA7C9 /* CRTView.metal in Sources */,
 				9BE04857F10CFE8F7F51BA70 /* ShellFinish.metal in Sources */,
 				A1C0DE0000000000000000A1 /* CartridgeView.swift in Sources */,
+				D9FAE47E35752387DA9FF746 /* CartridgeArt.swift in Sources */,
 				194F0E4D015A7188FC1A0C00 /* ClassicGreySkin.swift in Sources */,
 				720656CE84DDB80C10FD63A2 /* ControllerView.swift in Sources */,
 				6227BA44799E531A7B669A2D /* CoverScreenLayout.swift in Sources */,

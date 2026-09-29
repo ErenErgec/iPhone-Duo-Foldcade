@@ -16,6 +16,7 @@ public struct FullScreenLayout: View {
     @Environment(AppState.self) private var appState
     @Environment(HapticManager.self) private var hapticManager
     @Environment(AudioManager.self) private var audioManager
+    @Environment(StoreManager.self) private var storeManager
 
     public init() {}
 
@@ -113,6 +114,8 @@ public struct FullScreenLayout: View {
                     .font(.system(size: 13, weight: .semibold, design: .monospaced))
                     .tracking(4)
                     .foregroundStyle(.white.opacity(0.45))
+                collectionCounter
+                    .padding(.top, 6)
             }
 
             LazyVGrid(
@@ -123,33 +126,84 @@ public struct FullScreenLayout: View {
                 spacing: LibraryGridMetrics.spacing
             ) {
                 ForEach(GameType.allCases) { game in
-                    cartridgeButton(game, width: metrics.itemWidth)
+                    cartridgeSlot(game, width: metrics.itemWidth)
                 }
             }
         }
     }
     
-    private func cartridgeButton(_ game: GameType, width: CGFloat) -> some View {
-        Button {
-            audioManager.playCartridgeClick()
-            hapticManager.playHaptic(.cartridgeInsert)
-            appState.startGame(type: game)
-        } label: {
-            VStack(spacing: 12) {
+    /// How many cartridges are playable, out of all of them.
+    private var collectionCounter: some View {
+        let owned = GameType.allCases.filter { storeManager.isUnlocked($0) }.count
+        return RetroCapsuleLabel(
+            title: "COLLECTION \(owned)/\(GameType.allCases.count)",
+            systemImage: "square.stack.fill",
+            tint: RetroPalette.phosphor
+        )
+        .accessibilityLabel("\(owned) of \(GameType.allCases.count) cartridges in your collection")
+    }
+
+    /// A cartridge standing on its stretch of shelf, with its subtitle.
+    private func cartridgeSlot(_ game: GameType, width: CGFloat) -> some View {
+        let isLocked = !storeManager.isUnlocked(game)
+
+        return VStack(spacing: 0) {
+            Button {
+                insert(game)
+            } label: {
                 CartridgeView(
                     game: game,
                     highScore: appState.highScore(for: game),
-                    isSelected: game == appState.selectedGameType
+                    isSelected: game == appState.selectedGameType,
+                    isLocked: isLocked
                 )
-                Text(game.subtitle)
-                    .font(.system(size: 12, weight: .medium, design: .monospaced))
-                    .foregroundStyle(.white.opacity(0.5))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.7)
             }
-            .frame(width: width)
+            .buttonStyle(CartridgePressStyle())
+            .accessibilityLabel(game.rawValue)
+            .accessibilityValue(isLocked ? "Locked" : game.subtitle)
+
+            // Neighboring planks meet across the grid spacing into one shelf
+            ShelfLedge()
+                .frame(width: width + LibraryGridMetrics.spacing, height: 12)
+
+            Text(game.subtitle)
+                .font(.system(size: 12, weight: .medium, design: .monospaced))
+                .foregroundStyle(.white.opacity(0.5))
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+                .padding(.top, 10)
+                .accessibilityHidden(true)
         }
-        .buttonStyle(CartridgePressStyle())
+        .frame(width: width)
+    }
+
+    private func insert(_ game: GameType) {
+        guard storeManager.isUnlocked(game) else {
+            hapticManager.playHaptic(.buttonPress)
+            withAnimation(LibraryOverlays.animation) {
+                appState.isStoreVisible = true
+            }
+            return
+        }
+        audioManager.playCartridgeClick()
+        hapticManager.playHaptic(.cartridgeInsert)
+        appState.startGame(type: game)
+    }
+}
+
+/// A shelf plank for cartridges to stand on: a lit top surface and a
+/// darker front edge.
+private struct ShelfLedge: View {
+    var body: some View {
+        VStack(spacing: 0) {
+            Rectangle()
+                .fill(LinearGradient(colors: [Color(white: 0.34), Color(white: 0.22)], startPoint: .top, endPoint: .bottom))
+                .frame(height: 4)
+            Rectangle()
+                .fill(LinearGradient(colors: [Color(white: 0.15), Color(white: 0.08)], startPoint: .top, endPoint: .bottom))
+        }
+        .shadow(color: .black.opacity(0.6), radius: 8, y: 6)
+        .accessibilityHidden(true)
     }
 }
 

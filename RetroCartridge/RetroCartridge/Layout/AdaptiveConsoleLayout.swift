@@ -24,6 +24,7 @@ public struct AdaptiveConsoleLayout: View {
     @Environment(HingeEngine.self) private var hingeEngine
     @Environment(AudioManager.self) private var audioManager
     @Environment(HapticManager.self) private var hapticManager
+    @Environment(StoreManager.self) private var storeManager
 
     public init() {}
 
@@ -65,7 +66,9 @@ public struct AdaptiveConsoleLayout: View {
         }
         .onChange(of: postureManager.isCompactWidth) { wasCompact, isCompact in
             if wasCompact && !isCompact && !appState.isGameActive {
-                // Unfolded: insert the cartridge chosen on the cover screen
+                // Unfolded: insert the cartridge chosen on the cover screen,
+                // unless it's locked (the library then shows it on the shelf)
+                guard storeManager.isUnlocked(appState.selectedGameType) else { return }
                 appState.startGame(type: appState.selectedGameType)
             } else if isCompact {
                 // Folded: keep the session but pause it (app continuity)

@@ -196,11 +196,31 @@ struct CartridgeShell: Equatable, Sendable {
     /// Bottom of the shell's vertical gradient.
     var bottomColor: Color
 
-    /// See-through plastic, drawn by the cartridge artwork.
+    /// See-through plastic: the circuit board inside shows through.
     var isTranslucent: Bool = false
+
+    /// Glow-in-the-dark plastic gives off this color; nil for none.
+    var glowColor: Color? = nil
 
     /// The standard grey shell.
     static let grey = CartridgeShell(topColor: Color(white: 0.36), bottomColor: Color(white: 0.24))
+
+    /// Glossy black plastic.
+    static let black = CartridgeShell(topColor: Color(white: 0.17), bottomColor: Color(white: 0.07))
+
+    /// Pale glow-in-the-dark plastic.
+    static let glow = CartridgeShell(
+        topColor: Color(hex: "#D6EFC8"),
+        bottomColor: Color(hex: "#A9D39A"),
+        glowColor: Color(hex: "#9DFF7A")
+    )
+
+    /// Clear purple plastic.
+    static let clearPurple = CartridgeShell(
+        topColor: Color(hex: "#9B5DE5").opacity(0.55),
+        bottomColor: Color(hex: "#4A0E78").opacity(0.65),
+        isTranslucent: true
+    )
 }
 
 /// Everything the library, cover and store know about a cartridge, kept in
@@ -254,21 +274,24 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
                 subtitle: "8-bit highway dodge",
                 genre: "RACING",
                 symbolName: "car.fill",
-                labelColorHex: "#4ECDC4"
+                labelColorHex: "#4ECDC4",
+                shell: .black
             )
         case .snake:
             return CartridgeInfo(
                 subtitle: "Neon grid serpent",
                 genre: "ACTION",
                 symbolName: "scribble.variable",
-                labelColorHex: "#45B7D1"
+                labelColorHex: "#45B7D1",
+                shell: .glow
             )
         case .fallingBlocks:
             return CartridgeInfo(
                 subtitle: "Block stacking puzzle",
                 genre: "PUZZLE",
                 symbolName: "square.stack.3d.down.right.fill",
-                labelColorHex: "#F7DC6F"
+                labelColorHex: "#F7DC6F",
+                shell: .clearPurple
             )
         }
     }

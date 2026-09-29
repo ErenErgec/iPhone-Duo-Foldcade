@@ -185,4 +185,42 @@ final class RetroCartridgeTests: XCTestCase {
             }
         }
     }
+
+    // MARK: - Cartridge art
+
+    func testEveryCartridgeLabelIsASixteenPixelSquare() {
+        for gameType in GameType.allCases {
+            let rows = PixelArt.label(for: gameType).rows
+            XCTAssertEqual(rows.count, 16, gameType.rawValue)
+            for row in rows {
+                XCTAssertEqual(row.count, 16, "\(gameType.rawValue): \(row)")
+            }
+        }
+    }
+
+    func testCartridgeLabelsOnlyUseKnownPixels() {
+        for gameType in GameType.allCases {
+            let palette = GamePalette.native(for: gameType)
+            for character in PixelArt.label(for: gameType).rows.joined() where character != "." {
+                XCTAssertNotNil(PixelArt.color(for: character, in: palette), "\(gameType.rawValue): \(character)")
+            }
+        }
+    }
+
+    // MARK: - Screen
+
+    func testScreenSettingsRoundTrip() throws {
+        let settings = ScreenSettings(mode: .trinitron, curvature: 0.2, scanlines: 0.9, bleed: 0.4)
+        let data = try JSONEncoder().encode(settings)
+        XCTAssertEqual(try JSONDecoder().decode(ScreenSettings.self, from: data), settings)
+        XCTAssertFalse(settings.hasStandardTuning)
+        XCTAssertTrue(ScreenSettings(mode: .arcade).hasStandardTuning)
+    }
+
+    func testOnlyColorCRTIsFree() {
+        XCTAssertNil(ScreenMode.crt.requiredProductID)
+        for mode in ScreenMode.allCases where mode != .crt {
+            XCTAssertEqual(mode.requiredProductID, ProductIdentifiers.lifetimePro)
+        }
+    }
 }
