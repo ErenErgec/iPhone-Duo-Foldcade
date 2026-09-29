@@ -61,6 +61,7 @@
 		111E06A53F310B8D3B6BA8C7 /* CrimsonCreamSkin.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2C870153DAE65C54CE64EE /* CrimsonCreamSkin.swift */; };
 		E287517BE7946BC483C743B5 /* ElectricYellowSkin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E820EA722E876320B8FB34A /* ElectricYellowSkin.swift */; };
 		C3AB7BCC3E1F803FF7A48B6D /* GoldEditionSkin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CA7AF75FD419C264E66A1B6 /* GoldEditionSkin.swift */; };
+		094A9581F904E8F5EC3E7DF9 /* RecordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0B777D6058450A4862AE6B7 /* RecordsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -132,6 +133,7 @@
 		EE2C870153DAE65C54CE64EE /* CrimsonCreamSkin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrimsonCreamSkin.swift; sourceTree = "<group>"; };
 		8E820EA722E876320B8FB34A /* ElectricYellowSkin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElectricYellowSkin.swift; sourceTree = "<group>"; };
 		7CA7AF75FD419C264E66A1B6 /* GoldEditionSkin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoldEditionSkin.swift; sourceTree = "<group>"; };
+		A0B777D6058450A4862AE6B7 /* RecordsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -166,6 +168,7 @@
 				57E0BB0000000000000000F3 /* StoreView.swift */,
 				57E0BB0000000000000000F2 /* SkinPickerView.swift */,
 				FF3E442A1B8BB71C6A604E74 /* ScreenSettingsView.swift */,
+				A0B777D6058450A4862AE6B7 /* RecordsView.swift */,
 				57E0BB0000000000000000F1 /* OverlayPanel.swift */,
 			);
 			path = UI;
@@ -493,6 +496,7 @@
 				57E0BB0000000000000000B3 /* StoreView.swift in Sources */,
 				57E0BB0000000000000000B2 /* SkinPickerView.swift in Sources */,
 				F730C9995B3369A64BB9AF11 /* ScreenSettingsView.swift in Sources */,
+				094A9581F904E8F5EC3E7DF9 /* RecordsView.swift in Sources */,
 				57E0BB0000000000000000B1 /* OverlayPanel.swift in Sources */,
 				677B8DF4217D3EED21CB1C41 /* GameModels.swift in Sources */,
 				D2DDD4CE661F117CAF47450B /* HapticManager.swift in Sources */,

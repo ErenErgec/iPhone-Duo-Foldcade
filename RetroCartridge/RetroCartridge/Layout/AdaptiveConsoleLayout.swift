@@ -9,7 +9,7 @@
 // - Inner display: follows the system's orientation and splits the console at
 //   the fold (see `FullScreenLayout`).
 //
-// App controls (title, Skins, Screen, Store) live in the system toolbar, which iPhone
+// App controls (title, Skins, Screen, Store, Records) live in the system toolbar, which iPhone
 // Duo lays out vertically in the column beside the camera and status bar, or
 // as a regular top bar on the inner display in portrait. The toolbar is
 // hidden over a running console, an immersive screen without bars
@@ -86,6 +86,10 @@ public struct AdaptiveConsoleLayout: View {
 
     /// Symbol + title items, so the system can lay them out vertically in the
     /// side column (text-only or custom-view items would stay horizontal).
+    ///
+    /// Two groups, as the HIG suggests, with visibility priorities from whole
+    /// groups down: customization (Skins, Screen) stays longest; then Store,
+    /// with Records, the least-used, at the bottom so it overflows first.
     @ToolbarContentBuilder
     private var toolbarItems: some ToolbarContent {
         ToolbarItemGroup(placement: .topBarTrailing) {
@@ -99,10 +103,19 @@ public struct AdaptiveConsoleLayout: View {
             } label: {
                 Label("Screen", systemImage: "tv")
             }
+        }
+        .visibilityPriority(.high)
+
+        ToolbarItemGroup(placement: .topBarTrailing) {
             Button {
                 open(\.isStoreVisible)
             } label: {
                 Label("Store", systemImage: "bag.fill")
+            }
+            Button {
+                open(\.isRecordsVisible)
+            } label: {
+                Label("Records", systemImage: "trophy.fill")
             }
         }
     }
@@ -111,10 +124,11 @@ public struct AdaptiveConsoleLayout: View {
         audioManager.playCartridgeClick()
         hapticManager.playHaptic(.buttonPress)
         withAnimation(LibraryOverlays.animation) {
-            // Skins and Screen replace each other; the store stacks on top.
+            // Skins, Screen and Records replace each other; the store stacks on top.
             if flag != \AppState.isStoreVisible {
                 appState.isSkinSelectorVisible = false
                 appState.isScreenSettingsVisible = false
+                appState.isRecordsVisible = false
             } else {
                 appState.storeHighlight = nil
             }

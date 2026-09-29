@@ -127,6 +127,9 @@ final class AppState {
 
     /// Whether the screen settings overlay is visible. The store stacks above it.
     var isScreenSettingsVisible: Bool = false
+
+    /// Whether the records overlay is visible. The store stacks above it.
+    var isRecordsVisible: Bool = false
     
     // MARK: - High Scores (Persisted)
     
@@ -158,6 +161,7 @@ final class AppState {
         isStoreVisible = false
         isSkinSelectorVisible = false
         isScreenSettingsVisible = false
+        isRecordsVisible = false
     }
 
     /// When the eject began: the tube powers off, then `GameCanvasView`

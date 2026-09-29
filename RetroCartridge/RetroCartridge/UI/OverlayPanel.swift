@@ -212,7 +212,7 @@ struct OverlayLockBadge: View {
 
 // MARK: - Library overlays
 
-/// Hosts the skin picker, screen settings and store as in-hierarchy overlays.
+/// Hosts the skin picker, screen settings, records and store as in-hierarchy overlays.
 /// The store stacks above the others, and each backdrop tap closes only the
 /// top panel.
 struct LibraryOverlays: View {
@@ -226,6 +226,7 @@ struct LibraryOverlays: View {
     var body: some View {
         let showsSkinPicker = isEnabled && appState.isSkinSelectorVisible
         let showsScreenSettings = isEnabled && appState.isScreenSettingsVisible
+        let showsRecords = isEnabled && appState.isRecordsVisible
         let showsStore = isEnabled && appState.isStoreVisible
         
         ZStack {
@@ -247,6 +248,15 @@ struct LibraryOverlays: View {
                     .zIndex(11)
             }
             
+            if showsRecords {
+                OverlayBackdrop { close(\.isRecordsVisible) }
+                    .transition(.opacity)
+                    .zIndex(10)
+                RecordsView()
+                    .transition(.overlayPanel)
+                    .zIndex(11)
+            }
+            
             if showsStore {
                 OverlayBackdrop { close(\.isStoreVisible) }
                     .transition(.opacity)
@@ -258,6 +268,7 @@ struct LibraryOverlays: View {
         }
         .animation(Self.animation, value: showsSkinPicker)
         .animation(Self.animation, value: showsScreenSettings)
+        .animation(Self.animation, value: showsRecords)
         .animation(Self.animation, value: showsStore)
     }
     
