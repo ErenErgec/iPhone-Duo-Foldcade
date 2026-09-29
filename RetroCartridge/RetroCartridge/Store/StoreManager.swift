@@ -123,12 +123,18 @@ final class StoreManager {
     }
 
     func isUnlocked(_ skinType: ConsoleSkinType) -> Bool {
-        switch skinType {
-        case .classicGrey:
-            return true // Free default skin
-        case .atomicPurple, .cyberpunkNeon, .arcadeCabinet:
-            return hasLifetimePro || isPurchased(ProductIdentifiers.retroCollectorPack)
-        }
+        guard let productID = skinType.requiredProductID else { return true }
+        return hasLifetimePro || isPurchased(productID)
+    }
+
+    func isUnlocked(_ soundPack: SoundPack) -> Bool {
+        guard let productID = soundPack.requiredProductID else { return true }
+        return hasLifetimePro || isPurchased(productID)
+    }
+
+    /// The sound pack to play: a locked choice falls back to Classic.
+    func effectiveSoundPack(_ pack: SoundPack) -> SoundPack {
+        isUnlocked(pack) ? pack : .classic
     }
 
     func isUnlocked(_ gameType: GameType) -> Bool {

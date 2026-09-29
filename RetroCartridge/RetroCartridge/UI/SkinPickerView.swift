@@ -34,6 +34,8 @@ struct SkinPickerView: View {
                     }
                 }
 
+                soundPacks
+
                 if ConsoleSkinType.allCases.contains(where: { !storeManager.isUnlocked($0) }) {
                     upsell
                 }
@@ -102,19 +104,24 @@ struct SkinPickerView: View {
                         .lineLimit(1)
                         .minimumScaleFactor(0.6)
 
-                    status(isSelected: isSelected, isUnlocked: isUnlocked)
+                    status(isSelected: isSelected, isUnlocked: isUnlocked, product: productName(for: skin))
                 }
             }
             .overlayCard(isSelected: isSelected)
         }
         .buttonStyle(CartridgePressStyle())
         .accessibilityLabel(skin.rawValue)
-        .accessibilityValue(isSelected ? "Equipped" : (isUnlocked ? "Unlocked" : "Locked, part of the Collector Pack"))
+        .accessibilityValue(isSelected ? "Equipped" : (isUnlocked ? "Unlocked" : "Locked, part of \(productName(for: skin))"))
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 
+    /// The product that unlocks a skin, e.g. "Retro Collector Pack".
+    private func productName(for skin: ConsoleSkinType) -> String {
+        skin.requiredProductID.map(ProductIdentifiers.fallbackDisplayName(for:)) ?? ""
+    }
+
     @ViewBuilder
-    private func status(isSelected: Bool, isUnlocked: Bool) -> some View {
+    private func status(isSelected: Bool, isUnlocked: Bool, product: String) -> some View {
         Group {
             if isSelected {
                 Label("EQUIPPED", systemImage: "checkmark.circle.fill")
@@ -123,7 +130,7 @@ struct SkinPickerView: View {
                 Label("TAP TO EQUIP", systemImage: "hand.tap.fill")
                     .foregroundStyle(.white.opacity(0.45))
             } else {
-                Label("COLLECTOR PACK", systemImage: "lock.fill")
+                Label(product.replacingOccurrences(of: "Retro ", with: "").uppercased(), systemImage: "lock.fill")
                     .foregroundStyle(RetroPalette.amber)
             }
         }
@@ -133,6 +140,56 @@ struct SkinPickerView: View {
         .lineLimit(1)
         .minimumScaleFactor(0.7)
     }
+
+    // MARK: - Sound packs
+
+    /// The sound pack chips: tap to hear and use one; locked packs open the store.
+    private var soundPacks: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("SOUND PACK")
+                .font(.system(size: 12, weight: .heavy, design: .monospaced))
+                .tracking(2.5)
+                .foregroundStyle(RetroPalette.phosphor.opacity(0.85))
+
+            HStack(spacing: 8) {
+                ForEach(SoundPack.allCases) { pack in
+                    soundPackChip(pack)
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func soundPackChip(_ pack: SoundPack) -> some View {
+        let isUnlocked = storeManager.isUnlocked(pack)
+        let isSelected = storeManager.effectiveSoundPack(appState.soundPack) == pack
+
+        return Button {
+            hapticManager.playHaptic(.buttonPress)
+            guard isUnlocked else {
+                withAnimation(.spring(response: 0.38, dampingFraction: 0.86)) {
+                    appState.isStoreVisible = true
+                }
+                return
+            }
+            appState.soundPack = pack
+            // A sample in the new voice (RootView applies the pack right away)
+            audioManager.soundPack = pack
+            audioManager.playGameSound(.levelUp)
+        } label: {
+            RetroCapsuleLabel(
+                title: pack.title.uppercased(),
+                systemImage: isUnlocked ? (isSelected ? "checkmark" : "speaker.wave.2.fill") : "lock.fill",
+                tint: isUnlocked ? RetroPalette.phosphor : RetroPalette.amber,
+                filled: isSelected
+            )
+        }
+        .buttonStyle(CartridgePressStyle())
+        .accessibilityLabel("\(pack.title) sound pack")
+        .accessibilityValue(isSelected ? "In use" : (isUnlocked ? "Unlocked" : "Locked"))
+    }
+
+    // MARK: - Upsell
 
     private var upsell: some View {
         Button {

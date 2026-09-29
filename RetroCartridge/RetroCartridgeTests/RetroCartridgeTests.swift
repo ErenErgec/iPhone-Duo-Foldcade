@@ -614,4 +614,54 @@ final class RetroCartridgeTests: XCTestCase {
         game.hingeDidChange(angle: 150)
         XCTAssertEqual(game.hingeThrust, 0, "opening further raises the rest angle")
     }
+
+    // MARK: - Achievements
+
+    func testAchievementIdsAreUniqueAndStable() {
+        let ids = GameType.allCases.flatMap { Achievement.all(for: $0).map(\.id) }
+        XCTAssertEqual(Set(ids).count, ids.count)
+        XCTAssertEqual(Achievement.all(for: .snake).first?.id, "Snake.first-points")
+    }
+
+    func testFirstPointsAreAnnouncedOnce() {
+        let progress = ProgressStore(defaults: makeDefaults())
+        let game = SnakeGame()
+        game.handleInput(action: .buttonAPressed)
+        XCTAssertTrue(AchievementTracker.check(game, progress: progress).isEmpty)
+
+        game.score = 10
+        XCTAssertEqual(AchievementTracker.check(game, progress: progress).map(\.title), ["OFF THE MARK"])
+        XCTAssertTrue(AchievementTracker.check(game, progress: progress).isEmpty)
+        XCTAssertEqual(AchievementTracker.tally(for: .snake, progress: progress).earned, 1)
+    }
+
+    func testExplorerNeedsARoundInEveryMode() {
+        let progress = ProgressStore(defaults: makeDefaults())
+        let modes = GameType.retroRacer.modes
+        for (index, mode) in modes.enumerated() {
+            let game = PixelGameEngine.createGame(type: .retroRacer, mode: mode)
+            game.gameState = .gameOver(score: 0)
+            let earned = AchievementTracker.check(game, progress: progress).map(\.title)
+            XCTAssertEqual(earned.contains("EXPLORER"), index == modes.count - 1)
+            if mode.isDaily {
+                XCTAssertTrue(earned.contains("DAILY PLAYER"))
+            }
+        }
+    }
+
+    // MARK: - Sound packs and skins
+
+    func testSoundPacksRevoiceNotes() {
+        let patch = SynthPatch.levelUp.definition
+        XCTAssertEqual(SoundPack.classic.voice(patch).notes.map(\.startHz), patch.notes.map(\.startHz))
+        XCTAssertTrue(SoundPack.mellow.voice(patch).notes.allSatisfy { $0.waveform == .triangle })
+        XCTAssertLessThan(SoundPack.arcade.voice(patch).notes[0].startHz, patch.notes[0].startHz)
+        XCTAssertNil(SoundPack.classic.requiredProductID)
+    }
+
+    func testGoldEditionIsALifetimeProExclusive() {
+        XCTAssertEqual(ConsoleSkinType.goldEdition.requiredProductID, ProductIdentifiers.lifetimePro)
+        XCTAssertFalse(ProductIdentifiers.skins(unlockedBy: ProductIdentifiers.retroCollectorPack).contains(.goldEdition))
+        XCTAssertTrue(ProductIdentifiers.skins(unlockedBy: ProductIdentifiers.lifetimePro).contains(.goldEdition))
+    }
 }

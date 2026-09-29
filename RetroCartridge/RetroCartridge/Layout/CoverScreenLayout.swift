@@ -77,7 +77,8 @@ public struct CoverScreenLayout: View {
                     game: game,
                     highScore: appState.highScore(for: game),
                     isSelected: game == appState.selectedGameType,
-                    isLocked: !storeManager.isUnlocked(game)
+                    isLocked: !storeManager.isUnlocked(game),
+                    achievements: AchievementTracker.tally(for: game, progress: appState.progress)
                 )
                 .frame(width: cartridgeWidth)
                 .padding(.vertical, 20)

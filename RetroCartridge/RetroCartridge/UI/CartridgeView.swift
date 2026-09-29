@@ -22,6 +22,9 @@ struct CartridgeView: View {
     /// Locked cartridges look dusty and faded, with a padlock.
     var isLocked: Bool = false
 
+    /// Achievements earned out of the total, shown as stars once any are earned.
+    var achievements: (earned: Int, total: Int)? = nil
+
     /// Width / height of the cartridge shell.
     static let aspectRatio: CGFloat = 0.8
 
@@ -94,6 +97,14 @@ struct CartridgeView: View {
                             Text("HI \(highScore)")
                                 .font(.system(size: w * 0.055, weight: .semibold, design: .monospaced))
                                 .foregroundStyle(Color.white.opacity(0.6))
+                        }
+
+                        if let achievements, achievements.earned > 0 {
+                            Text(String(repeating: "★", count: achievements.earned)
+                                 + String(repeating: "☆", count: max(0, achievements.total - achievements.earned)))
+                                .font(.system(size: w * 0.055, weight: .bold))
+                                .foregroundStyle(Color(hex: "#FFD166").opacity(0.85))
+                                .accessibilityLabel("\(achievements.earned) of \(achievements.total) achievements")
                         }
                     }
 

@@ -87,6 +87,24 @@ final class AppState {
             .flatMap(PaletteChoice.init(rawValue:)) ?? .original
     }
 
+    // MARK: - Sound
+
+    /// The chosen sound pack, persisted. What plays also depends on
+    /// purchases: `RootView` hands `AudioManager` the unlocked pack.
+    var soundPack: SoundPack = AppState.persistedSoundPack() {
+        didSet {
+            guard soundPack != oldValue else { return }
+            UserDefaults.standard.set(soundPack.rawValue, forKey: Self.soundPackKey)
+        }
+    }
+
+    private static let soundPackKey = "soundPack"
+
+    private static func persistedSoundPack() -> SoundPack {
+        UserDefaults.standard.string(forKey: soundPackKey)
+            .flatMap(SoundPack.init(rawValue:)) ?? .classic
+    }
+
     // MARK: - UI State
     
     /// Whether the store overlay is visible (drawn in-hierarchy by the library,

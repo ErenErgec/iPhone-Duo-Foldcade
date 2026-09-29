@@ -165,7 +165,7 @@ struct StoreView: View {
 
                     Text(isPro
                          ? "Every skin and screen mode, plus all future skins, cartridges and upgrades."
-                         : "Three premium console shells for your handheld.")
+                         : "Six premium console shells and three sound packs.")
                         .font(.system(size: 12, weight: .medium, design: .monospaced))
                         .foregroundStyle(.white.opacity(0.55))
                         .fixedSize(horizontal: false, vertical: true)
@@ -204,29 +204,35 @@ struct StoreView: View {
                 .tracking(2.5)
                 .foregroundStyle(tint.opacity(0.85))
 
-            HStack(alignment: .top, spacing: 12) {
-                ForEach(skins) { skin in
-                    VStack(spacing: 6) {
-                        ConsoleSkinPreview(theme: SkinManager.theme(for: skin))
-                            .frame(height: 64)
-                        Text(skin.rawValue.uppercased())
-                            .font(.system(size: 9, weight: .bold, design: .monospaced))
-                            .foregroundStyle(.white.opacity(0.6))
-                            .lineLimit(2)
-                            .multilineTextAlignment(.center)
-                            .fixedSize(horizontal: false, vertical: true)
+            // More skins than fit side by side, so they scroll
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(alignment: .top, spacing: 12) {
+                    ForEach(skins) { skin in
+                        VStack(spacing: 6) {
+                            ConsoleSkinPreview(theme: SkinManager.theme(for: skin))
+                                .frame(height: 64)
+                            Text(skin.rawValue.uppercased())
+                                .font(.system(size: 9, weight: .bold, design: .monospaced))
+                                .foregroundStyle(.white.opacity(0.6))
+                                .lineLimit(2)
+                                .multilineTextAlignment(.center)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                        .frame(width: 84)
                     }
-                    .frame(width: 84)
                 }
+            }
 
+            VStack(alignment: .leading, spacing: 6) {
                 if isPro {
-                    VStack(alignment: .leading, spacing: 6) {
-                        perk("ALL SCREEN MODES & TUNING")
-                        perk("ALL FUTURE SKINS")
-                        perk("ALL FUTURE CARTRIDGES")
-                        perk("ONE-TIME PURCHASE")
-                    }
-                    .padding(.leading, 4)
+                    perk("GOLD EDITION SKIN")
+                    perk("ALL SCREEN MODES & TUNING")
+                    perk("ALL SOUND PACKS")
+                    perk("ALL FUTURE SKINS")
+                    perk("ALL FUTURE CARTRIDGES")
+                    perk("ONE-TIME PURCHASE")
+                } else {
+                    perk("POCKET, ARCADE & MELLOW SOUND PACKS")
                 }
             }
         }

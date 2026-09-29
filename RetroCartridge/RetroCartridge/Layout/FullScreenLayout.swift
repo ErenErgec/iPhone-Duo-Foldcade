@@ -179,7 +179,8 @@ public struct FullScreenLayout: View {
                     game: game,
                     highScore: appState.highScore(for: game),
                     isSelected: game == appState.selectedGameType,
-                    isLocked: isLocked
+                    isLocked: isLocked,
+                    achievements: AchievementTracker.tally(for: game, progress: appState.progress)
                 )
                 // Sliding down into the slot, behind the shelf
                 .offset(y: isInserting ? width * 0.35 : 0)

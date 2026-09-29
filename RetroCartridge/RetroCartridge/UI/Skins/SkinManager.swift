@@ -49,6 +49,14 @@ enum SkinManager {
             return .cyberpunkNeon
         case .arcadeCabinet:
             return .arcadeCabinet
+        case .clearIce:
+            return .clearIce
+        case .crimsonCream:
+            return .crimsonCream
+        case .electricYellow:
+            return .electricYellow
+        case .goldEdition:
+            return .goldEdition
         }
     }
 }

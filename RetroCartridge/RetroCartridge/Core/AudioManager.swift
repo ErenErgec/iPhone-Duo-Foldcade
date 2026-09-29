@@ -373,6 +373,77 @@ enum SynthPatch: Int, CaseIterable, Sendable {
     }
 }
 
+// MARK: - Sound Packs
+
+/// Alternative voicings of every sound, like swapping the sound chip. A
+/// pack rewrites each patch's notes (waveform, pitch, length, volume); all
+/// packs are built into the note table at launch, so switching packs is
+/// just a different patch index and the audio thread is untouched.
+enum SoundPack: String, CaseIterable, Identifiable, Codable, Sendable {
+    /// The original sounds.
+    case classic
+    /// Thin pulse waves, like a monochrome handheld.
+    case pocket
+    /// Lower and punchier, like an arcade cabinet.
+    case arcade
+    /// Soft triangle tones throughout.
+    case mellow
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .classic: return "Classic"
+        case .pocket: return "Pocket"
+        case .arcade: return "Arcade"
+        case .mellow: return "Mellow"
+        }
+    }
+
+    /// The IAP product that unlocks the pack, nil when it is free.
+    var requiredProductID: String? {
+        self == .classic ? nil : ProductIdentifiers.retroCollectorPack
+    }
+
+    /// A patch as this pack voices it.
+    func voice(_ patch: SynthPatchDefinition) -> SynthPatchDefinition {
+        var voiced = patch
+        voiced.notes = patch.notes.map { voiceNote($0) }
+        return voiced
+    }
+
+    private func voiceNote(_ note: SynthNote) -> SynthNote {
+        var voiced = note
+        switch self {
+        case .classic:
+            break
+        case .pocket:
+            switch note.waveform {
+            case .square: voiced.waveform = .pulse25
+            case .pulse25: voiced.waveform = .pulse12
+            default: break
+            }
+            voiced.volume = note.volume * 0.9
+        case .arcade:
+            if note.waveform != .noise {
+                voiced.waveform = .square
+                // Down three semitones
+                voiced.startHz = note.startHz * 0.84
+                voiced.endHz = note.endHz * 0.84
+            }
+            voiced.durationMs = note.durationMs * 1.1
+        case .mellow:
+            if note.waveform == .noise {
+                voiced.volume = note.volume * 0.6
+            } else {
+                voiced.waveform = .triangle
+                voiced.volume = min(0.7, note.volume * 1.15)
+            }
+        }
+        return voiced
+    }
+}
+
 // MARK: - Tone Generator
 
 /// Thread-safe synthesizer running on the realtime CoreAudio thread.
@@ -664,10 +735,14 @@ final class AudioManager: @unchecked Sendable {
 
     @ObservationIgnored private let engine = AVAudioEngine()
     @ObservationIgnored private var sourceNode: AVAudioSourceNode?
+    /// Every patch in every sound pack, pack by pack.
     @ObservationIgnored private let generator = ToneGenerator(
-        patches: SynthPatch.allCases.map(\.definition),
+        patches: SoundPack.allCases.flatMap { pack in SynthPatch.allCases.map { pack.voice($0.definition) } },
         sampleRate: AudioManager.sampleRate
     )
+
+    /// The voicing used for game sounds. Set from the main thread.
+    @ObservationIgnored var soundPack: SoundPack = .classic
     /// Serial queue for audio session and engine calls that can block, kept
     /// off the main thread. The engine is only started or stopped on it.
     @ObservationIgnored private let audioQueue = DispatchQueue(label: "RetroCartridge.AudioManager", qos: .userInitiated)
@@ -725,11 +800,13 @@ final class AudioManager: @unchecked Sendable {
 
     // MARK: - Playback
 
-    /// Plays patches together, starting on the next audio buffer.
+    /// Plays patches together in the current sound pack, starting on the
+    /// next audio buffer.
     private func play(_ patches: SynthPatch...) {
         guard !isMuted else { return }
+        let packOffset = SoundPack.allCases.firstIndex(of: soundPack).map { $0 * SynthPatch.allCases.count } ?? 0
         for patch in patches {
-            generator.trigger(patchIndex: patch.rawValue)
+            generator.trigger(patchIndex: packOffset + patch.rawValue)
         }
         // Restart the engine if an interruption or route change stopped it.
         audioQueue.async { [self] in

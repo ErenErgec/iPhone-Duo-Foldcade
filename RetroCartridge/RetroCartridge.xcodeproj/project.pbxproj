@@ -56,6 +56,11 @@
 		8211547AA7CA87F1BB4BFB57 /* MazeMuncherGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7755234F58958A63BBC40B /* MazeMuncherGame.swift */; };
 		FCFDD0725F5BA1DE5CFBCE60 /* FrogHopGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDCD5F70AB41D678905B27E7 /* FrogHopGame.swift */; };
 		644A994F3BAB2B5C94A2E02B /* LunarHingeGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4D26FD4458712A58DBE0B9D /* LunarHingeGame.swift */; };
+		3B1BEE17D217EE959F8E62E7 /* Achievements.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C1CEBAE8171A91826FBAD82 /* Achievements.swift */; };
+		A941B7ADC3D5B9979350D710 /* ClearIceSkin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B748F6C1980A29E19F50B1B /* ClearIceSkin.swift */; };
+		111E06A53F310B8D3B6BA8C7 /* CrimsonCreamSkin.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2C870153DAE65C54CE64EE /* CrimsonCreamSkin.swift */; };
+		E287517BE7946BC483C743B5 /* ElectricYellowSkin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E820EA722E876320B8FB34A /* ElectricYellowSkin.swift */; };
+		C3AB7BCC3E1F803FF7A48B6D /* GoldEditionSkin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CA7AF75FD419C264E66A1B6 /* GoldEditionSkin.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -122,6 +127,11 @@
 		6E7755234F58958A63BBC40B /* MazeMuncherGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MazeMuncherGame.swift; sourceTree = "<group>"; };
 		BDCD5F70AB41D678905B27E7 /* FrogHopGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrogHopGame.swift; sourceTree = "<group>"; };
 		A4D26FD4458712A58DBE0B9D /* LunarHingeGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LunarHingeGame.swift; sourceTree = "<group>"; };
+		8C1CEBAE8171A91826FBAD82 /* Achievements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Achievements.swift; sourceTree = "<group>"; };
+		4B748F6C1980A29E19F50B1B /* ClearIceSkin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearIceSkin.swift; sourceTree = "<group>"; };
+		EE2C870153DAE65C54CE64EE /* CrimsonCreamSkin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrimsonCreamSkin.swift; sourceTree = "<group>"; };
+		8E820EA722E876320B8FB34A /* ElectricYellowSkin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElectricYellowSkin.swift; sourceTree = "<group>"; };
+		7CA7AF75FD419C264E66A1B6 /* GoldEditionSkin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoldEditionSkin.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -229,6 +239,7 @@
 				057CF93884D57447C526BAAB /* HingeEngine.swift */,
 				99CD56444E0BB80576F0C69C /* PostureManager.swift */,
 				3EEE3B220D92F1C8139D16AB /* ProgressStore.swift */,
+				8C1CEBAE8171A91826FBAD82 /* Achievements.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -291,6 +302,10 @@
 			isa = PBXGroup;
 			children = (
 				FFDC1F90D883742F4094239E /* ArcadeCabinetSkin.swift */,
+				7CA7AF75FD419C264E66A1B6 /* GoldEditionSkin.swift */,
+				8E820EA722E876320B8FB34A /* ElectricYellowSkin.swift */,
+				EE2C870153DAE65C54CE64EE /* CrimsonCreamSkin.swift */,
+				4B748F6C1980A29E19F50B1B /* ClearIceSkin.swift */,
 				F2352D04E27E375DD1A10880 /* AtomicPurpleSkin.swift */,
 				3628B66C3CD93516B7909369 /* ClassicGreySkin.swift */,
 				D1AD9D1084CD725675BB20D9 /* CyberpunkNeonSkin.swift */,
@@ -452,6 +467,10 @@
 				317FDB0AE36753EDB8ED23CE /* AdaptiveConsoleLayout.swift in Sources */,
 				822ECC45A4F7783AD19720A1 /* AppState.swift in Sources */,
 				98718E16D8A934DE36C9A9D3 /* ArcadeCabinetSkin.swift in Sources */,
+				C3AB7BCC3E1F803FF7A48B6D /* GoldEditionSkin.swift in Sources */,
+				E287517BE7946BC483C743B5 /* ElectricYellowSkin.swift in Sources */,
+				111E06A53F310B8D3B6BA8C7 /* CrimsonCreamSkin.swift in Sources */,
+				A941B7ADC3D5B9979350D710 /* ClearIceSkin.swift in Sources */,
 				DCABA366CA692CE42077BAEC /* AtomicPurpleSkin.swift in Sources */,
 				B6AD0B14BB189F075875626E /* AudioManager.swift in Sources */,
 				2061C3D92333D50207BB2984 /* BrickBreakerGame.swift in Sources */,
@@ -484,6 +503,7 @@
 				1F731E3550AFB142BAC4ADAE /* PixelGameProtocol.swift in Sources */,
 				349DA3AFA1F86A358B2BA421 /* PostureManager.swift in Sources */,
 				64B1FDE4D6A297AAF4F6DB35 /* ProgressStore.swift in Sources */,
+				3B1BEE17D217EE959F8E62E7 /* Achievements.swift in Sources */,
 				71C7D06E6A57AA69BCF61731 /* ProductIdentifiers.swift in Sources */,
 				ADB0CCD71E9D30600FBF6354 /* RetroCartridgeApp.swift in Sources */,
 				67697161ED6B40C49A4BF984 /* RetroRacerGame.swift in Sources */,

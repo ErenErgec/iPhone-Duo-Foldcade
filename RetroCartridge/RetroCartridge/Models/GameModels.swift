@@ -68,6 +68,10 @@ enum ConsoleSkinType: String, CaseIterable, Identifiable, Codable {
     case atomicPurple = "Atomic Purple"
     case cyberpunkNeon = "Cyberpunk Neon"
     case arcadeCabinet = "90's Arcade Cabinet"
+    case clearIce = "Clear Ice"
+    case crimsonCream = "Crimson & Cream"
+    case electricYellow = "Electric Yellow"
+    case goldEdition = "Gold Edition"
     
     var id: String { rawValue }
     
@@ -79,9 +83,15 @@ enum ConsoleSkinType: String, CaseIterable, Identifiable, Codable {
         }
     }
     
-    /// The IAP product ID required to unlock this skin (nil if free).
+    /// The IAP product ID required to unlock this skin (nil if free). The
+    /// Gold Edition is a Lifetime Pro exclusive; the rest are in the
+    /// Collector Pack.
     var requiredProductID: String? {
-        isFree ? nil : ProductIdentifiers.retroCollectorPack
+        switch self {
+        case .classicGrey: return nil
+        case .goldEdition: return ProductIdentifiers.lifetimePro
+        default: return ProductIdentifiers.retroCollectorPack
+        }
     }
 }
 
@@ -284,6 +294,12 @@ struct CartridgeInfo: Sendable {
 
     /// The IAP product that unlocks the cartridge, nil when it is free.
     var requiredProductID: String? = nil
+
+    /// Score for the "High Scorer" achievement.
+    var scoreGoal: Int = 1000
+
+    /// Level for the level achievement.
+    var levelGoal: Int = 5
 }
 
 // MARK: - Game Type
@@ -311,7 +327,9 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
                 genre: "ARCADE",
                 symbolName: "square.grid.3x2.fill",
                 labelColorHex: "#FF6B6B",
-                modes: [.standard, .daily]
+                modes: [.standard, .daily],
+                scoreGoal: 3000,
+                levelGoal: 4
             )
         case .retroRacer:
             return CartridgeInfo(
@@ -320,7 +338,9 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
                 symbolName: "car.fill",
                 labelColorHex: "#4ECDC4",
                 shell: .black,
-                modes: [.racerDay, .racerNight, .daily]
+                modes: [.racerDay, .racerNight, .daily],
+                scoreGoal: 300,
+                levelGoal: 5
             )
         case .snake:
             return CartridgeInfo(
@@ -329,7 +349,9 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
                 symbolName: "scribble.variable",
                 labelColorHex: "#45B7D1",
                 shell: .glow,
-                modes: [.snakeClassic, .snakeWrap, .snakeMaze, .daily]
+                modes: [.snakeClassic, .snakeWrap, .snakeMaze, .daily],
+                scoreGoal: 500,
+                levelGoal: 5
             )
         case .fallingBlocks:
             return CartridgeInfo(
@@ -338,7 +360,9 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
                 symbolName: "square.stack.3d.down.right.fill",
                 labelColorHex: "#F7DC6F",
                 shell: .clearPurple,
-                modes: [.blocksMarathon, .blocksSprint, .blocksUltra, .daily]
+                modes: [.blocksMarathon, .blocksSprint, .blocksUltra, .daily],
+                scoreGoal: 5000,
+                levelGoal: 5
             )
         case .pixelInvaders:
             return CartridgeInfo(
@@ -347,7 +371,9 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
                 symbolName: "sparkles",
                 labelColorHex: "#C77DFF",
                 shell: .smoke,
-                modes: [.standard, .daily]
+                modes: [.standard, .daily],
+                scoreGoal: 3000,
+                levelGoal: 3
             )
         case .mineSweep:
             return CartridgeInfo(
@@ -356,7 +382,9 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
                 symbolName: "flag.fill",
                 labelColorHex: "#A8DADC",
                 shell: .grey,
-                modes: [.standard, .daily]
+                modes: [.standard, .daily],
+                scoreGoal: 2000,
+                levelGoal: 3
             )
         case .mazeMuncher:
             return CartridgeInfo(
@@ -365,7 +393,9 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
                 symbolName: "circle.grid.cross.fill",
                 labelColorHex: "#FFB703",
                 shell: .black,
-                modes: [.standard, .daily]
+                modes: [.standard, .daily],
+                scoreGoal: 5000,
+                levelGoal: 3
             )
         case .frogHop:
             return CartridgeInfo(
@@ -374,7 +404,9 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
                 symbolName: "arrow.up.circle.fill",
                 labelColorHex: "#80ED99",
                 shell: .clearGreen,
-                modes: [.standard, .daily]
+                modes: [.standard, .daily],
+                scoreGoal: 1000,
+                levelGoal: 3
             )
         case .lunarHinge:
             return CartridgeInfo(
@@ -383,7 +415,9 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
                 symbolName: "moon.stars.fill",
                 labelColorHex: "#E0E1DD",
                 shell: .gold,
-                modes: [.standard, .daily]
+                modes: [.standard, .daily],
+                scoreGoal: 1000,
+                levelGoal: 4
             )
         }
     }

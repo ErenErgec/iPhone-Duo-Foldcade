@@ -112,6 +112,10 @@ struct RootView: View {
             .onAppear {
                 setupOnLaunch()
             }
+            // Play the chosen sound pack once it's unlocked
+            .onChange(of: storeManager.effectiveSoundPack(appState.soundPack), initial: true) { _, pack in
+                audioManager.soundPack = pack
+            }
     }
 
     // MARK: - Setup

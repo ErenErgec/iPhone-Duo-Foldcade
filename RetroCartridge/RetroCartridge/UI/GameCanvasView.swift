@@ -27,6 +27,10 @@ struct GameCanvasView: View {
     /// Duration of the power-off animation when ejecting, in seconds.
     private let powerOffDuration: TimeInterval = 0.45
 
+    /// The achievement being announced on the bezel, and until when.
+    @State private var toast: Achievement?
+    @State private var toastUntil = Date.distantPast
+
     /// Handheld-style, slightly wider than square (Game Boy screens are 10:9).
     private let screenAspectRatio: CGFloat = 10 / 9
 
@@ -64,12 +68,17 @@ struct GameCanvasView: View {
                                     .aspectRatio(screenAspectRatio, contentMode: .fit)
                                     .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-                                BezelReadout(
-                                    score: activeGame.score,
-                                    level: activeGame.level,
-                                    highScore: max(appState.highScore(for: activeGame.gameType, mode: activeGame.mode), activeGame.score),
-                                    fontSize: max(10, inset * 0.5)
-                                )
+                                if let toast, timeline.date < toastUntil {
+                                    AchievementToast(achievement: toast, fontSize: max(10, inset * 0.5))
+                                        .transition(.opacity)
+                                } else {
+                                    BezelReadout(
+                                        score: activeGame.score,
+                                        level: activeGame.level,
+                                        highScore: max(appState.highScore(for: activeGame.gameType, mode: activeGame.mode), activeGame.score),
+                                        fontSize: max(10, inset * 0.5)
+                                    )
+                                }
                             }
                             .onChange(of: timeline.date) { oldDate, newDate in
                                 // Ejecting: the game stays frozen while the tube powers off
@@ -93,6 +102,14 @@ struct GameCanvasView: View {
                                     audioManager.playGameSound(sound)
                                 }
                                 if sounds.contains(where: \.isImpactful) {
+                                    hapticManager.playHaptic(.gameEvent)
+                                }
+
+                                // Announce achievements as soon as they're earned
+                                if let earned = AchievementTracker.check(activeGame, progress: appState.progress).first {
+                                    toast = earned
+                                    toastUntil = newDate.addingTimeInterval(2.5)
+                                    audioManager.playGameSound(.powerUp)
                                     hapticManager.playHaptic(.gameEvent)
                                 }
 
@@ -236,6 +253,31 @@ private struct BezelReadout: View {
                 .foregroundStyle(phosphor)
                 .shadow(color: phosphor.opacity(0.6), radius: 3)
         }
+    }
+}
+
+// MARK: - Achievement toast
+
+/// A just-earned achievement, shown on the bezel in place of the score strip.
+private struct AchievementToast: View {
+    let achievement: Achievement
+    let fontSize: CGFloat
+
+    private let gold = Color(hex: "#FFD166")
+
+    var body: some View {
+        HStack(spacing: fontSize * 0.6) {
+            Text("★ \(achievement.title)")
+                .foregroundStyle(gold)
+                .shadow(color: gold.opacity(0.6), radius: 3)
+            Text(achievement.detail.uppercased())
+                .foregroundStyle(Color.white.opacity(0.55))
+        }
+        .font(.system(size: fontSize, weight: .bold, design: .monospaced))
+        .lineLimit(1)
+        .minimumScaleFactor(0.6)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Achievement earned: \(achievement.title.capitalized). \(achievement.detail).")
     }
 }
 
