@@ -43,6 +43,7 @@
 		57E0BB0000000000000000B4 /* ConsoleSkinPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E0BB0000000000000000F4 /* ConsoleSkinPreview.swift */; };
 		2E31C09473DE7594D11015A0 /* GamePalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EAF4D860F97D1FBBA8D649C /* GamePalette.swift */; };
 		64B1FDE4D6A297AAF4F6DB35 /* ProgressStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EEE3B220D92F1C8139D16AB /* ProgressStore.swift */; };
+		F730C9995B3369A64BB9AF11 /* ScreenSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF3E442A1B8BB71C6A604E74 /* ScreenSettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -96,6 +97,7 @@
 		57E0BB0000000000000000F5 /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Products.storekit; sourceTree = "<group>"; };
 		9EAF4D860F97D1FBBA8D649C /* GamePalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamePalette.swift; sourceTree = "<group>"; };
 		3EEE3B220D92F1C8139D16AB /* ProgressStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressStore.swift; sourceTree = "<group>"; };
+		FF3E442A1B8BB71C6A604E74 /* ScreenSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenSettingsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -126,6 +128,7 @@
 				87FEA080C926760FB3C162F5 /* GameCanvasView.swift */,
 				57E0BB0000000000000000F3 /* StoreView.swift */,
 				57E0BB0000000000000000F2 /* SkinPickerView.swift */,
+				FF3E442A1B8BB71C6A604E74 /* ScreenSettingsView.swift */,
 				57E0BB0000000000000000F1 /* OverlayPanel.swift */,
 			);
 			path = UI;
@@ -390,6 +393,7 @@
 				57E0BB0000000000000000B4 /* ConsoleSkinPreview.swift in Sources */,
 				57E0BB0000000000000000B3 /* StoreView.swift in Sources */,
 				57E0BB0000000000000000B2 /* SkinPickerView.swift in Sources */,
+				F730C9995B3369A64BB9AF11 /* ScreenSettingsView.swift in Sources */,
 				57E0BB0000000000000000B1 /* OverlayPanel.swift in Sources */,
 				677B8DF4217D3EED21CB1C41 /* GameModels.swift in Sources */,
 				D2DDD4CE661F117CAF47450B /* HapticManager.swift in Sources */,

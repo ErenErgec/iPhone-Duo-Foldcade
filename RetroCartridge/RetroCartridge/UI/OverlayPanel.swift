@@ -2,7 +2,8 @@
 // OverlayPanel.swift
 // RetroCartridge
 //
-// Chrome shared by the in-hierarchy overlays (skin picker, store).
+// Chrome shared by the in-hierarchy overlays (skin picker, screen settings,
+// store).
 //
 // These are in-hierarchy panels rather than sheets, so they keep the console's
 // retro look and sit inside whichever display layout hosts them.
@@ -174,10 +175,46 @@ struct RetroCapsuleLabel: View {
     }
 }
 
+// MARK: - Cards
+
+extension View {
+    /// Chrome for a selectable card in an overlay grid (skins, screens).
+    func overlayCard(isSelected: Bool) -> some View {
+        let shape = RoundedRectangle(cornerRadius: 20, style: .continuous)
+
+        return self
+            .padding(14)
+            .frame(maxWidth: .infinity)
+            .background(shape.fill(Color.white.opacity(isSelected ? 0.07 : 0.035)))
+            .overlay(
+                shape.stroke(
+                    isSelected ? RetroPalette.phosphor : Color.white.opacity(0.08),
+                    lineWidth: isSelected ? 2 : 1
+                )
+            )
+            .shadow(color: isSelected ? RetroPalette.phosphor.opacity(0.25) : .clear, radius: 14)
+            .contentShape(shape)
+    }
+}
+
+/// Padlock badge drawn over locked items in the overlays.
+struct OverlayLockBadge: View {
+    var body: some View {
+        Image(systemName: "lock.fill")
+            .font(.system(size: 20, weight: .heavy))
+            .foregroundStyle(.white)
+            .frame(width: 48, height: 48)
+            .background(Circle().fill(Color.black.opacity(0.7)))
+            .overlay(Circle().stroke(RetroPalette.amber.opacity(0.7), lineWidth: 1.5))
+            .shadow(color: .black.opacity(0.5), radius: 6, y: 3)
+    }
+}
+
 // MARK: - Library overlays
 
-/// Hosts the skin picker and store as in-hierarchy overlays. The store stacks
-/// above the picker, and each backdrop tap closes only the top panel.
+/// Hosts the skin picker, screen settings and store as in-hierarchy overlays.
+/// The store stacks above the others, and each backdrop tap closes only the
+/// top panel.
 struct LibraryOverlays: View {
     @Environment(AppState.self) private var appState
     
@@ -188,6 +225,7 @@ struct LibraryOverlays: View {
     
     var body: some View {
         let showsSkinPicker = isEnabled && appState.isSkinSelectorVisible
+        let showsScreenSettings = isEnabled && appState.isScreenSettingsVisible
         let showsStore = isEnabled && appState.isStoreVisible
         
         ZStack {
@@ -196,6 +234,15 @@ struct LibraryOverlays: View {
                     .transition(.opacity)
                     .zIndex(10)
                 SkinPickerView()
+                    .transition(.overlayPanel)
+                    .zIndex(11)
+            }
+            
+            if showsScreenSettings {
+                OverlayBackdrop { close(\.isScreenSettingsVisible) }
+                    .transition(.opacity)
+                    .zIndex(10)
+                ScreenSettingsView()
                     .transition(.overlayPanel)
                     .zIndex(11)
             }
@@ -210,6 +257,7 @@ struct LibraryOverlays: View {
             }
         }
         .animation(Self.animation, value: showsSkinPicker)
+        .animation(Self.animation, value: showsScreenSettings)
         .animation(Self.animation, value: showsStore)
     }
     

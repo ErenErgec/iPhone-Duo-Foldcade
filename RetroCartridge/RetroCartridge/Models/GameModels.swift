@@ -85,6 +85,90 @@ enum ConsoleSkinType: String, CaseIterable, Identifiable, Codable {
     }
 }
 
+// MARK: - Screen
+
+/// The display the game shows through. Every mode is drawn by the
+/// `screenEffect` shader; `shaderIndex` selects its branch.
+enum ScreenMode: String, CaseIterable, Identifiable, Codable, Sendable {
+    case crt
+    case lcd
+    case trinitron
+    case arcade
+
+    var id: String { rawValue }
+
+    /// Name shown in the screen picker.
+    var title: String {
+        switch self {
+        case .crt: return "Color CRT"
+        case .lcd: return "Pocket LCD"
+        case .trinitron: return "Trinitron"
+        case .arcade: return "Arcade Monitor"
+        }
+    }
+
+    /// One-line description for the screen picker.
+    var summary: String {
+        switch self {
+        case .crt: return "Curved tube, soft glow"
+        case .lcd: return "Four shades of green"
+        case .trinitron: return "Flat and sharp, RGB grille"
+        case .arcade: return "Deep lines, big bloom"
+        }
+    }
+
+    /// Model name printed on the bezel above the screen.
+    var bezelLabel: String {
+        switch self {
+        case .crt: return "COLOR CRT"
+        case .lcd: return "DOT MATRIX"
+        case .trinitron: return "TRINITRON"
+        case .arcade: return "ARCADE CRT"
+        }
+    }
+
+    /// The branch of the `screenEffect` shader that draws this mode.
+    var shaderIndex: Float {
+        switch self {
+        case .crt: return 0
+        case .lcd: return 1
+        case .trinitron: return 2
+        case .arcade: return 3
+        }
+    }
+
+    /// Whether the picture bends with the tube (an LCD panel is flat).
+    var hasCurvature: Bool { self != .lcd }
+
+    /// Name of the line-strength tuning control.
+    var linesTitle: String { self == .lcd ? "PIXEL GRID" : "SCANLINES" }
+
+    /// Name of the bleed tuning control.
+    var bleedTitle: String { self == .lcd ? "PIXEL SHADOW" : "COLOR BLEED" }
+
+    /// The IAP product that unlocks the mode, nil when it is free.
+    var requiredProductID: String? {
+        self == .crt ? nil : ProductIdentifiers.lifetimePro
+    }
+}
+
+/// The chosen screen and its tuning. Each tuning value runs from 0 to 1,
+/// where 0.5 is the mode's designed look.
+struct ScreenSettings: Codable, Equatable, Sendable {
+    var mode: ScreenMode = .crt
+    var curvature: Double = 0.5
+    var scanlines: Double = 0.5
+    var bleed: Double = 0.5
+
+    /// The free default: Color CRT as designed.
+    static let standard = ScreenSettings()
+
+    /// Whether the tuning is the designed look, whatever the mode.
+    var hasStandardTuning: Bool {
+        curvature == 0.5 && scanlines == 0.5 && bleed == 0.5
+    }
+}
+
 // MARK: - Game Mode
 
 /// A rule set a cartridge can be played with. Each mode keeps its own high

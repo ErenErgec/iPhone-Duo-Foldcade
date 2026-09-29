@@ -164,7 +164,7 @@ struct StoreView: View {
                         .minimumScaleFactor(0.7)
 
                     Text(isPro
-                         ? "Every skin today, plus all future skins, cartridges and upgrades."
+                         ? "Every skin and screen mode, plus all future skins, cartridges and upgrades."
                          : "Three premium console shells for your handheld.")
                         .font(.system(size: 12, weight: .medium, design: .monospaced))
                         .foregroundStyle(.white.opacity(0.55))
@@ -221,6 +221,7 @@ struct StoreView: View {
 
                 if isPro {
                     VStack(alignment: .leading, spacing: 6) {
+                        perk("ALL SCREEN MODES & TUNING")
                         perk("ALL FUTURE SKINS")
                         perk("ALL FUTURE CARTRIDGES")
                         perk("ONE-TIME PURCHASE")

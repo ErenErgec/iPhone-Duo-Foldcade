@@ -136,6 +136,24 @@ final class StoreManager {
         return hasLifetimePro || isPurchased(productID)
     }
 
+    func isUnlocked(_ screenMode: ScreenMode) -> Bool {
+        guard let productID = screenMode.requiredProductID else { return true }
+        return hasLifetimePro || isPurchased(productID)
+    }
+
+    /// Whether the screen tuning controls are available (Lifetime Pro).
+    var canTuneScreen: Bool { hasLifetimePro }
+
+    /// The screen to actually draw: locked modes fall back to Color CRT and
+    /// locked tuning to the designed look, e.g. after a refund.
+    func effectiveScreenSettings(_ settings: ScreenSettings) -> ScreenSettings {
+        var effective = canTuneScreen ? settings : ScreenSettings(mode: settings.mode)
+        if !isUnlocked(effective.mode) {
+            effective.mode = .crt
+        }
+        return effective
+    }
+
     /// Rebuilds the owned set from current entitlements, so refunds and
     /// revocations drop out as well.
     private func updatePurchasedProducts() async {

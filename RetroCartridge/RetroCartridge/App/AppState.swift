@@ -47,6 +47,25 @@ final class AppState {
             .flatMap(ConsoleSkinType.init(rawValue:)) ?? .classicGrey
     }
     
+    // MARK: - Screen
+
+    /// The chosen screen mode and tuning, persisted. What is actually drawn
+    /// also depends on purchases: see `StoreManager.effectiveScreenSettings(_:)`.
+    var screenSettings: ScreenSettings = AppState.persistedScreenSettings() {
+        didSet {
+            guard screenSettings != oldValue,
+                  let data = try? JSONEncoder().encode(screenSettings) else { return }
+            UserDefaults.standard.set(data, forKey: Self.screenSettingsKey)
+        }
+    }
+
+    private static let screenSettingsKey = "screenSettings"
+
+    private static func persistedScreenSettings() -> ScreenSettings {
+        UserDefaults.standard.data(forKey: screenSettingsKey)
+            .flatMap { try? JSONDecoder().decode(ScreenSettings.self, from: $0) } ?? .standard
+    }
+
     // MARK: - UI State
     
     /// Whether the store overlay is visible (drawn in-hierarchy by the library,
@@ -55,6 +74,9 @@ final class AppState {
 
     /// Whether the skin picker overlay is visible. The store stacks above it.
     var isSkinSelectorVisible: Bool = false
+
+    /// Whether the screen settings overlay is visible. The store stacks above it.
+    var isScreenSettingsVisible: Bool = false
     
     // MARK: - High Scores (Persisted)
     
@@ -82,6 +104,7 @@ final class AppState {
         // Library overlays shouldn't reappear when the cartridge is ejected.
         isStoreVisible = false
         isSkinSelectorVisible = false
+        isScreenSettingsVisible = false
     }
     
     /// End the current game session and return to menu.

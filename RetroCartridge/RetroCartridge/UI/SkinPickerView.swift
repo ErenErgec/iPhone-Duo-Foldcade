@@ -88,7 +88,7 @@ struct SkinPickerView: View {
                     .saturation(isUnlocked ? 1 : 0.55)
                     .overlay {
                         if !isUnlocked {
-                            lockBadge
+                            OverlayLockBadge()
                         }
                     }
                     .frame(maxWidth: .infinity)
@@ -105,21 +105,7 @@ struct SkinPickerView: View {
                     status(isSelected: isSelected, isUnlocked: isUnlocked)
                 }
             }
-            .padding(14)
-            .frame(maxWidth: .infinity)
-            .background(
-                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .fill(Color.white.opacity(isSelected ? 0.07 : 0.035))
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .stroke(
-                        isSelected ? RetroPalette.phosphor : Color.white.opacity(0.08),
-                        lineWidth: isSelected ? 2 : 1
-                    )
-            )
-            .shadow(color: isSelected ? RetroPalette.phosphor.opacity(0.25) : .clear, radius: 14)
-            .contentShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+            .overlayCard(isSelected: isSelected)
         }
         .buttonStyle(CartridgePressStyle())
         .accessibilityLabel(skin.rawValue)
@@ -146,16 +132,6 @@ struct SkinPickerView: View {
         .labelStyle(.titleAndIcon)
         .lineLimit(1)
         .minimumScaleFactor(0.7)
-    }
-
-    private var lockBadge: some View {
-        Image(systemName: "lock.fill")
-            .font(.system(size: 20, weight: .heavy))
-            .foregroundStyle(.white)
-            .frame(width: 48, height: 48)
-            .background(Circle().fill(Color.black.opacity(0.7)))
-            .overlay(Circle().stroke(RetroPalette.amber.opacity(0.7), lineWidth: 1.5))
-            .shadow(color: .black.opacity(0.5), radius: 6, y: 3)
     }
 
     private var upsell: some View {

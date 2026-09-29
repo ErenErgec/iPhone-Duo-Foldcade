@@ -14,6 +14,7 @@ struct GameCanvasView: View {
     @Environment(HingeEngine.self) private var hingeEngine
     @Environment(AudioManager.self) private var audioManager
     @Environment(HapticManager.self) private var hapticManager
+    @Environment(StoreManager.self) private var storeManager
 
     /// When the CRT power-on animation started. This view is created fresh
     /// for each game session, so every cartridge gets its own power-on.
@@ -95,6 +96,11 @@ struct GameCanvasView: View {
         }
     }
 
+    /// The screen to draw, limited to what the player has unlocked.
+    private var screenSettings: ScreenSettings {
+        storeManager.effectiveScreenSettings(appState.screenSettings)
+    }
+
     // MARK: - Bezel
 
     private func bezelHeader(theme: SkinTheme, inset: CGFloat) -> some View {
@@ -110,7 +116,7 @@ struct GameCanvasView: View {
 
             Spacer()
 
-            Text(theme.screenLabel)
+            Text(screenSettings.mode.bezelLabel)
                 .font(.system(size: max(8, inset * 0.36), weight: .bold, design: .monospaced))
                 .tracking(2)
                 .foregroundStyle(Color.white.opacity(0.3))
@@ -148,7 +154,8 @@ struct GameCanvasView: View {
                     blinkOn: Int(date.timeIntervalSinceReferenceDate * 2.5) % 2 == 0
                 )
             }
-            .crtEffect(
+            .screenEffect(
+                screenSettings,
                 hingeAngle: hingeEngine.hingeAngle,
                 powerOnProgress: date.timeIntervalSince(powerOnStart) / powerOnDuration
             )

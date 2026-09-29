@@ -9,7 +9,7 @@
 // - Inner display: follows the system's orientation and splits the console at
 //   the fold (see `FullScreenLayout`).
 //
-// App controls (title, Skins, Store) live in the system toolbar, which iPhone
+// App controls (title, Skins, Screen, Store) live in the system toolbar, which iPhone
 // Duo lays out vertically in the column beside the camera and status bar, or
 // as a regular top bar on the inner display in portrait. The toolbar is
 // hidden over a running console, an immersive screen without bars
@@ -92,6 +92,11 @@ public struct AdaptiveConsoleLayout: View {
                 Label("Skins", systemImage: "paintpalette.fill")
             }
             Button {
+                open(\.isScreenSettingsVisible)
+            } label: {
+                Label("Screen", systemImage: "tv")
+            }
+            Button {
                 open(\.isStoreVisible)
             } label: {
                 Label("Store", systemImage: "bag.fill")
@@ -103,6 +108,11 @@ public struct AdaptiveConsoleLayout: View {
         audioManager.playCartridgeClick()
         hapticManager.playHaptic(.buttonPress)
         withAnimation(LibraryOverlays.animation) {
+            // Skins and Screen replace each other; the store stacks on top.
+            if flag != \AppState.isStoreVisible {
+                appState.isSkinSelectorVisible = false
+                appState.isScreenSettingsVisible = false
+            }
             appState[keyPath: flag] = true
         }
     }

@@ -36,8 +36,6 @@ struct SkinTheme: Equatable, Sendable {
     var bezelBottomColor: Color = Color(hex: "#17191D")
     /// The power LED while a game is running.
     var ledColor: Color = Color(hex: "#FF3B30")
-    /// Model name printed on the bezel above the screen.
-    var screenLabel: String = "COLOR CRT"
 }
 
 enum SkinManager {
