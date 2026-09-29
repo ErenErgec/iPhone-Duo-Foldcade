@@ -254,6 +254,9 @@ The update rate and precision are system policy; prefer `status` when you only n
 - **Cover attract mode:** a full-bleed, faded background behind inset content ("letting a background image or header span the full width while scrollable content stays inset"), faded toward the vertical toolbar column so its items keep their contrast.
 - **Hinge:** still visuals only. The cover's "unfold to play" prompt was kept rather than animating it with the hinge, because the outer display goes dark as the device opens.
 
+**Decided on 2026-09-29 (Phase 2):**
+- **Lunar Hinge uses the hinge as input.** §8: "Hinge data is observed live, and is ideal for driving interactions or effects." Thrust grows as the device folds up to 30° past the most-open angle of the attempt, so it works from any starting pose; the smoothed `HingeEngine.hingeAngle` is used. §2 / HIG: "You don't want to tie functionality to a specific pose", so ▲ and A always thrust too. The hinge is still never used for layout.
+
 **Verified by the user in Device Hub (2026-09-23):**
 - Closed with the hinge on top, the outer display comes up in landscape.
 - Opened like a laptop, the CRT is above and the controls are below, with the split on the fold.

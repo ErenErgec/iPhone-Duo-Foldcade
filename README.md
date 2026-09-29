@@ -44,20 +44,29 @@ See [DESIGN.md](DESIGN.md) for Apple's guidance and our measurements.
 
 ## 🎮 Games
 
-All four games implement `PixelGameProtocol` and render at 60 FPS in a SwiftUI `Canvas` inside the CRT.
+All nine games implement `PixelGameProtocol` and render at 60 FPS in a SwiftUI `Canvas` inside the CRT.
 
-| Game | Description | Controls |
-| :--- | :--- | :--- |
-| **🧱 Brick Breaker** | Breakout with multi-ball and wide-paddle power-ups. | D-Pad ◀ ▶ moves the paddle. |
-| **🏎️ Retro Racer** | Three-lane top-down highway dodge that speeds up over time. | D-Pad ◀ ▶ changes lanes. |
-| **🐍 Snake** | Grid snake that speeds up every five apples. | D-Pad changes direction (no reversing). |
-| **🧩 Falling Blocks** | Tetromino stacking with a ghost piece and line clears. | D-Pad ◀ ▶ ▼ moves, ▲ hard-drops, A / B rotates. |
+| Game | Description | Modes | Controls |
+| :--- | :--- | :--- | :--- |
+| **🧱 Brick Breaker** | Twelve hand-built walls with tough and steel bricks; wide paddle, multi-ball, laser and sticky power-ups. | Standard | ◀ ▶ move, A launches the ball / fires the laser |
+| **🏎️ Retro Racer** | Three-lane highway dodge with coins and a speedometer. | Day, Night (headlights only) | ◀ ▶ change lanes |
+| **🐍 Snake** | Grid snake with a gold bonus every seventh apple. | Classic, Wrap, Maze | D-Pad steers |
+| **🧩 Falling Blocks** | Tetromino stacking with a ghost piece and a three-piece preview. | Marathon, Sprint (40 lines), Ultra (2 min) | ◀ ▶ ▼ move, ▲ hard-drops, A / B rotate |
+| **👾 Pixel Invaders** | A marching formation, eroding shields and a bonus saucer. | Standard | ◀ ▶ move, A fires |
+| **💣 Mine Sweep** | A 10 × 9 minefield; the first reveal is always safe. | Standard | D-Pad moves the cursor, A reveals, B flags |
+| **🟡 Maze Muncher** | Pellets, power pellets and three ghosts with different hunting styles. | Standard | D-Pad steers |
+| **🐸 Frog Hop** | Traffic, river logs and five homes, against the clock. | Standard | D-Pad hops |
+| **🌙 Lunar Hinge** | Land on one of three pads (×1, ×2, ×4). **Fold the device to thrust**, or hold ▲ / A. | Standard | fold or ▲ / A thrust, ◀ ▶ side thrusters |
+
+Every game also has a **Daily** mode: the same round for everyone that day (seeded from the UTC date), with a high score that starts over daily. The title and game-over screens switch modes with ◀ ▶.
 
 - **All games:** A starts or retries, Start pauses, and Select ejects the cartridge (the tube powers off, then the library returns).
-- **Pause menu:** while paused, an on-screen menu inside the tube offers Resume, Screen (switch between unlocked screen modes) and Eject. The D-Pad moves and changes, A selects, B or Start resumes.
+- **Pause menu:** while paused, an on-screen menu inside the tube offers Resume, Screen (switch between unlocked screen modes), Palette and Eject. The D-Pad moves and changes, A selects, B or Start resumes.
 - **Attract mode:** on the cover screen, the selected cartridge plays itself faintly behind the details (`AttractPilot`), silently and at 30 FPS. It stays still with Reduce Motion.
 - **High scores** are saved per game and mode (`ProgressStore`).
-- **Sound:** every game plays chiptune effects from `AudioManager`, a 3-channel sequenced synth (pulse/triangle/noise) that renders on the audio thread. Big events also trigger a haptic.
+- **Achievements:** five per cartridge (first points, a level goal, a score goal, a daily round, every mode). New ones are announced on the bezel; cartridge labels show earned stars.
+- **Palettes:** Original, DMG Green, Pocket Grey, Virtual Red and Neon Night recolor any game (PALETTE in the pause menu).
+- **Sound:** every game plays chiptune effects from `AudioManager`, a 3-channel sequenced synth (pulse/triangle/noise) that renders on the audio thread. Big events also trigger a haptic. Sound packs (Classic, Pocket, Arcade, Mellow) re-voice every sound; pick one in the skin picker.
 
 ---
 
@@ -100,10 +109,10 @@ All four games implement `PixelGameProtocol` and render at 60 FPS in a SwiftUI `
 
 | Product | ID | Price | Unlocks |
 | :--- | :--- | :--- | :--- |
-| Retro Collector Pack | `com.retrocartridge.collector_pack` | $6.99 | Atomic Purple, Cyberpunk Neon, 90's Arcade Cabinet |
-| Lifetime Pro | `com.retrocartridge.lifetime_pro` | $49.99 | Every skin, every screen mode and tuning, plus future skins and cartridges |
+| Retro Collector Pack | `com.retrocartridge.collector_pack` | $6.99 | Six skins (all but Gold Edition), Pocket, Arcade and Mellow sound packs |
+| Lifetime Pro | `com.retrocartridge.lifetime_pro` | $49.99 | Everything above, the Gold Edition skin, every screen mode and tuning, plus future content |
 
-All four games are free. `Products.storekit` defines both products for local testing, and the shared scheme uses it when you run from Xcode.
+All nine games, their modes and the palettes are free for now (the store is revisited in Phase 3). `Products.storekit` defines both products for local testing, and the shared scheme uses it when you run from Xcode.
 
 ---
 
@@ -122,7 +131,8 @@ RetroCartridge/
 │   │   ├── HapticManager.swift        # CoreHaptics transient feedback
 │   │   ├── HingeEngine.swift          # Smoothed hinge angle (onHingeChange) + 90° unfold chime
 │   │   ├── PostureManager.swift       # Outer / inner display detection (DuoDisplay)
-│   │   └── ProgressStore.swift        # High scores per game and mode, achievements
+│   │   ├── ProgressStore.swift        # High scores per game and mode (daily ones reset), achievements
+│   │   └── Achievements.swift         # Achievement definitions and per-frame tracker
 │   ├── Layout/
 │   │   ├── AdaptiveConsoleLayout.swift # Cover vs inner routing, system toolbar, fold/unfold, hinge
 │   │   ├── CoverScreenLayout.swift    # Outer display: cartridge carousel
@@ -144,7 +154,7 @@ RetroCartridge/
 │   │   ├── StoreView.swift            # Store overlay
 │   │   ├── OverlayPanel.swift         # Overlay panel chrome + LibraryOverlays (skin picker, store host)
 │   │   └── Skins/                     # SkinTheme definitions, ShellSurface finishes, console previews
-│   ├── Games/                         # PixelGameProtocol, factory, AttractPilot, and the four games
+│   ├── Games/                         # PixelGameProtocol, factory, GameRNG, AttractPilot, and the nine games
 │   ├── Models/GameModels.swift        # Game, cartridge metadata, mode, input, posture, skin and sound types
 │   └── Store/                         # StoreManager + product identifiers
 └── RetroCartridgeTests/               # Unit tests

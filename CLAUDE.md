@@ -39,18 +39,21 @@ xcodebuild -project RetroCartridge/RetroCartridge.xcodeproj -scheme RetroCartrid
 - **Overlays:** the skin picker and store are in-hierarchy overlays (`LibraryOverlays` in `UI/OverlayPanel.swift`), shown on both displays, to keep the retro look.
 - **Inner display split:** it must sit exactly on the fold. `FullScreenLayout.console` measures the full display (ignoring the safe area) and pads each half with the safe area insets of its own outer edges.
 - **Game Canvas redraw:** the `Canvas` in `UI/GameCanvasView.swift` must capture a per-frame value (`[frameDate = date]`). Otherwise SwiftUI treats the renderer as unchanged and the game looks frozen while it keeps running.
+- **Randomness:** games draw every random choice from their `rng` (`GameRNG`), reseeded with `makeRNG()` in `reset()`. Never call `.random()` without `using: &rng`, or daily rounds stop being the same for everyone.
 - **Games stay UI-free:** they don't touch `AudioManager` or haptics. They `emit(_:)` sounds into `pendingSounds`, and the frame loop drains them.
 - **Game colors come from the palette:** `render` draws only with `palette` roles (`GamePalette`), never literal colors, so palettes can be swapped, even mid-round. Each game's native palette sits at the bottom of its file.
-- **Cartridge metadata lives in `GameType.info`** (`CartridgeInfo`): subtitle, genre, artwork, label color, shell, modes, required product. A new game adds one case there, one in `PixelGameEngine`, one in `GamePalette.native(for:)` and one in `PixelArt.label(for:)`, plus a steering rule in `AttractPilot`.
+- **Cartridge metadata lives in `GameType.info`** (`CartridgeInfo`): subtitle, genre, artwork, label color, shell, modes, required product. A new game adds one case there, one in `PixelGameEngine`, one in `GamePalette.native(for:)` and one in `PixelArt.label(for:)`, plus a steering rule in `AttractPilot` (the attract test requires every game to score within 30 simulated seconds).
 - **High scores:** `ProgressStore` keeps them per game and mode. The standard mode uses the pre-modes key `highScore_<Game>`, so never rename a shipped `GameMode.id`.
 - **Screen modes:** one `screenEffect` shader draws every `ScreenMode`. Always draw `storeManager.effectiveScreenSettings(appState.screenSettings)`, never the stored settings directly, so locked modes and tuning fall back after a refund.
 - **Pause menu and eject:** while a game is paused, `ControllerView` routes the D-Pad and A / B to `PauseMenu` (Start still goes to the game). Select calls `appState.ejectCartridge()`; `GameCanvasView` plays the power-off and then calls `endGame()`. Don't call `endGame()` from the controller.
 - **Attract mode:** `AttractPilot` plays games only through `handleInput` and reads their state. Keep games free of demo code.
+- **Achievements and sound packs:** achievement ids (`Achievement.id`) are persistence keys, like mode ids; never change a shipped one. Sound packs are baked into the note table at launch (`pack index × patch count + patch`), so adding a patch or pack needs no audio-thread change.
 - **Cartridge labels:** `PixelArt` rows are 16×16 characters naming palette roles (key in `CartridgeArt.swift`); a test enforces the size and characters.
 - **Motion:** decorative motion (neon pulse, attract mode, insert slide, console jolt) is skipped with Reduce Motion.
 - **Library grid:** `LibraryGridMetrics` uses an even column count when the display has a fold (HIG: "prefer an even number of columns"). The fold is read with `.includeInactive`, so folding never reflows the grid. Cartridge width comes from the container, not a fixed size.
 - **Audio thread safety:** `AudioManager` renders on the audio thread. No allocation or blocking there beyond the existing unfair lock.
-- **Hinge angle:** it comes from `onHingeChange` (iOS 27.1), forwarded to `HingeEngine.updateFromHardware(_:)`, with the display posture as a fallback. Use it only for visuals (CRT, chime), never for layout; layout uses reserved regions.
+- **Hinge angle:** it comes from `onHingeChange` (iOS 27.1), forwarded to `HingeEngine.updateFromHardware(_:)`, with the display posture as a fallback. Use it for visuals (CRT, chime) and as game input (Apple: "ideal for driving interactions or effects"), never for layout; layout uses reserved regions.
+  - Games that take it conform to `HingeControllable` (Lunar Hinge). Every hinge action needs a button equivalent, so the game works in every pose.
 - **System toolbar:** the root is wrapped in a `NavigationStack`. The app name is a `navigationTitle`, and Skins/Store are `Label` items (icon + title), so iPhone Duo can lay them out vertically in the side column. On the inner display in portrait they form a regular top bar.
   - Items: Skins, Screen, Store in one `ToolbarItemGroup`. Skins and Screen replace each other; the store stacks above both.
   - The toolbar is hidden over a running console (immersive, no bars).
@@ -78,3 +81,4 @@ xcodebuild -project RetroCartridge/RetroCartridge.xcodeproj -scheme RetroCartrid
 - Code, comments and commit messages are in English. The user communicates in Turkish.
 - Match the existing style: `// MARK:` sections, doc comments on types and non-trivial members, and `@Observable` managers injected through the SwiftUI environment in `RootView`.
 - The app ships for iPhone Duo only. Don't add fallbacks for other devices.
+- Don't add Claude as a contributor: no `Co-Authored-By: Claude` trailer in commit messages.
