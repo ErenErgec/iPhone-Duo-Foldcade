@@ -211,8 +211,9 @@ final class PaddleDuelGame: PixelGameProtocol {
         ballVY = 0
     }
 
-    /// Serves from the middle toward whoever lost the point, a little
-    /// faster every level. Squash serves from the top wall.
+    /// Serves from the middle toward whoever won the point, so the player
+    /// who just missed gets a moment to recover, a little faster every
+    /// level. Squash serves from the top wall.
     private func serve() {
         let speed = min(maxBallSpeed, 0.55 + 0.05 * Double(level - 1))
         let angle = Double.random(in: -0.5...0.5, using: &rng)

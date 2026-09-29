@@ -243,6 +243,139 @@ final class RetroCartridgeTests: XCTestCase {
         }
     }
 
+    // MARK: - Long play
+
+    /// Every floating point value in a game's stored state that isn't finite.
+    private func nonFiniteValues(in value: Any, path: String = "", depth: Int = 0) -> [String] {
+        if let number = value as? Double { return number.isFinite ? [] : [path] }
+        if let number = value as? CGFloat { return number.isFinite ? [] : [path] }
+        guard depth < 5, !(value is GamePalette) else { return [] }
+        return Mirror(reflecting: value).children.enumerated().flatMap { index, child in
+            nonFiniteValues(in: child.value, path: path + "." + (child.label ?? "\(index)"), depth: depth + 1)
+        }
+    }
+
+    /// A game's stored state as text, with sets and dictionaries sorted
+    /// (their order differs between equal instances), so equal states match.
+    private func stateDescription(of value: Any, depth: Int = 0) -> String {
+        let mirror = Mirror(reflecting: value)
+        guard !mirror.children.isEmpty, depth < 6, !(value is GamePalette) else { return String(describing: value) }
+        var parts = mirror.children.map { "\($0.label ?? ""):\(stateDescription(of: $0.value, depth: depth + 1))" }
+        if mirror.displayStyle == .set || mirror.displayStyle == .dictionary { parts.sort() }
+        return "{" + parts.joined(separator: ",") + "}"
+    }
+
+    private static let everyInput: [GameInputAction] = [
+        .dpadUpPressed, .dpadDownPressed, .dpadLeftPressed, .dpadRightPressed,
+        .dpadUpReleased, .dpadDownReleased, .dpadLeftReleased, .dpadRightReleased,
+        .buttonAPressed, .buttonAReleased, .buttonBPressed, .buttonBReleased
+    ]
+
+    /// A minute of random button mashing in every mode, at uneven frame
+    /// times up to the frame loop's 0.05 s cap: no non-finite state, and the
+    /// score and level never go backwards within a round.
+    func testEveryModeSurvivesAMinuteOfRandomInput() {
+        for gameType in GameType.allCases {
+            for mode in gameType.modes {
+                let label = "\(gameType.rawValue) / \(mode.id)"
+                let game = PixelGameEngine.createGame(type: gameType, mode: mode)
+                var rng = GameRNG(seed: 42)
+                var lastScore = 0
+                var lastLevel = 1
+                var rounds = 0
+                for frame in 0..<3_600 {
+                    switch game.gameState {
+                    case .menu, .gameOver:
+                        game.handleInput(action: .buttonAPressed)
+                        rounds += 1
+                        lastScore = 0
+                        lastLevel = game.level
+                    case .paused:
+                        game.resume()
+                    case .playing:
+                        if rng.next() % 6 == 0 {
+                            game.handleInput(action: Self.everyInput[Int(rng.next() % UInt64(Self.everyInput.count))])
+                        }
+                    }
+                    game.update(deltaTime: [1.0 / 60, 1.0 / 30, 0.05][Int(rng.next() % 3)])
+                    _ = game.drainSounds()
+
+                    if case .gameOver(let final) = game.gameState {
+                        XCTAssertEqual(final, game.score, label)
+                    } else if game.gameState == .playing {
+                        XCTAssertGreaterThanOrEqual(game.score, lastScore, label)
+                        XCTAssertGreaterThanOrEqual(game.level, lastLevel, label)
+                        lastScore = game.score
+                        lastLevel = game.level
+                    }
+                    if frame % 30 == 0 {
+                        let bad = nonFiniteValues(in: game)
+                        XCTAssertTrue(bad.isEmpty, "\(label): \(bad)")
+                        if !bad.isEmpty { break }
+                    }
+                }
+                XCTAssertGreaterThan(rounds, 0, label)
+            }
+        }
+    }
+
+    /// Two daily rounds played with the same inputs stay identical in every
+    /// cartridge, so everyone really gets the same round.
+    func testDailyRoundsPlayOutTheSameInEveryGame() {
+        for gameType in GameType.allCases {
+            guard let daily = gameType.modes.first(where: \.isDaily) else {
+                XCTFail("\(gameType.rawValue) has no daily mode")
+                continue
+            }
+            var traces: [[String]] = []
+            for _ in 0..<2 {
+                let game = PixelGameEngine.createGame(type: gameType, mode: daily)
+                var rng = GameRNG(seed: 99)
+                var trace = [stateDescription(of: game)]
+                game.handleInput(action: .buttonAPressed)
+                for frame in 0..<1_800 {
+                    if case .gameOver = game.gameState {
+                        game.handleInput(action: .buttonAPressed)
+                    } else if rng.next() % 8 == 0 {
+                        game.handleInput(action: Self.everyInput[Int(rng.next() % UInt64(Self.everyInput.count))])
+                    }
+                    game.update(deltaTime: 1.0 / 60)
+                    _ = game.drainSounds()
+                    if frame % 120 == 0 {
+                        trace.append(stateDescription(of: game))
+                    }
+                }
+                traces.append(trace)
+            }
+            XCTAssertEqual(traces[0], traces[1], gameType.rawValue)
+        }
+    }
+
+    /// A shot fired at full speed hits even the smallest rock when frames
+    /// run long (the cover plays at 30 FPS, and dropped frames reach the
+    /// 0.05 s cap), instead of skipping over it between two frames.
+    func testAstroDriftShotsDontSkipOverRocks() {
+        for deltaTime in [1.0 / 60, 1.0 / 30, 0.05] {
+            for offset in 0..<40 {
+                let game = AstroDriftGame()
+                game.handleInput(action: .buttonAPressed)
+                game.shieldTimer = 100
+                let rockY = 0.30 + Double(offset) * 0.004
+                game.rocks = [AstroDriftGame.Rock(x: 0.5, y: rockY, vx: 0, vy: 0, size: 1, spin: 0, outline: Array(repeating: 1, count: 9))]
+                // Fire while flying forward at top speed, then move the ship
+                // out of the way; the shot keeps the ship's speed
+                game.shipVY = -game.maxShipSpeed
+                game.handleInput(action: .buttonAPressed)
+                game.shipVY = 0
+                game.shipY = 0.9
+                for _ in 0..<10 {
+                    game.update(deltaTime: deltaTime)
+                }
+                XCTAssertTrue(game.rocks.isEmpty, "rock at \(rockY) missed at \(deltaTime) s frames")
+            }
+        }
+    }
+
     // MARK: - Pause menu and eject
 
     private func makePausedAppState() -> AppState {

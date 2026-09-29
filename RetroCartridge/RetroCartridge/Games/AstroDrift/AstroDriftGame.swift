@@ -99,7 +99,20 @@ final class AstroDriftGame: PixelGameProtocol {
 
     // MARK: - Update
 
+    /// The longest step the field moves in one go. Shots cross up to 0.026
+    /// of the field per 1/60 s, the radius of the smallest rock, so a longer
+    /// frame (30 FPS, a dropped frame) is split up or a shot could skip
+    /// right over a rock.
+    static let maxStep: TimeInterval = 1.0 / 60
+
     func update(deltaTime: TimeInterval) {
+        let steps = max(1, Int((deltaTime / Self.maxStep).rounded(.up)))
+        for _ in 0..<steps {
+            step(deltaTime: deltaTime / Double(steps))
+        }
+    }
+
+    private func step(deltaTime: TimeInterval) {
         guard gameState == .playing else { return }
         clock += deltaTime
         cooldown = max(0, cooldown - deltaTime)
