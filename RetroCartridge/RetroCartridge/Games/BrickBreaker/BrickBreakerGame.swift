@@ -12,6 +12,7 @@ final class BrickBreakerGame: PixelGameProtocol {
     var highScore: Int = 0
     var mode: GameMode = .standard
     var palette: GamePalette = .brickBreaker
+    var rng = GameRNG()
     var pendingSounds: [GameSound] = []
     
     struct Paddle {
@@ -165,8 +166,8 @@ final class BrickBreakerGame: PixelGameProtocol {
                         emit(.brickBreak)
                         
                         // Spawn powerup?
-                        if Double.random(in: 0...1) < 0.20 {
-                            powerUps.append(PowerUp(x: bx + brickWidth/2, y: by + brickHeight/2, type: Bool.random() ? .widePaddle : .multiBall))
+                        if Double.random(in: 0...1, using: &rng) < 0.20 {
+                            powerUps.append(PowerUp(x: bx + brickWidth/2, y: by + brickHeight/2, type: Bool.random(using: &rng) ? .widePaddle : .multiBall))
                         }
                         
                         // Simple collision response
@@ -316,6 +317,7 @@ final class BrickBreakerGame: PixelGameProtocol {
     }
     
     func reset() {
+        rng = makeRNG()
         gameState = .menu
         pendingSounds.removeAll()
         score = 0

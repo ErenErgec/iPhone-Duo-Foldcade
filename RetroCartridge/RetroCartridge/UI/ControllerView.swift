@@ -91,6 +91,13 @@ public struct ControllerView: View {
             return
         }
 
+        // On the title and game-over screens, left / right switch modes
+        if action == .dpadLeftPressed || action == .dpadRightPressed,
+           appState.cycleMode(by: action == .dpadLeftPressed ? -1 : 1) {
+            audioManager.playGameSound(.moveTick)
+            return
+        }
+
         appState.activeGame?.handleInput(action: action)
     }
 

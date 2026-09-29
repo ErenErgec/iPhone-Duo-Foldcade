@@ -173,9 +173,12 @@ struct GameCanvasView: View {
                     gameState: game.gameState,
                     highScore: max(appState.highScore(for: game.gameType, mode: game.mode), game.score),
                     blinkOn: Int(date.timeIntervalSinceReferenceDate * 2.5) % 2 == 0,
+                    mode: game.mode,
+                    hasModes: game.gameType.modes.count > 1,
                     menuSelection: appState.pauseMenuSelection,
                     screenModeTitle: screenSettings.mode.title,
-                    canChangeScreen: PauseMenu.availableScreenModes(store: storeManager).count > 1
+                    canChangeScreen: PauseMenu.availableScreenModes(store: storeManager).count > 1,
+                    paletteTitle: appState.paletteChoice.title
                 )
             }
             .screenEffect(
@@ -242,9 +245,13 @@ private struct GameStatePanel: View {
     let gameState: GameState
     let highScore: Int
     let blinkOn: Bool
+    let mode: GameMode
+    /// Whether the D-Pad can switch modes on the title and game-over screens.
+    let hasModes: Bool
     let menuSelection: PauseMenuItem
     let screenModeTitle: String
     let canChangeScreen: Bool
+    let paletteTitle: String
 
     private let phosphor = Color(hex: "#9CFFB8")
 
@@ -255,12 +262,19 @@ private struct GameStatePanel: View {
             Group {
                 switch gameState {
                 case .menu:
-                    panel(u: u, title: title.uppercased(), lines: [], prompt: "PRESS A TO START")
+                    // The D-Pad picks the mode on the title screen
+                    panel(
+                        u: u,
+                        title: title.uppercased(),
+                        lines: hasModes ? ["◀ \(mode.title.uppercased()) ▶", mode.summary.uppercased()] : [],
+                        prompt: "PRESS A TO START"
+                    )
                 case .paused:
                     PauseMenuPanel(
                         selection: menuSelection,
                         screenModeTitle: screenModeTitle,
                         canChangeScreen: canChangeScreen,
+                        paletteTitle: paletteTitle,
                         blinkOn: blinkOn,
                         u: u
                     )
@@ -268,7 +282,8 @@ private struct GameStatePanel: View {
                     panel(
                         u: u,
                         title: "GAME OVER",
-                        lines: finalScore > 0 && finalScore >= highScore ? ["NEW HIGH SCORE!", "\(finalScore)"] : ["SCORE \(finalScore)"],
+                        lines: (finalScore > 0 && finalScore >= highScore ? ["NEW HIGH SCORE!", "\(finalScore)"] : ["SCORE \(finalScore)"])
+                            + (hasModes ? ["◀ \(mode.title.uppercased()) ▶"] : []),
                         prompt: "PRESS A TO RETRY"
                     )
                 case .playing:
@@ -289,10 +304,12 @@ private struct GameStatePanel: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.5)
 
-            ForEach(lines, id: \.self) { line in
+            ForEach(Array(lines.enumerated()), id: \.offset) { _, line in
                 Text(line)
                     .font(.system(size: u * 0.85, weight: .bold, design: .monospaced))
                     .foregroundStyle(phosphor)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
             }
 
             Text(prompt)

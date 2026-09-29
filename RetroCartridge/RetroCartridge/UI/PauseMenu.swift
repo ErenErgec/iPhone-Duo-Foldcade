@@ -3,7 +3,7 @@
 // RetroCartridge
 //
 // The on-screen display shown inside the tube while a game is paused, like
-// a TV's settings menu. The controller drives it (D-Pad moves and changes,
+// a TV's settings menu: resume, screen mode, palette, eject. The controller drives it (D-Pad moves and changes,
 // A selects, B resumes, Start still resumes through the game), so games
 // stay unaware of it. It sits in the CRT, next to the content it affects.
 //
@@ -16,12 +16,14 @@ import SwiftUI
 enum PauseMenuItem: Int, CaseIterable, Sendable {
     case resume
     case screen
+    case palette
     case eject
 
     var title: String {
         switch self {
         case .resume: return "RESUME"
         case .screen: return "SCREEN"
+        case .palette: return "PALETTE"
         case .eject: return "EJECT"
         }
     }
@@ -67,8 +69,15 @@ enum PauseMenu {
             return .moved
 
         case .dpadLeftPressed, .dpadRightPressed:
-            guard selection == .screen else { return .ignored }
-            return cycleScreen(by: action == .dpadLeftPressed ? -1 : 1, appState: appState, modes: screenModes, current: currentScreen)
+            let step = action == .dpadLeftPressed ? -1 : 1
+            switch selection {
+            case .screen:
+                return cycleScreen(by: step, appState: appState, modes: screenModes, current: currentScreen)
+            case .palette:
+                return cyclePalette(by: step, appState: appState)
+            case .resume, .eject:
+                return .ignored
+            }
 
         case .buttonAPressed:
             switch selection {
@@ -77,6 +86,8 @@ enum PauseMenu {
                 return .confirmed
             case .screen:
                 return cycleScreen(by: 1, appState: appState, modes: screenModes, current: currentScreen)
+            case .palette:
+                return cyclePalette(by: 1, appState: appState)
             case .eject:
                 appState.ejectCartridge()
                 return .confirmed
@@ -96,6 +107,13 @@ enum PauseMenu {
         appState.activeGame?.resume()
     }
 
+    private static func cyclePalette(by step: Int, appState: AppState) -> Outcome {
+        let palettes = PaletteChoice.allCases
+        let index = palettes.firstIndex(of: appState.paletteChoice) ?? 0
+        appState.paletteChoice = palettes[(index + step + palettes.count) % palettes.count]
+        return .changed
+    }
+
     private static func cycleScreen(by step: Int, appState: AppState, modes: [ScreenMode], current: ScreenMode) -> Outcome {
         guard modes.count > 1 else { return .ignored }
         let index = modes.firstIndex(of: current) ?? 0
@@ -112,6 +130,7 @@ struct PauseMenuPanel: View {
     let selection: PauseMenuItem
     let screenModeTitle: String
     let canChangeScreen: Bool
+    let paletteTitle: String
     let blinkOn: Bool
     /// Base unit, 1/20 of the tube's shorter side.
     let u: CGFloat
@@ -148,7 +167,19 @@ struct PauseMenuPanel: View {
         )
         .padding(u)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Paused. \(selection.title.capitalized) selected. Screen: \(screenModeTitle).")
+        .accessibilityLabel("Paused. \(selection.title.capitalized) selected. Screen: \(screenModeTitle). Palette: \(paletteTitle).")
+    }
+
+    /// The setting shown at the end of a row, with arrows when it can change.
+    private func value(of item: PauseMenuItem) -> String? {
+        switch item {
+        case .screen:
+            return canChangeScreen ? "◀ \(screenModeTitle.uppercased()) ▶" : screenModeTitle.uppercased()
+        case .palette:
+            return "◀ \(paletteTitle.uppercased()) ▶"
+        case .resume, .eject:
+            return nil
+        }
     }
 
     private func row(_ item: PauseMenuItem) -> some View {
@@ -158,9 +189,9 @@ struct PauseMenuPanel: View {
             Text("▶")
                 .opacity(isSelected ? (blinkOn ? 1 : 0.35) : 0)
             Text(item.title)
-            if item == .screen {
+            if let value = value(of: item) {
                 Spacer(minLength: u * 0.5)
-                Text(canChangeScreen ? "◀ \(screenModeTitle.uppercased()) ▶" : screenModeTitle.uppercased())
+                Text(value)
                     .foregroundStyle(phosphor.opacity(isSelected ? 1 : 0.6))
             }
         }

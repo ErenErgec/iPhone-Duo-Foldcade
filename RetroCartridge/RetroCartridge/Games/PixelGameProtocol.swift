@@ -93,6 +93,14 @@ extension PixelGameProtocol {
         }
     }
 
+    /// A random generator for a new round: seeded from the day for a daily
+    /// round, unpredictable otherwise. Games call it from `reset()` and draw
+    /// every random choice from it.
+    func makeRNG() -> GameRNG {
+        guard mode.isDaily else { return GameRNG() }
+        return GameRNG(seed: DailySeed.seed(for: gameType, day: DailySeed.dayKey()))
+    }
+
     /// Queues a sound effect for the next frame. Duplicates within a frame
     /// are dropped (e.g. several bricks breaking at once play one sound).
     func emit(_ sound: GameSound) {

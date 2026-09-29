@@ -66,6 +66,27 @@ final class AppState {
             .flatMap { try? JSONDecoder().decode(ScreenSettings.self, from: $0) } ?? .standard
     }
 
+    // MARK: - Palette
+
+    /// The palette games draw with, persisted. Applied to every new game and
+    /// to the running one as soon as it changes.
+    var paletteChoice: PaletteChoice = AppState.persistedPaletteChoice() {
+        didSet {
+            guard paletteChoice != oldValue else { return }
+            UserDefaults.standard.set(paletteChoice.rawValue, forKey: Self.paletteChoiceKey)
+            if let activeGame {
+                activeGame.palette = paletteChoice.palette(for: activeGame.gameType)
+            }
+        }
+    }
+
+    private static let paletteChoiceKey = "paletteChoice"
+
+    private static func persistedPaletteChoice() -> PaletteChoice {
+        UserDefaults.standard.string(forKey: paletteChoiceKey)
+            .flatMap(PaletteChoice.init(rawValue:)) ?? .original
+    }
+
     // MARK: - UI State
     
     /// Whether the store overlay is visible (drawn in-hierarchy by the library,
@@ -100,6 +121,7 @@ final class AppState {
     
     /// Start a new game session with the selected game type.
     func startGame(_ game: any PixelGameProtocol) {
+        game.palette = paletteChoice.palette(for: game.gameType)
         activeGame = game
         ejectStart = nil
         pauseMenuSelection = .resume
@@ -129,6 +151,25 @@ final class AppState {
         }
         activeGame = nil
         ejectStart = nil
+    }
+
+    /// Switches the active game to its next (or previous) mode and resets it
+    /// to the title screen. Only on the title and game-over screens, and only
+    /// for games with more than one mode.
+    /// - Returns: Whether the mode changed.
+    @discardableResult
+    func cycleMode(by step: Int) -> Bool {
+        guard let game = activeGame, !isEjecting else { return false }
+        switch game.gameState {
+        case .menu, .gameOver: break
+        case .playing, .paused: return false
+        }
+        let modes = game.gameType.modes
+        guard modes.count > 1 else { return false }
+        let index = modes.firstIndex(of: game.mode) ?? 0
+        game.mode = modes[(index + step % modes.count + modes.count) % modes.count]
+        game.reset()
+        return true
     }
 
     // MARK: - Pause Menu

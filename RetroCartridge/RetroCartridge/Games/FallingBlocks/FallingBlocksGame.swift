@@ -12,6 +12,7 @@ final class FallingBlocksGame: PixelGameProtocol {
     var highScore: Int = 0
     var mode: GameMode = .standard
     var palette: GamePalette = .fallingBlocks
+    var rng = GameRNG()
     var pendingSounds: [GameSound] = []
     
     let cols = 10
@@ -86,7 +87,7 @@ final class FallingBlocksGame: PixelGameProtocol {
     
     /// A random piece at the top center of the board.
     func randomPiece() -> Tetromino {
-        let kind = Int.random(in: 0..<pieceShapes.count)
+        let kind = Int.random(in: 0..<pieceShapes.count, using: &rng)
         let shape = pieceShapes[kind]
         return Tetromino(shape: shape, colorIndex: kind, x: cols/2 - shape.count/2, y: 0)
     }
@@ -301,6 +302,7 @@ final class FallingBlocksGame: PixelGameProtocol {
     }
     
     func reset() {
+        rng = makeRNG()
         gameState = .menu
         pendingSounds.removeAll()
         score = 0

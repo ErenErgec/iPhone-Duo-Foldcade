@@ -172,7 +172,10 @@ struct ScreenSettings: Codable, Equatable, Sendable {
 // MARK: - Game Mode
 
 /// A rule set a cartridge can be played with. Each mode keeps its own high
-/// score. Every game supports `.standard`, the rules it shipped with.
+/// score. Every game supports `.standard`, the rules it shipped with, which
+/// a game may present under its own name (e.g. "Marathon"), and `.daily`.
+///
+/// Two modes are the same rule set when their ids match.
 struct GameMode: Hashable, Identifiable, Sendable {
     /// Stable identifier, used in persistence keys. Never rename a shipped one.
     let id: String
@@ -183,7 +186,21 @@ struct GameMode: Hashable, Identifiable, Sendable {
     /// One-line summary of the rules.
     let summary: String
 
+    /// A daily round: standard rules, dealt from the day's shared seed, with
+    /// a high score that starts over every day.
+    var isDaily: Bool = false
+
     static let standard = GameMode(id: "standard", title: "Standard", summary: "The classic rules.")
+
+    static let daily = GameMode(id: "daily", title: "Daily", summary: "Today's round, same for everyone.", isDaily: true)
+
+    static func == (lhs: GameMode, rhs: GameMode) -> Bool {
+        lhs.id == rhs.id
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
 }
 
 // MARK: - Cartridge
@@ -267,7 +284,8 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
                 subtitle: "Classic paddle & ball action",
                 genre: "ARCADE",
                 symbolName: "square.grid.3x2.fill",
-                labelColorHex: "#FF6B6B"
+                labelColorHex: "#FF6B6B",
+                modes: [.standard, .daily]
             )
         case .retroRacer:
             return CartridgeInfo(
@@ -275,7 +293,8 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
                 genre: "RACING",
                 symbolName: "car.fill",
                 labelColorHex: "#4ECDC4",
-                shell: .black
+                shell: .black,
+                modes: [.standard, .daily]
             )
         case .snake:
             return CartridgeInfo(
@@ -283,7 +302,8 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
                 genre: "ACTION",
                 symbolName: "scribble.variable",
                 labelColorHex: "#45B7D1",
-                shell: .glow
+                shell: .glow,
+                modes: [.standard, .daily]
             )
         case .fallingBlocks:
             return CartridgeInfo(
@@ -291,7 +311,8 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
                 genre: "PUZZLE",
                 symbolName: "square.stack.3d.down.right.fill",
                 labelColorHex: "#F7DC6F",
-                shell: .clearPurple
+                shell: .clearPurple,
+                modes: [.standard, .daily]
             )
         }
     }

@@ -12,6 +12,7 @@ final class RetroRacerGame: PixelGameProtocol {
     var highScore: Int = 0
     var mode: GameMode = .standard
     var palette: GamePalette = .retroRacer
+    var rng = GameRNG()
     var pendingSounds: [GameSound] = []
     
     struct Car {
@@ -67,8 +68,8 @@ final class RetroRacerGame: PixelGameProtocol {
         spawnTimer -= deltaTime
         if spawnTimer <= 0 {
             spawnTimer = currentSpawnInterval
-            let lane = Int.random(in: 0...2)
-            obstacles.append(Car(lane: lane, y: -0.2, isAlt: Bool.random()))
+            let lane = Int.random(in: 0...2, using: &rng)
+            obstacles.append(Car(lane: lane, y: -0.2, isAlt: Bool.random(using: &rng)))
         }
         
         // Update obstacles
@@ -166,6 +167,7 @@ final class RetroRacerGame: PixelGameProtocol {
     }
     
     func reset() {
+        rng = makeRNG()
         gameState = .menu
         pendingSounds.removeAll()
         score = 0

@@ -12,6 +12,7 @@ final class SnakeGame: PixelGameProtocol {
     var highScore: Int = 0
     var mode: GameMode = .standard
     var palette: GamePalette = .snake
+    var rng = GameRNG()
     var pendingSounds: [GameSound] = []
     
     struct SnakeSegment {
@@ -91,8 +92,8 @@ final class SnakeGame: PixelGameProtocol {
     func spawnFood() {
         var placed = false
         while !placed {
-            let fx = Int.random(in: 0..<gridSize)
-            let fy = Int.random(in: 0..<gridSize)
+            let fx = Int.random(in: 0..<gridSize, using: &rng)
+            let fy = Int.random(in: 0..<gridSize, using: &rng)
             if !snake.contains(where: { $0.x == fx && $0.y == fy }) {
                 food = SnakeSegment(x: fx, y: fy)
                 placed = true
@@ -175,6 +176,7 @@ final class SnakeGame: PixelGameProtocol {
     }
     
     func reset() {
+        rng = makeRNG()
         gameState = .menu
         pendingSounds.removeAll()
         score = 0

@@ -300,4 +300,77 @@ final class RetroCartridgeTests: XCTestCase {
         XCTAssertFalse(appState.isEjecting)
         XCTAssertNil(appState.activeGame)
     }
+
+    // MARK: - Variety infrastructure
+
+    func testModesAreTheSameRuleSetWhenTheirIdsMatch() {
+        let marathon = GameMode(id: "standard", title: "Marathon", summary: "Endless.")
+        XCTAssertEqual(marathon, .standard)
+        XCTAssertEqual(Set([marathon, .standard]).count, 1)
+        XCTAssertNotEqual(GameMode.daily, .standard)
+    }
+
+    func testDailyRoundsAreDealtTheSameWay() {
+        func pieces(_ game: FallingBlocksGame) -> [Int] {
+            (0..<12).map { _ in game.randomPiece().colorIndex }
+        }
+        let first = PixelGameEngine.createGame(type: .fallingBlocks, mode: .daily) as! FallingBlocksGame
+        let second = PixelGameEngine.createGame(type: .fallingBlocks, mode: .daily) as! FallingBlocksGame
+        XCTAssertEqual(pieces(first), pieces(second))
+    }
+
+    func testDailySeedDependsOnGameAndDay() {
+        let day = "2026-09-29"
+        XCTAssertEqual(DailySeed.seed(for: .snake, day: day), DailySeed.seed(for: .snake, day: day))
+        XCTAssertNotEqual(DailySeed.seed(for: .snake, day: day), DailySeed.seed(for: .retroRacer, day: day))
+        XCTAssertNotEqual(DailySeed.seed(for: .snake, day: day), DailySeed.seed(for: .snake, day: "2026-09-30"))
+        XCTAssertEqual(DailySeed.dayKey(for: Date(timeIntervalSince1970: 0)), "1970-01-01")
+    }
+
+    func testDailyHighScoresStartOverEachDay() {
+        let defaults = makeDefaults()
+        var day = "2026-09-29"
+        let progress = ProgressStore(defaults: defaults, today: { day })
+        XCTAssertTrue(progress.recordScore(500, for: .snake, mode: .daily))
+        XCTAssertEqual(progress.highScore(for: .snake, mode: .daily), 500)
+
+        day = "2026-09-30"
+        XCTAssertEqual(progress.highScore(for: .snake, mode: .daily), 0)
+        XCTAssertTrue(progress.recordScore(100, for: .snake, mode: .daily))
+        XCTAssertEqual(ProgressStore(defaults: defaults, today: { day }).highScore(for: .snake, mode: .daily), 100)
+    }
+
+    func testModeCyclesOnlyOnTheTitleAndGameOverScreens() {
+        let appState = AppState(progress: ProgressStore(defaults: makeDefaults()))
+        appState.startGame(type: .snake)
+        XCTAssertTrue(appState.cycleMode(by: 1))
+        XCTAssertEqual(appState.activeGame?.mode, GameType.snake.modes[1])
+        XCTAssertEqual(appState.activeGame?.gameState, .menu)
+
+        appState.activeGame?.handleInput(action: .buttonAPressed)
+        XCTAssertFalse(appState.cycleMode(by: 1))
+    }
+
+    func testPaletteChoiceRecolorsTheRunningGame() {
+        let appState = AppState(progress: ProgressStore(defaults: makeDefaults()))
+        let original = appState.paletteChoice
+        defer { appState.paletteChoice = original }
+
+        appState.paletteChoice = .original
+        appState.startGame(type: .snake)
+        XCTAssertEqual(appState.activeGame?.palette, GamePalette.snake)
+        appState.paletteChoice = .dmgGreen
+        XCTAssertEqual(appState.activeGame?.palette, GamePalette.dmgGreen)
+    }
+
+    func testPauseMenuCyclesPalettes() {
+        let appState = makePausedAppState()
+        let original = appState.paletteChoice
+        defer { appState.paletteChoice = original }
+
+        appState.paletteChoice = .original
+        appState.pauseMenuSelection = .palette
+        PauseMenu.handle(.dpadRightPressed, appState: appState, screenModes: [.crt], currentScreen: .crt)
+        XCTAssertEqual(appState.paletteChoice, PaletteChoice.allCases[1])
+    }
 }

@@ -50,6 +50,7 @@
 		76827DBEEF4823E2E6DDDC1B /* AttractPilot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 880E3CC9E33A86EC6E951F9F /* AttractPilot.swift */; };
 		E8C268C93BD75A0BAA33D4E2 /* AttractScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B76AF2FF78603680C9FC0C0 /* AttractScreen.swift */; };
 		FA3EEA4E93EEFCD8A1E1585E /* PauseMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC226AEA802B413476577317 /* PauseMenu.swift */; };
+		226C9958BD311D51C69DF289 /* GameRNG.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F8168463B5C2FBD8ADC7AF /* GameRNG.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -110,6 +111,7 @@
 		880E3CC9E33A86EC6E951F9F /* AttractPilot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttractPilot.swift; sourceTree = "<group>"; };
 		7B76AF2FF78603680C9FC0C0 /* AttractScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttractScreen.swift; sourceTree = "<group>"; };
 		FC226AEA802B413476577317 /* PauseMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PauseMenu.swift; sourceTree = "<group>"; };
+		39F8168463B5C2FBD8ADC7AF /* GameRNG.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameRNG.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -263,6 +265,7 @@
 				A517D40FBA6FE62245965879 /* RetroRacer */,
 				DED774755CD87D1DF85B59D6 /* Snake */,
 				84E3D648292B168D294C0233 /* PixelGameEngine.swift */,
+				39F8168463B5C2FBD8ADC7AF /* GameRNG.swift */,
 				880E3CC9E33A86EC6E951F9F /* AttractPilot.swift */,
 				CEB7C8D18F05AF96EE9A28DD /* PixelGameProtocol.swift */,
 			);
@@ -421,6 +424,7 @@
 				D2DDD4CE661F117CAF47450B /* HapticManager.swift in Sources */,
 				762BE0DA9936473273BDB6B0 /* HingeEngine.swift in Sources */,
 				FC184BF79E8C70A9A2D41B64 /* PixelGameEngine.swift in Sources */,
+				226C9958BD311D51C69DF289 /* GameRNG.swift in Sources */,
 				76827DBEEF4823E2E6DDDC1B /* AttractPilot.swift in Sources */,
 				1F731E3550AFB142BAC4ADAE /* PixelGameProtocol.swift in Sources */,
 				349DA3AFA1F86A358B2BA421 /* PostureManager.swift in Sources */,
