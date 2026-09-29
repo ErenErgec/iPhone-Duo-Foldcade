@@ -68,7 +68,8 @@ Every game also has a **Daily** mode: the same round for everyone that day (seed
 - **Achievements:** five per cartridge (first points, a level goal, a score goal, a daily round, every mode). New ones are announced on the bezel; cartridge labels show earned stars.
 - **Records:** the Records toolbar item shows every cartridge's best score per mode (today's for Daily) and its achievements.
 - **Palettes:** Original, DMG Green, Pocket Grey, Virtual Red and Neon Night recolor any game (PALETTE in the pause menu).
-- **Sound:** every game plays chiptune effects from `AudioManager`, a 3-channel sequenced synth (pulse/triangle/noise) that renders on the audio thread. Big events also trigger a haptic. Sound packs (Classic, Pocket, Arcade, Mellow) re-voice every sound; pick one in the skin picker.
+- **Sound:** every game plays chiptune effects from `AudioManager`, a sequenced synth (pulse/triangle/noise) that renders on the audio thread. Big events also trigger a haptic. Sound packs (Classic, Pocket, Arcade, Mellow) re-voice every sound; pick one in the skin picker.
+- **Music:** each cartridge has its own looping eight-bar theme (lead, triangle bass, noise drums) on three music channels of its own, so effects never cut it. It plays on the title screen and in game, in the current sound pack, and stops on pause and game over. MUSIC in the pause menu turns it off.
 
 ---
 
@@ -103,6 +104,11 @@ Every game also has a **Daily** mode: the same round for everyone that day (seed
   - 90's Arcade Cabinet: wood-grain laminate.
 - **Cartridges:** each game has its own plastic (grey, black, glow-in-the-dark, clear over its circuit board) and a 16×16 pixel-art label drawn in the game's palette. The library stands them on a shelf with a collection counter; locked cartridges look dusty and open the store.
 
+- **Accessibility:**
+  - VoiceOver: the controls are buttons with the direct-interaction trait, so games can be played by touch; a double tap presses a button, and the D-Pad has Up/Down/Left/Right actions for single steps. The game screen describes the game in words (title screen, score and level, pause menu, final score), and new achievements are announced.
+  - Reduce Motion skips decorative motion; Reduce Transparency draws translucent shells solid, turns off the faded attract mode and makes overlay backdrops nearly opaque.
+- **Languages:** English and Turkish, from a String Catalog (`Localizable.xcstrings`). Game titles, skin and product names and the console's silkscreen stay in English.
+
 ---
 
 ## 💎 In-app purchases (StoreKit 2)
@@ -131,7 +137,8 @@ RetroCartridge/
 │   │   ├── RetroCartridgeApp.swift    # @main UIKit entry, per-display orientation, RootView (NavigationStack)
 │   │   └── AppState.swift             # @Observable app state: active game, skin, overlays, high scores
 │   ├── Core/
-│   │   ├── AudioManager.swift         # Sequenced 3-channel chiptune synth (AVAudioEngine)
+│   │   ├── AudioManager.swift         # Six-channel chiptune synth (AVAudioEngine): effects, sound packs, looping music
+│   │   ├── ChipMusic.swift            # Each cartridge's theme as text scores, parsed into looping patches
 │   │   ├── HapticManager.swift        # CoreHaptics transient feedback
 │   │   ├── HingeEngine.swift          # Smoothed hinge angle (onHingeChange) + 90° unfold chime
 │   │   ├── PostureManager.swift       # Outer / inner display detection (DuoDisplay)
@@ -162,6 +169,7 @@ RetroCartridge/
 │   │   └── Skins/                     # SkinTheme definitions, ShellSurface finishes, console previews
 │   ├── Games/                         # PixelGameProtocol, factory, GameRNG, AttractPilot, and the nine games
 │   ├── Models/GameModels.swift        # Game, cartridge metadata, mode, input, posture, skin and sound types
+│   ├── Localizable.xcstrings          # String Catalog: English source, Turkish translations
 │   └── Store/                         # StoreManager + product identifiers
 └── RetroCartridgeTests/               # Unit tests
 DESIGN.md                              # iPhone Duo platform reference: Apple guidance + measurements

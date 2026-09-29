@@ -50,6 +50,13 @@ xcodebuild -project RetroCartridge/RetroCartridge.xcodeproj -scheme RetroCartrid
 - **Attract mode:** `AttractPilot` plays games only through `handleInput` and reads their state. Keep games free of demo code.
 - **Store contents:** gate an item only through its own `requiredProductID` (skins, `CartridgeInfo`, sound packs, screen modes). The store's lists and summaries are derived from it (`ProductIdentifiers`), and tests pin the split, so never hard-code store copy. Open the store for a locked item with `appState.openStore(highlighting:)`.
 - **Achievements and sound packs:** achievement ids (`Achievement.id`) are persistence keys, like mode ids; never change a shipped one. Sound packs are baked into the note table at launch (`pack index × patch count + patch`), so adding a patch or pack needs no audio-thread change.
+- **Music:** `ChipMusic` tempos must make a sixteenth a whole number of samples at 44.1 kHz (661500 divisible by the bpm; a test checks it), and every part of a track must span the same length, or the looping parts drift apart. Music plays only through `audioManager.playMusic(for:)`, which `GameCanvasView` calls every frame; sound packs keep music note lengths.
+- **Accessibility:** console controls go through `consoleControl(_:hint:press:release:)` (button trait plus `.allowsDirectInteraction`). The game screen's accessibility value comes from `screenDescription(for:)`; update it when a game gains a new state. Decorative views (brand, grille, attract mode) are hidden from accessibility.
+- **Localization:** every user-facing string is in `Localizable.xcstrings` with a Turkish translation.
+  - Literals in `Text`, `Label`, `Button` and accessibility modifiers are localized automatically. Strings built in models or passed as `String` need `String(localized:)`; our own view parameters take a `LocalizedStringKey`.
+  - Case with `localizedUppercase` / `localizedCapitalized` (Turkish i/İ). Product names are English everywhere and use `uppercased()`.
+  - Game titles, skin names, product names and the console silkscreen (RETRO CARTRIDGE, POWER, SELECT, START) stay in English (`shouldTranslate: false`).
+  - Xcode adds new keys to the catalog when building; add their Turkish text before committing.
 - **Cartridge labels:** `PixelArt` rows are 16×16 characters naming palette roles (key in `CartridgeArt.swift`); a test enforces the size and characters.
 - **Motion:** decorative motion (neon pulse, attract mode, insert slide, console jolt) is skipped with Reduce Motion.
 - **Library grid:** `LibraryGridMetrics` uses an even column count when the display has a fold (HIG: "prefer an even number of columns"). The fold is read with `.includeInactive`, so folding never reflows the grid. Cartridge width comes from the container, not a fixed size.
@@ -64,7 +71,7 @@ xcodebuild -project RetroCartridge/RetroCartridge.xcodeproj -scheme RetroCartrid
 
 ## Project status (2026-09-29)
 
-- **Git:** `main` is the working branch; PR #1 (`gameplay-fixes`) was merged on 2026-09-28. The design and variety plan (Phases 0–3 below) is on `claude/festive-dirac-8zepxk`, in review as a PR into `main`. The GitHub repo is private. Commit and push only when the user asks; they usually test in Device Hub first.
+- **Git:** `main` is the working branch; PR #1 (`gameplay-fixes`) was merged on 2026-09-28. The design and variety plan (Phases 0–5 below) is on `claude/festive-dirac-8zepxk`, in review as a PR into `main`. The GitHub repo is private. Commit and push only when the user asks; they usually test in Device Hub first.
 - **Done and verified by the user on the simulator (before the plan):**
   - games running at 60 FPS;
   - CRT shader;
@@ -78,11 +85,13 @@ xcodebuild -project RetroCartridge/RetroCartridge.xcodeproj -scheme RetroCartrid
   - Phase 2: seeded games and daily rounds, mode picker, shared palettes, deeper original four games, five new cartridges (Pixel Invaders, Mine Sweep, Maze Muncher, Frog Hop, Lunar Hinge with hinge thrust), achievements, sound packs, four new skins.
   - Phase 4: Records overlay, toolbar groups with visibility priorities, occlusion avoidance; `ArrangementView` evaluated and not adopted for the console.
   - Phase 3: store aligned with its contents (six free cartridges; Maze Muncher and Frog Hop in the Collector Pack; Lunar Hinge, Gold Edition, screen modes and tuning in Lifetime Pro), derived store copy, locked-item highlighting.
+  - Phase 5: a looping chiptune theme per cartridge (MUSIC in the pause menu), VoiceOver play and Reduce Transparency, Turkish localization (not yet built).
 - **Not yet verified:**
   - the unit tests on the Duo simulator after Phases 1–3;
   - the plan's visuals and interactions in Device Hub, in both inner-display orientations and on the cover;
   - Lunar Hinge played by folding (the simulator may not deliver hinge readings; ▲ / A always thrust);
-  - sound effects and the four sound packs by ear;
+  - sound effects, music and the four sound packs by ear (music was checked only by rendering it offline);
+  - VoiceOver play on the console, and the app in Turkish (set the simulator's language, or the scheme's App Language, to Turkish);
   - StoreKit purchases end to end (run from Xcode with `Products.storekit` selected in the scheme);
   - anything on real iPhone Duo hardware (ships 2026-10-23).
 - **Possible next steps:** run the tests and check the plan in Device Hub (including the toolbar overflow on the outer display and the console with the inner camera active), check sound and purchases, and a cartridge designer (a finger-drawn 16×16 label editor was discussed and deferred).

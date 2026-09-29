@@ -262,6 +262,11 @@ The update rate and precision are system policy; prefer `status` when you only n
 - **Occlusion.** HIG: "For custom components, ReservedRegion… provide[s] a way to reposition content away from reserved regions"; "when the camera activates, the UI moves aside". `avoidingOcclusion()` pads the console halves and overlay panels in from the nearest edge by the reach of active `.occlusion` regions (`OcclusionInsets`). The cover needs nothing extra: its content stays in the safe area, and "When controls are on the side, the system automatically accounts for" the outer camera.
 - **`ArrangementView` evaluated, not adopted for the console.** Apple recommends it ("Consider an arrangement view when your layout already resembles one"), and the console is a split. But a split arrangement picks its axis and ratio itself and doesn't expose where it splits. The console needs the split exactly on the fold (verified 2026-09-23), with the shell continuous behind both halves and the hinge groove drawn on the split line. `FoldSplit` gets that from the same `.division` reserved region Apple offers custom layouts. The HIG phrasing is "prefer", so the custom layout stays. Revisit if `ArrangementView` gains a way to read or pin its split.
 
+**Decided on 2026-09-29 (Phase 5, music, accessibility, languages):**
+- **VoiceOver play.** The console's controls carry `.allowsDirectInteraction`, so a VoiceOver user can play in real time by touch, as with any game. Every control also works with a double tap, and the D-Pad has named actions, so nothing depends on direct touch.
+- **Reduce Transparency.** Backgrounds become more opaque, as with the system's own bars (§5). Translucent shells and cartridges are drawn solid, overlay backdrops go nearly opaque, and the faded attract mode stays off.
+- **Localization.** A String Catalog with English as the source and Turkish. Casing uses the user's locale; product names and the console silkscreen stay English. Layout already adapts to longer text (monospaced labels scale down with `minimumScaleFactor`).
+
 **Verified by the user in Device Hub (2026-09-23):**
 - Closed with the hinge on top, the outer display comes up in landscape.
 - Opened like a laptop, the CRT is above and the controls are below, with the split on the fold.
