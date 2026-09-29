@@ -111,6 +111,17 @@ final class AppState {
     /// never as a sheet, so it follows the pinned display orientation).
     var isStoreVisible: Bool = false
 
+    /// The product the store points out, when it was opened by tapping
+    /// something locked; nil when opened from the toolbar.
+    var storeHighlight: String?
+
+    /// Opens the store over the other overlays, pointing out the product
+    /// that unlocks what was tapped. Call inside `withAnimation`.
+    func openStore(highlighting productID: String?) {
+        storeHighlight = productID
+        isStoreVisible = true
+    }
+
     /// Whether the skin picker overlay is visible. The store stacks above it.
     var isSkinSelectorVisible: Bool = false
 

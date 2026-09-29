@@ -109,10 +109,12 @@ Every game also has a **Daily** mode: the same round for everyone that day (seed
 
 | Product | ID | Price | Unlocks |
 | :--- | :--- | :--- | :--- |
-| Retro Collector Pack | `com.retrocartridge.collector_pack` | $6.99 | Six skins (all but Gold Edition), Pocket, Arcade and Mellow sound packs |
-| Lifetime Pro | `com.retrocartridge.lifetime_pro` | $49.99 | Everything above, the Gold Edition skin, every screen mode and tuning, plus future content |
+| Retro Collector Pack | `com.retrocartridge.collector_pack` | $6.99 | 6 skins (all but Gold Edition), the Maze Muncher and Frog Hop cartridges, the Pocket, Arcade and Mellow sound packs |
+| Lifetime Pro | `com.retrocartridge.lifetime_pro` | $49.99 | Everything in the Collector Pack, plus the Lunar Hinge cartridge, the Gold Edition skin, every screen mode with tuning, and all future content |
 
-All nine games, their modes and the palettes are free for now (the store is revisited in Phase 3). `Products.storekit` defines both products for local testing, and the shared scheme uses it when you run from Xcode.
+- **Free:** six cartridges (Brick Breaker, Retro Racer, Snake, Falling Blocks, Pixel Invaders, Mine Sweep), every mode, every palette, Classic Grey, Color CRT and the Classic sound pack.
+- **Derived contents:** each item names the product that unlocks it (`requiredProductID`), and the store builds its lists and descriptions from those (`ProductIdentifiers.summary(for:)`), so it always shows exactly what a purchase opens.
+- **Locked items:** locked cartridges look dusty on the shelf and name their pack. Tapping anything locked opens the store with the product that unlocks it highlighted. Locked cartridges still play in the cover's attract mode. `Products.storekit` defines both products for local testing, and the shared scheme uses it when you run from Xcode.
 
 ---
 

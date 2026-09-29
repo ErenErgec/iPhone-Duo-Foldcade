@@ -394,6 +394,7 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
                 labelColorHex: "#FFB703",
                 shell: .black,
                 modes: [.standard, .daily],
+                requiredProductID: ProductIdentifiers.retroCollectorPack,
                 scoreGoal: 5000,
                 levelGoal: 3
             )
@@ -405,6 +406,7 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
                 labelColorHex: "#80ED99",
                 shell: .clearGreen,
                 modes: [.standard, .daily],
+                requiredProductID: ProductIdentifiers.retroCollectorPack,
                 scoreGoal: 1000,
                 levelGoal: 3
             )
@@ -416,6 +418,7 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
                 labelColorHex: "#E0E1DD",
                 shell: .gold,
                 modes: [.standard, .daily],
+                requiredProductID: ProductIdentifiers.lifetimePro,
                 scoreGoal: 1000,
                 levelGoal: 4
             )

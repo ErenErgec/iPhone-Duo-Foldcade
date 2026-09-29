@@ -62,8 +62,8 @@ struct SkinPickerView: View {
         hapticManager.playHaptic(.buttonPress)
 
         guard storeManager.isUnlocked(skin) else {
-            withAnimation(.spring(response: 0.38, dampingFraction: 0.86)) {
-                appState.isStoreVisible = true
+            withAnimation(LibraryOverlays.animation) {
+                appState.openStore(highlighting: skin.requiredProductID)
             }
             return
         }
@@ -111,13 +111,13 @@ struct SkinPickerView: View {
         }
         .buttonStyle(CartridgePressStyle())
         .accessibilityLabel(skin.rawValue)
-        .accessibilityValue(isSelected ? "Equipped" : (isUnlocked ? "Unlocked" : "Locked, part of \(productName(for: skin))"))
+        .accessibilityValue(isSelected ? "Equipped" : (isUnlocked ? "Unlocked" : "Locked, part of \(productName(for: skin).capitalized)"))
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 
-    /// The product that unlocks a skin, e.g. "Retro Collector Pack".
+    /// The product that unlocks a skin, e.g. "COLLECTOR PACK".
     private func productName(for skin: ConsoleSkinType) -> String {
-        skin.requiredProductID.map(ProductIdentifiers.fallbackDisplayName(for:)) ?? ""
+        skin.requiredProductID.map(ProductIdentifiers.shortName(for:)) ?? ""
     }
 
     @ViewBuilder
@@ -130,7 +130,7 @@ struct SkinPickerView: View {
                 Label("TAP TO EQUIP", systemImage: "hand.tap.fill")
                     .foregroundStyle(.white.opacity(0.45))
             } else {
-                Label(product.replacingOccurrences(of: "Retro ", with: "").uppercased(), systemImage: "lock.fill")
+                Label(product, systemImage: "lock.fill")
                     .foregroundStyle(RetroPalette.amber)
             }
         }
@@ -167,8 +167,8 @@ struct SkinPickerView: View {
         return Button {
             hapticManager.playHaptic(.buttonPress)
             guard isUnlocked else {
-                withAnimation(.spring(response: 0.38, dampingFraction: 0.86)) {
-                    appState.isStoreVisible = true
+                withAnimation(LibraryOverlays.animation) {
+                    appState.openStore(highlighting: pack.requiredProductID)
                 }
                 return
             }
@@ -194,8 +194,8 @@ struct SkinPickerView: View {
     private var upsell: some View {
         Button {
             hapticManager.playHaptic(.buttonPress)
-            withAnimation(.spring(response: 0.38, dampingFraction: 0.86)) {
-                appState.isStoreVisible = true
+            withAnimation(LibraryOverlays.animation) {
+                appState.openStore(highlighting: ProductIdentifiers.retroCollectorPack)
             }
         } label: {
             HStack(spacing: 12) {

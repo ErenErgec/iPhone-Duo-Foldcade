@@ -115,6 +115,8 @@ public struct AdaptiveConsoleLayout: View {
             if flag != \AppState.isStoreVisible {
                 appState.isSkinSelectorVisible = false
                 appState.isScreenSettingsVisible = false
+            } else {
+                appState.storeHighlight = nil
             }
             appState[keyPath: flag] = true
         }

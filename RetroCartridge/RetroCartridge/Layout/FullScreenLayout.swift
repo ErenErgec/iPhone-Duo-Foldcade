@@ -190,19 +190,27 @@ public struct FullScreenLayout: View {
             .buttonStyle(CartridgePressStyle())
             .opacity(insertingGame != nil && !isInserting ? 0.35 : 1)
             .accessibilityLabel(game.rawValue)
-            .accessibilityValue(isLocked ? "Locked" : game.subtitle)
+            .accessibilityValue(isLocked ? "Locked, part of \(ProductIdentifiers.shortName(for: game.info.requiredProductID ?? "").capitalized)" : game.subtitle)
 
             // Neighboring planks meet across the grid spacing into one shelf
             ShelfLedge()
                 .frame(width: width + LibraryGridMetrics.spacing, height: 12)
 
-            Text(game.subtitle)
-                .font(.system(size: 12, weight: .medium, design: .monospaced))
-                .foregroundStyle(.white.opacity(0.5))
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
-                .padding(.top, 10)
-                .accessibilityHidden(true)
+            // Locked cartridges say which pack they come in
+            Group {
+                if isLocked, let productID = game.info.requiredProductID {
+                    Label(ProductIdentifiers.shortName(for: productID), systemImage: "lock.fill")
+                        .foregroundStyle(RetroPalette.amber)
+                } else {
+                    Text(game.subtitle)
+                        .foregroundStyle(.white.opacity(0.5))
+                }
+            }
+            .font(.system(size: 12, weight: .medium, design: .monospaced))
+            .lineLimit(1)
+            .minimumScaleFactor(0.7)
+            .padding(.top, 10)
+            .accessibilityHidden(true)
         }
         .frame(width: width)
     }
@@ -212,7 +220,7 @@ public struct FullScreenLayout: View {
         guard storeManager.isUnlocked(game) else {
             hapticManager.playHaptic(.buttonPress)
             withAnimation(LibraryOverlays.animation) {
-                appState.isStoreVisible = true
+                appState.openStore(highlighting: game.info.requiredProductID)
             }
             return
         }

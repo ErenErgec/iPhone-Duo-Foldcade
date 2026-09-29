@@ -10,7 +10,7 @@
       "internalID" : "6740000001",
       "localizations" : [
         {
-          "description" : "Unlocks the Atomic Purple, Cyberpunk Neon and Arcade Cabinet skins.",
+          "description" : "6 skins, the Maze Muncher and Frog Hop cartridges, and 3 sound packs.",
           "displayName" : "Retro Collector Pack",
           "locale" : "en_US"
         }
@@ -25,7 +25,7 @@
       "internalID" : "6740000002",
       "localizations" : [
         {
-          "description" : "Unlocks every skin and all future content.",
+          "description" : "Everything in the Collector Pack, plus Lunar Hinge, the Gold Edition skin, every screen mode with tuning, and all future content.",
           "displayName" : "Lifetime Pro",
           "locale" : "en_US"
         }

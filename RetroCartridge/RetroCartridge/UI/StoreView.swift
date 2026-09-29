@@ -23,7 +23,7 @@ struct StoreView: View {
     var body: some View {
         OverlayPanel(
             title: "CARTRIDGE SHOP",
-            subtitle: "SKINS & UPGRADES",
+            subtitle: "CARTRIDGES, SKINS & UPGRADES",
             onClose: close
         ) {
             VStack(spacing: 16) {
@@ -57,6 +57,7 @@ struct StoreView: View {
     private func close() {
         withAnimation(.spring(response: 0.38, dampingFraction: 0.86)) {
             appState.isStoreVisible = false
+            appState.storeHighlight = nil
         }
     }
 
@@ -146,6 +147,7 @@ struct StoreView: View {
         let product = storeManager.product(for: productID)
         let isPro = productID == ProductIdentifiers.lifetimePro
         let tint = isPro ? Color(hex: "#FFD54F") : Color(hex: "#B266FF")
+        let isHighlighted = appState.storeHighlight == productID
 
         return VStack(alignment: .leading, spacing: 14) {
             HStack(alignment: .top, spacing: 16) {
@@ -163,9 +165,15 @@ struct StoreView: View {
                         .lineLimit(1)
                         .minimumScaleFactor(0.7)
 
-                    Text(isPro
-                         ? "Every skin and screen mode, plus all future skins, cartridges and upgrades."
-                         : "Six premium console shells and three sound packs.")
+                    if isHighlighted {
+                        Label("UNLOCKS WHAT YOU TAPPED", systemImage: "arrow.down.circle.fill")
+                            .font(.system(size: 10, weight: .heavy, design: .monospaced))
+                            .tracking(1)
+                            .foregroundStyle(tint)
+                            .labelStyle(.titleAndIcon)
+                    }
+
+                    Text(ProductIdentifiers.summary(for: productID))
                         .font(.system(size: 12, weight: .medium, design: .monospaced))
                         .foregroundStyle(.white.opacity(0.55))
                         .fixedSize(horizontal: false, vertical: true)
@@ -191,51 +199,104 @@ struct StoreView: View {
         )
         .overlay(
             RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .stroke(tint.opacity(0.28), lineWidth: 1)
+                .stroke(tint.opacity(isHighlighted ? 0.9 : 0.28), lineWidth: isHighlighted ? 2 : 1)
         )
+        .shadow(color: isHighlighted ? tint.opacity(0.3) : .clear, radius: 14)
     }
 
+    /// What a product unlocks, listed from the items' own gating. Pro lists
+    /// only what it adds to the Collector Pack.
     private func unlocks(productID: String, isPro: Bool, tint: Color) -> some View {
+        let collector = ProductIdentifiers.retroCollectorPack
+        let cartridges = ProductIdentifiers.cartridges(unlockedBy: productID)
+            .filter { !isPro || !ProductIdentifiers.unlocks(collector, itemRequiring: $0.info.requiredProductID) }
         let skins = ProductIdentifiers.skins(unlockedBy: productID)
+            .filter { !isPro || !ProductIdentifiers.unlocks(collector, itemRequiring: $0.requiredProductID) }
+        let soundPacks = isPro ? [] : ProductIdentifiers.soundPacks(unlockedBy: productID)
+        let screenModes = ProductIdentifiers.screenModes(unlockedBy: productID)
 
-        return VStack(alignment: .leading, spacing: 10) {
-            Text("UNLOCKS")
-                .font(.system(size: 10, weight: .heavy, design: .monospaced))
-                .tracking(2.5)
-                .foregroundStyle(tint.opacity(0.85))
+        return VStack(alignment: .leading, spacing: 12) {
+            if isPro {
+                perk("EVERYTHING IN THE COLLECTOR PACK")
+            }
 
-            // More skins than fit side by side, so they scroll
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(alignment: .top, spacing: 12) {
-                    ForEach(skins) { skin in
+            if !cartridges.isEmpty {
+                section("CARTRIDGES", tint: tint) {
+                    ForEach(cartridges) { game in
                         VStack(spacing: 6) {
-                            ConsoleSkinPreview(theme: SkinManager.theme(for: skin))
-                                .frame(height: 64)
-                            Text(skin.rawValue.uppercased())
-                                .font(.system(size: 9, weight: .bold, design: .monospaced))
-                                .foregroundStyle(.white.opacity(0.6))
-                                .lineLimit(2)
-                                .multilineTextAlignment(.center)
-                                .fixedSize(horizontal: false, vertical: true)
+                            CartridgeView(game: game)
+                                .frame(width: 52)
+                            itemName(game.rawValue)
                         }
                         .frame(width: 84)
                     }
                 }
             }
 
-            VStack(alignment: .leading, spacing: 6) {
-                if isPro {
-                    perk("GOLD EDITION SKIN")
-                    perk("ALL SCREEN MODES & TUNING")
-                    perk("ALL SOUND PACKS")
-                    perk("ALL FUTURE SKINS")
-                    perk("ALL FUTURE CARTRIDGES")
+            if !skins.isEmpty {
+                section("SKINS", tint: tint) {
+                    ForEach(skins) { skin in
+                        VStack(spacing: 6) {
+                            ConsoleSkinPreview(theme: SkinManager.theme(for: skin))
+                                .frame(height: 64)
+                            itemName(skin.rawValue)
+                        }
+                        .frame(width: 84)
+                    }
+                }
+            }
+
+            if !soundPacks.isEmpty {
+                section("SOUND PACKS", tint: tint) {
+                    ForEach(soundPacks) { pack in
+                        RetroCapsuleLabel(title: pack.title.uppercased(), systemImage: "speaker.wave.2.fill", tint: tint)
+                    }
+                }
+            }
+
+            if !screenModes.isEmpty {
+                section("SCREEN MODES", tint: tint) {
+                    ForEach(screenModes) { mode in
+                        RetroCapsuleLabel(title: mode.title.uppercased(), systemImage: "tv", tint: tint)
+                    }
+                    if ProductIdentifiers.unlocksScreenTuning(productID) {
+                        RetroCapsuleLabel(title: "TUNING", systemImage: "slider.horizontal.3", tint: tint)
+                    }
+                }
+            }
+
+            if isPro {
+                VStack(alignment: .leading, spacing: 6) {
+                    perk("ALL FUTURE SKINS & CARTRIDGES")
                     perk("ONE-TIME PURCHASE")
-                } else {
-                    perk("POCKET, ARCADE & MELLOW SOUND PACKS")
                 }
             }
         }
+    }
+
+    /// A titled row of unlocked items that scrolls when it doesn't fit.
+    private func section<Items: View>(_ title: String, tint: Color, @ViewBuilder items: () -> Items) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(title)
+                .font(.system(size: 10, weight: .heavy, design: .monospaced))
+                .tracking(2.5)
+                .foregroundStyle(tint.opacity(0.85))
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(alignment: .top, spacing: 10) {
+                    items()
+                }
+            }
+        }
+    }
+
+    private func itemName(_ name: String) -> some View {
+        Text(name.uppercased())
+            .font(.system(size: 9, weight: .bold, design: .monospaced))
+            .foregroundStyle(.white.opacity(0.6))
+            .lineLimit(2)
+            .multilineTextAlignment(.center)
+            .fixedSize(horizontal: false, vertical: true)
     }
 
     private func perk(_ text: String) -> some View {

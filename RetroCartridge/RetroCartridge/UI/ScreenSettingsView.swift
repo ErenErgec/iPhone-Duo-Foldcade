@@ -61,9 +61,10 @@ struct ScreenSettingsView: View {
         }
     }
 
+    /// Screen modes and tuning all come with Lifetime Pro.
     private func openStore() {
         withAnimation(LibraryOverlays.animation) {
-            appState.isStoreVisible = true
+            appState.openStore(highlighting: ProductIdentifiers.lifetimePro)
         }
     }
 

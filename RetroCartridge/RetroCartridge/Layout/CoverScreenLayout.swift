@@ -132,7 +132,7 @@ public struct CoverScreenLayout: View {
         return HStack(spacing: 10) {
             Image(systemName: isLocked ? "lock.fill" : "arrow.up.and.down")
                 .font(.system(size: 14, weight: .bold))
-            Text(isLocked ? "UNLOCK IN STORE" : "UNFOLD TO PLAY")
+            Text(isLocked ? ProductIdentifiers.shortName(for: appState.selectedGameType.info.requiredProductID ?? "") : "UNFOLD TO PLAY")
                 .font(.system(size: 15, weight: .heavy, design: .monospaced))
                 .tracking(3)
         }

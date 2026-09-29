@@ -664,4 +664,51 @@ final class RetroCartridgeTests: XCTestCase {
         XCTAssertFalse(ProductIdentifiers.skins(unlockedBy: ProductIdentifiers.retroCollectorPack).contains(.goldEdition))
         XCTAssertTrue(ProductIdentifiers.skins(unlockedBy: ProductIdentifiers.lifetimePro).contains(.goldEdition))
     }
+
+    // MARK: - Store contents
+
+    func testCartridgesAreSplitAcrossTheProducts() {
+        let free = GameType.allCases.filter(\.isFree)
+        XCTAssertEqual(free, [.brickBreaker, .retroRacer, .snake, .fallingBlocks, .pixelInvaders, .mineSweep])
+        XCTAssertEqual(ProductIdentifiers.cartridges(unlockedBy: ProductIdentifiers.retroCollectorPack), [.mazeMuncher, .frogHop])
+        XCTAssertEqual(ProductIdentifiers.cartridges(unlockedBy: ProductIdentifiers.lifetimePro), [.mazeMuncher, .frogHop, .lunarHinge])
+    }
+
+    func testEveryPaidItemBelongsToARealProduct() {
+        let products = ProductIdentifiers.allProductIDs
+        let required = ConsoleSkinType.allCases.compactMap(\.requiredProductID)
+            + GameType.allCases.compactMap(\.info.requiredProductID)
+            + SoundPack.allCases.compactMap(\.requiredProductID)
+            + ScreenMode.allCases.compactMap(\.requiredProductID)
+        XCTAssertFalse(required.isEmpty)
+        XCTAssertTrue(required.allSatisfy { products.contains($0) })
+    }
+
+    func testLifetimeProIncludesTheCollectorPack() {
+        let collector = ProductIdentifiers.retroCollectorPack
+        let pro = ProductIdentifiers.lifetimePro
+        XCTAssertTrue(Set(ProductIdentifiers.skins(unlockedBy: collector)).isSubset(of: ProductIdentifiers.skins(unlockedBy: pro)))
+        XCTAssertTrue(Set(ProductIdentifiers.cartridges(unlockedBy: collector)).isSubset(of: ProductIdentifiers.cartridges(unlockedBy: pro)))
+        XCTAssertTrue(Set(ProductIdentifiers.soundPacks(unlockedBy: collector)).isSubset(of: ProductIdentifiers.soundPacks(unlockedBy: pro)))
+        XCTAssertTrue(ProductIdentifiers.screenModes(unlockedBy: collector).isEmpty)
+        XCTAssertTrue(ProductIdentifiers.unlocksScreenTuning(pro))
+    }
+
+    func testStoreSummariesDescribeTheContents() {
+        XCTAssertEqual(
+            ProductIdentifiers.summary(for: ProductIdentifiers.retroCollectorPack),
+            "6 skins, 2 cartridges and 3 sound packs."
+        )
+        XCTAssertEqual(
+            ProductIdentifiers.summary(for: ProductIdentifiers.lifetimePro),
+            "Everything in the Collector Pack, plus Lunar Hinge, the Gold Edition skin, 3 screen modes with tuning and all future content."
+        )
+    }
+
+    func testTappingSomethingLockedHighlightsItsProduct() {
+        let appState = AppState(progress: ProgressStore(defaults: makeDefaults()))
+        appState.openStore(highlighting: GameType.lunarHinge.info.requiredProductID)
+        XCTAssertTrue(appState.isStoreVisible)
+        XCTAssertEqual(appState.storeHighlight, ProductIdentifiers.lifetimePro)
+    }
 }
