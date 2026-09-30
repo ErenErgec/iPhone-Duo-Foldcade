@@ -80,16 +80,17 @@ struct IntroView: View {
             subtitle: "RETRO CARTRIDGE",
             onClose: finish
         ) {
-            VStack(spacing: 22) {
-                pageContent
-                    .id(page)
-                    .transition(pageTransition)
-                    .frame(maxWidth: .infinity)
-                    .contentShape(Rectangle())
-                    .gesture(swipe)
-
+            pageContent
+                .id(page)
+                .transition(pageTransition)
+                .frame(maxWidth: .infinity)
+                .contentShape(Rectangle())
+                .gesture(swipe)
+        } footer: {
+            // Outside the scrolling page, so Next is always in view, even on
+            // the short cover display or with large text
+            VStack(spacing: 14) {
                 pageDots
-
                 controls
             }
         }
@@ -97,35 +98,53 @@ struct IntroView: View {
 
     // MARK: - Page
 
+    /// The picture above the text; beside it on the cover display, which
+    /// is too short to stack them.
+    @ViewBuilder
     private var pageContent: some View {
-        VStack(spacing: 16) {
-            picture
-                .frame(height: 112)
-                .accessibilityHidden(true)
-
-            VStack(spacing: 10) {
-                Text(page.title)
-                    .retroFont(18, weight: .black)
-                    .tracking(2.5)
-                    .foregroundStyle(RetroPalette.phosphor)
-                    .multilineTextAlignment(.center)
-                Text(page.text)
-                    .retroFont(13, weight: .medium)
-                    .foregroundStyle(.white.opacity(0.78))
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .frame(maxWidth: 440)
+        if postureManager.isCompactWidth {
+            HStack(alignment: .top, spacing: 20) {
+                picture(side: 88)
+                pageText(alignment: .leading)
             }
-            .accessibilityElement(children: .combine)
-            .accessibilityValue(String(localized: "Page \(page.rawValue + 1) of \(IntroPage.allCases.count)"))
+        } else {
+            VStack(spacing: 16) {
+                picture(side: 112)
+                pageText(alignment: .center)
+            }
         }
+    }
+
+    private func pageText(alignment: HorizontalAlignment) -> some View {
+        let textAlignment: TextAlignment = alignment == .leading ? .leading : .center
+
+        return VStack(alignment: alignment, spacing: 10) {
+            Text(page.title)
+                .retroFont(18, weight: .black)
+                .tracking(2.5)
+                .foregroundStyle(RetroPalette.phosphor)
+                .multilineTextAlignment(textAlignment)
+            Text(page.text)
+                .retroFont(13, weight: .medium)
+                .foregroundStyle(.white.opacity(0.78))
+                .multilineTextAlignment(textAlignment)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: 440, alignment: Alignment(horizontal: alignment, vertical: .center))
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityValue(String(localized: "Page \(page.rawValue + 1) of \(IntroPage.allCases.count)"))
+    }
+
+    private func picture(side: CGFloat) -> some View {
+        picture
+            .frame(width: side, height: side)
+            .accessibilityHidden(true)
     }
 
     @ViewBuilder
     private var picture: some View {
         if let art = page.art {
             PixelArtView(art: art, palette: .intro)
-                .frame(width: 112, height: 112)
                 .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
                 .overlay(
                     RoundedRectangle(cornerRadius: 10, style: .continuous)
@@ -133,7 +152,7 @@ struct IntroView: View {
                 )
         } else {
             CartridgeView(game: appState.selectedGameType)
-                .frame(width: 90)
+                .aspectRatio(CartridgeView.aspectRatio, contentMode: .fit)
         }
     }
 

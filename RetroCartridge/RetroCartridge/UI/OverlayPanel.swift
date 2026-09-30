@@ -51,12 +51,28 @@ struct OverlayBackdrop: View {
 }
 
 /// A dark, rounded console-accessory panel with a title bar and a close
-/// button. Content that doesn't fit vertically scrolls.
-struct OverlayPanel<Content: View>: View {
+/// button. Content that doesn't fit vertically scrolls; an optional footer
+/// stays in view below it, for controls that must never scroll away.
+struct OverlayPanel<Content: View, Footer: View>: View {
     let title: LocalizedStringKey
     let subtitle: LocalizedStringKey
     let onClose: () -> Void
     @ViewBuilder let content: Content
+    @ViewBuilder let footer: Footer
+
+    init(
+        title: LocalizedStringKey,
+        subtitle: LocalizedStringKey,
+        onClose: @escaping () -> Void,
+        @ViewBuilder content: () -> Content,
+        @ViewBuilder footer: () -> Footer
+    ) {
+        self.title = title
+        self.subtitle = subtitle
+        self.onClose = onClose
+        self.content = content()
+        self.footer = footer()
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -74,6 +90,12 @@ struct OverlayPanel<Content: View>: View {
                         .padding(22)
                 }
                 .scrollIndicators(.hidden)
+            }
+
+            if Footer.self != EmptyView.self {
+                footer
+                    .padding(.horizontal, 22)
+                    .padding(.bottom, 18)
             }
         }
         .frame(maxWidth: 580)
@@ -147,6 +169,20 @@ struct OverlayPanel<Content: View>: View {
         }
         .padding(.horizontal, 22)
         .padding(.vertical, 18)
+    }
+}
+
+extension OverlayPanel where Footer == EmptyView {
+    /// A panel without a footer: everything scrolls together.
+    init(
+        title: LocalizedStringKey,
+        subtitle: LocalizedStringKey,
+        onClose: @escaping () -> Void,
+        @ViewBuilder content: () -> Content
+    ) {
+        self.init(title: title, subtitle: subtitle, onClose: onClose, content: content) {
+            EmptyView()
+        }
     }
 }
 
