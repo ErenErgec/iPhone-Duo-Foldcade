@@ -18,7 +18,7 @@ public struct ControllerView: View {
     public init() {}
 
     public var body: some View {
-        let theme = SkinManager.theme(for: appState.selectedSkin)
+        let theme = SkinManager.theme(for: storeManager.effectiveSkin(appState.selectedSkin))
 
         GeometryReader { geo in
             let unit = min(geo.size.width / 5.2, geo.size.height / 4.2, 110)

@@ -37,7 +37,7 @@ struct GameCanvasView: View {
     init() {}
 
     var body: some View {
-        let theme = SkinManager.theme(for: appState.selectedSkin)
+        let theme = SkinManager.theme(for: storeManager.effectiveSkin(appState.selectedSkin))
 
         GeometryReader { geo in
             let inset = min(geo.size.width, geo.size.height) * 0.05

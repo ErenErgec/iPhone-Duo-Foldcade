@@ -78,7 +78,7 @@ struct SkinPickerView: View {
     // MARK: - Pieces
 
     private func skinCard(_ skin: ConsoleSkinType) -> some View {
-        let isSelected = skin == appState.selectedSkin
+        let isSelected = skin == storeManager.effectiveSkin(appState.selectedSkin)
         let isUnlocked = storeManager.isUnlocked(skin)
 
         return Button {

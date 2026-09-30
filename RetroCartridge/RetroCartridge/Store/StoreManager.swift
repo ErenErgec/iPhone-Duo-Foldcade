@@ -127,6 +127,12 @@ final class StoreManager {
         return hasLifetimePro || isPurchased(productID)
     }
 
+    /// The skin to draw: a locked choice (e.g. after a refund) falls back
+    /// to Classic Grey, as the sound pack and the screen fall back too.
+    func effectiveSkin(_ skin: ConsoleSkinType) -> ConsoleSkinType {
+        isUnlocked(skin) ? skin : .classicGrey
+    }
+
     func isUnlocked(_ soundPack: SoundPack) -> Bool {
         guard let productID = soundPack.requiredProductID else { return true }
         return hasLifetimePro || isPurchased(productID)

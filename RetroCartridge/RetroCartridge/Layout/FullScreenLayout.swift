@@ -46,7 +46,7 @@ public struct FullScreenLayout: View {
     // MARK: - Console
 
     private var console: some View {
-        let theme = SkinManager.theme(for: appState.selectedSkin)
+        let theme = SkinManager.theme(for: storeManager.effectiveSkin(appState.selectedSkin))
         
         return GeometryReader { geo in
             let split = FoldSplit(
