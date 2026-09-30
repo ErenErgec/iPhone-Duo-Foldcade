@@ -366,6 +366,33 @@ final class RetroCartridgeTests: XCTestCase {
         }
     }
 
+    /// A shot on the seam between two shield blocks touches both. The one
+    /// eroded used to be the first in the set's order, which differs
+    /// between instances and devices, so daily rounds played out
+    /// differently. However the set was built, the same block goes.
+    func testPixelInvadersErodesTheSameShieldBlockEverywhere() {
+        let reference = PixelInvadersGame()
+        let blocks = Array(reference.shields)
+        let seam = PixelInvadersGame.Shot(
+            x: reference.shieldCenters[0] - reference.shieldBlockWidth * 2,
+            y: reference.shieldTop + reference.shieldBlockHeight / 2
+        )
+        var eroded: Set<Set<PixelInvadersGame.ShieldBlock>> = []
+        for variant in 0..<24 {
+            let game = PixelInvadersGame()
+            // The same blocks, inserted in different orders and capacities
+            var shields = Set<PixelInvadersGame.ShieldBlock>(minimumCapacity: blocks.count + variant * 7)
+            for block in variant.isMultiple(of: 2) ? blocks : blocks.reversed() {
+                shields.insert(block)
+            }
+            game.shields = shields
+            XCTAssertTrue(game.hitShield(at: seam))
+            XCTAssertEqual(game.shields.count, blocks.count - 1)
+            eroded.insert(Set(blocks).subtracting(game.shields))
+        }
+        XCTAssertEqual(eroded, [[PixelInvadersGame.ShieldBlock(column: 0, row: 0)]])
+    }
+
     /// A shot fired at full speed hits even the smallest rock when frames
     /// run long (the cover plays at 30 FPS, and dropped frames reach the
     /// 0.05 s cap), instead of skipping over it between two frames.

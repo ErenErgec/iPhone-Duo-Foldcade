@@ -264,13 +264,25 @@ final class PixelInvadersGame: PixelGameProtocol {
     }
 
     /// Erodes the shield block a shot or bomb touches.
-    private func hitShield(at point: Shot) -> Bool {
+    /// Erodes the shield block a shot or bomb touches; false if it misses.
+    func hitShield(at point: Shot) -> Bool {
         guard point.y >= shieldTop - 0.01, point.y <= shieldTop + 4 * shieldBlockHeight + 0.01 else { return false }
-        if let block = shields.first(where: { shieldFrame($0).insetBy(dx: -0.004, dy: -0.004).contains(CGPoint(x: point.x, y: point.y)) }) {
-            shields.remove(block)
-            return true
-        }
-        return false
+        let target = CGPoint(x: point.x, y: point.y)
+        // The slightly enlarged frames overlap, so a shot can touch two
+        // blocks. Erode the nearest, ties broken by position, never by the
+        // set's order: that differs between devices (and instances), and a
+        // daily round would play out differently for different players.
+        let touched = shields.filter { shieldFrame($0).insetBy(dx: -0.004, dy: -0.004).contains(target) }
+        guard let block = touched.min(by: { lhs, rhs in
+            (distance(from: target, to: lhs), lhs.row, lhs.column) < (distance(from: target, to: rhs), rhs.row, rhs.column)
+        }) else { return false }
+        shields.remove(block)
+        return true
+    }
+
+    private func distance(from point: CGPoint, to block: ShieldBlock) -> Double {
+        let frame = shieldFrame(block)
+        return hypot(point.x - frame.midX, point.y - frame.midY)
     }
 
     private func cannonHit() {
