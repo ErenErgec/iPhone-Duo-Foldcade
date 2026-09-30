@@ -210,7 +210,7 @@ struct GameCanvasView: View {
                     mode: game.mode,
                     hasModes: game.gameType.modes.count > 1,
                     menuSelection: appState.pauseMenuSelection,
-                    screenModeTitle: screenSettings.mode.title,
+                    screenMode: screenSettings.mode,
                     canChangeScreen: PauseMenu.availableScreenModes(store: storeManager).count > 1,
                     paletteTitle: appState.paletteChoice.title,
                     isMusicOn: appState.isMusicOn
@@ -334,7 +334,7 @@ private struct GameStatePanel: View {
     /// Whether the D-Pad can switch modes on the title and game-over screens.
     let hasModes: Bool
     let menuSelection: PauseMenuItem
-    let screenModeTitle: String
+    let screenMode: ScreenMode
     let canChangeScreen: Bool
     let paletteTitle: String
     let isMusicOn: Bool
@@ -358,7 +358,7 @@ private struct GameStatePanel: View {
                 case .paused:
                     PauseMenuPanel(
                         selection: menuSelection,
-                        screenModeTitle: screenModeTitle,
+                        screenMode: screenMode,
                         canChangeScreen: canChangeScreen,
                         paletteTitle: paletteTitle,
                         isMusicOn: isMusicOn,

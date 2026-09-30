@@ -112,7 +112,7 @@ struct ScreenSettingsView: View {
                     .padding(.top, 4)
 
                 VStack(spacing: 5) {
-                    Text(mode.title.localizedUppercase)
+                    Text(mode.uppercasedTitle)
                         .retroFont(13, weight: .heavy)
                         .tracking(1.5)
                         .foregroundStyle(.white)

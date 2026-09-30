@@ -1271,6 +1271,9 @@ final class RetroCartridgeTests: XCTestCase {
         let turkish = Locale(identifier: "tr")
         // Mode titles are uppercased with the user's locale: i → İ
         XCTAssertEqual("Geçişli".uppercased(with: turkish), "GEÇİŞLİ")
+        // Trinitron is a name too: TRINITRON, not TRİNİTRON
+        XCTAssertEqual(ScreenMode.trinitron.uppercasedTitle(in: turkish), "TRINITRON")
+        XCTAssertEqual(ScreenMode.crt.uppercasedTitle(in: turkish), ScreenMode.crt.title.uppercased(with: turkish))
         // Product names are English everywhere and uppercased by English rules
         XCTAssertEqual(ProductIdentifiers.fallbackDisplayName(for: ProductIdentifiers.lifetimePro).uppercased(), "LIFETIME PRO")
         XCTAssertEqual(ProductIdentifiers.shortName(for: "com.example.unknown"), "COM.EXAMPLE.UNKNOWN")

@@ -117,6 +117,18 @@ enum ScreenMode: String, CaseIterable, Identifiable, Codable, Sendable {
         }
     }
 
+    /// The title in capitals, as the picker, the store and the pause menu
+    /// show it. Trinitron is a name, like the game and skin names, so it's
+    /// capitalized by English rules in every language: TRINITRON, never
+    /// the Turkish TRİNİTRON.
+    var uppercasedTitle: String {
+        uppercasedTitle(in: .current)
+    }
+
+    func uppercasedTitle(in locale: Locale) -> String {
+        self == .trinitron ? title.uppercased() : title.uppercased(with: locale)
+    }
+
     /// One-line description for the screen picker.
     var summary: String {
         switch self {

@@ -259,7 +259,7 @@ struct StoreView: View {
             if !screenModes.isEmpty {
                 section("SCREEN MODES", tint: tint) {
                     ForEach(screenModes) { mode in
-                        RetroCapsuleLabel(title: mode.title.localizedUppercase, systemImage: "tv", tint: tint)
+                        RetroCapsuleLabel(title: mode.uppercasedTitle, systemImage: "tv", tint: tint)
                     }
                     if ProductIdentifiers.unlocksScreenTuning(productID) {
                         RetroCapsuleLabel(title: String(localized: "TUNING"), systemImage: "slider.horizontal.3", tint: tint)

@@ -136,7 +136,7 @@ enum PauseMenu {
 /// other in-tube messages.
 struct PauseMenuPanel: View {
     let selection: PauseMenuItem
-    let screenModeTitle: String
+    let screenMode: ScreenMode
     let canChangeScreen: Bool
     let paletteTitle: String
     let isMusicOn: Bool
@@ -176,14 +176,14 @@ struct PauseMenuPanel: View {
         )
         .padding(u)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Paused. \(selection.title.localizedCapitalized) selected. Screen: \(screenModeTitle). Palette: \(paletteTitle).")
+        .accessibilityLabel("Paused. \(selection.title.localizedCapitalized) selected. Screen: \(screenMode.title). Palette: \(paletteTitle).")
     }
 
     /// The setting shown at the end of a row, with arrows when it can change.
     private func value(of item: PauseMenuItem) -> String? {
         switch item {
         case .screen:
-            return canChangeScreen ? "◀ \(screenModeTitle.localizedUppercase) ▶" : screenModeTitle.localizedUppercase
+            return canChangeScreen ? "◀ \(screenMode.uppercasedTitle) ▶" : screenMode.uppercasedTitle
         case .palette:
             return "◀ \(paletteTitle.localizedUppercase) ▶"
         case .music:
