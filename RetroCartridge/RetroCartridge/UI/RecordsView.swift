@@ -16,6 +16,10 @@ struct RecordsView: View {
     @Environment(StoreManager.self) private var storeManager
     @Environment(HapticManager.self) private var hapticManager
 
+    /// Narrowest column of mode scores. It grows with the text, so at large
+    /// sizes the modes stack instead of breaking "STANDARD" mid-word.
+    @ScaledMetric(relativeTo: .body) private var modeColumnWidth: CGFloat = 120
+
     var body: some View {
         OverlayPanel(
             title: "RECORDS",
@@ -144,7 +148,7 @@ struct RecordsView: View {
 
     /// Each mode's best score; the daily one is today's.
     private func modeScores(_ game: GameType) -> some View {
-        let columns = [GridItem(.adaptive(minimum: 120), spacing: 8, alignment: .leading)]
+        let columns = [GridItem(.adaptive(minimum: modeColumnWidth), spacing: 8, alignment: .leading)]
 
         return LazyVGrid(columns: columns, alignment: .leading, spacing: 6) {
             ForEach(game.modes) { mode in
