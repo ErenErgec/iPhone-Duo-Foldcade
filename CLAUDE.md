@@ -21,7 +21,7 @@ xcodebuild -project RetroCartridge/RetroCartridge.xcodeproj -scheme RetroCartrid
 - **Run on the Duo:**
   - Build with `-destination 'id=<iPhone Duo UDID>'`, then run `xcrun simctl install` and `xcrun simctl launch`.
   - The user often has the Duo open in Device Hub. Don't reboot, erase or reconfigure it.
-- **Screenshots:** `xcrun simctl io <UDID> screenshot --display=1` captures the outer display and `--display=3` the inner one, both in interface orientation. A display that is off (e.g. the inner display while folded) returns black.
+- **Screenshots:** `xcrun simctl io <UDID> screenshot --display=1` and `--display=3` capture the two displays in interface orientation, but which number is which can swap between sessions: tell them apart by size (outer 2034×1398 px, inner 2007×2853 px, either way round). A display that is off (e.g. the inner display while folded) returns black.
 - **UI that needs taps:** tool taps don't reach the inner display. Build a throwaway copy in a temp directory that sets the state at launch, e.g. launch arguments that call `appState.startGame(type:)` or open an overlay. Screenshot it, then reinstall the real build.
 - **Editor errors:** SourceKit shows spurious "Cannot find 'AppState' in scope" errors. Trust `xcodebuild`.
 
@@ -90,8 +90,8 @@ xcodebuild -project RetroCartridge/RetroCartridge.xcodeproj -scheme RetroCartrid
   - Phase 5: a looping chiptune theme per cartridge (MUSIC in the pause menu), VoiceOver play and Reduce Transparency, Turkish localization.
   - Phase 7 (not yet built): first-launch How to Play intro, replayable from Records.
   - Phase 6: label designer (Labels toolbar item), three new cartridges (Paddle Duel and Tower Stack free, Astro Drift in the Collector Pack), overlay text following Dynamic Type and Bold Text.
+- **Verified on the simulator (2026-09-30, end-to-end test pass):** all unit tests on the Duo simulator, including StoreKit purchases, restore and refunds (`StoreKitPurchaseTests`); screenshots of every game and overlay on both displays, in Turkish and at accessibility text sizes; music rendered offline.
 - **Not yet verified:**
-  - the unit tests on the Duo simulator after Phases 1–3;
   - the plan's visuals and interactions in Device Hub, in both inner-display orientations and on the cover;
   - Lunar Hinge played by folding (the simulator may not deliver hinge readings; ▲ / A always thrust);
   - sound effects, music and the four sound packs by ear (music was checked only by rendering it offline);
