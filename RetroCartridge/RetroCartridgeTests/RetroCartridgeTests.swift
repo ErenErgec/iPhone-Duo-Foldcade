@@ -40,6 +40,20 @@ final class RetroCartridgeTests: XCTestCase {
         posture.updateDisplay(fullScreenSize: CGSize(width: 871, height: 669))
         XCTAssertFalse(posture.isCompactWidth)
     }
+
+    /// At launch the window is measured as 0×0 before it has a size. Read
+    /// as the outer display, a launch on the inner display looked like an
+    /// unfold and inserted the cartridge instead of showing the shelf.
+    func testPostureIgnoresTheSizeBeforeLayout() {
+        let posture = PostureManager()
+        posture.updateDisplay(fullScreenSize: .zero)
+        XCTAssertFalse(posture.isCompactWidth)
+        XCTAssertEqual(posture.currentPosture, .closed)
+
+        posture.updateDisplay(fullScreenSize: CGSize(width: 678, height: 466))
+        posture.updateDisplay(fullScreenSize: .zero)
+        XCTAssertTrue(posture.isCompactWidth, "a zero size doesn't move the app off the cover")
+    }
     
     func testGameTypeMetadata() {
         for gameType in GameType.allCases {
