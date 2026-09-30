@@ -31,12 +31,20 @@ final class StoreManager {
     /// Whether `loadProducts()` has finished at least once.
     var hasAttemptedProductLoad: Bool = false
 
+    /// Listens for purchases, refunds and revocations made outside the app.
+    @ObservationIgnored private var transactionUpdates: Task<Void, Never>?
+
     init() {
-        Task { [weak self] in
+        transactionUpdates = Task { [weak self] in
             for await result in StoreKit.Transaction.updates {
-                await self?.handle(transactionResult: result)
+                guard let self else { return }
+                await self.handle(transactionResult: result)
             }
         }
+    }
+
+    isolated deinit {
+        transactionUpdates?.cancel()
     }
 
     var hasLifetimePro: Bool {
