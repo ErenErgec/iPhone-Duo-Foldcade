@@ -6,6 +6,8 @@
 import XCTest
 import SwiftUI
 import AVFoundation
+import StoreKit
+import StoreKitTest
 @testable import RetroCartridge
 
 final class RetroCartridgeTests: XCTestCase {
@@ -1304,5 +1306,150 @@ final class RetroCartridgeTests: XCTestCase {
         // Product names are English everywhere and uppercased by English rules
         XCTAssertEqual(ProductIdentifiers.fallbackDisplayName(for: ProductIdentifiers.lifetimePro).uppercased(), "LIFETIME PRO")
         XCTAssertEqual(ProductIdentifiers.shortName(for: "com.example.unknown"), "COM.EXAMPLE.UNKNOWN")
+    }
+}
+
+// MARK: - StoreKit
+
+/// Purchases, restores and refunds against the local StoreKit configuration
+/// (`Products.storekit`), through `StoreManager` as the app uses it.
+@MainActor
+final class StoreKitPurchaseTests: XCTestCase {
+
+    private var session: SKTestSession!
+
+    override func setUp() async throws {
+        // The configuration the scheme runs the app with, found from this file
+        let configuration = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .appendingPathComponent("Products.storekit")
+        session = try SKTestSession(contentsOf: configuration)
+        session.resetToDefaultState()
+        session.disableDialogs = true
+        session.clearTransactions()
+    }
+
+    override func tearDown() async throws {
+        session.clearTransactions()
+        session = nil
+    }
+
+    // MARK: Helpers
+
+    private func makeStore() async throws -> StoreManager {
+        let store = StoreManager()
+        await store.loadProducts()
+        XCTAssertEqual(Set(store.products.map(\.id)), ProductIdentifiers.allProductIDs)
+        XCTAssertNil(store.productLoadError)
+        return store
+    }
+
+    private func buy(_ productID: String, in store: StoreManager) async throws {
+        let product = try XCTUnwrap(store.product(for: productID))
+        await store.purchase(product)
+        XCTAssertNil(store.errorMessage)
+        XCTAssertTrue(store.isPurchased(productID))
+    }
+
+    /// Refunds a product in the test session, then refreshes the store's
+    /// entitlements as the app does at launch and whenever the store opens.
+    ///
+    /// A running store also hears of refunds through `Transaction.updates`,
+    /// but the test session sometimes drops that notification for a refund
+    /// sent milliseconds after the purchase (about one run in three), so
+    /// the test doesn't depend on it.
+    private func refund(_ productID: String, in store: StoreManager) async throws {
+        let transaction = try XCTUnwrap(session.allTransactions().last { $0.productIdentifier == productID })
+        try session.refundTransaction(identifier: transaction.identifier)
+        await store.loadProducts()
+        XCTAssertFalse(store.isPurchased(productID), "\(productID) still owned after the refund")
+    }
+
+    // MARK: Tests
+
+    func testNothingIsUnlockedBeforeAPurchase() async throws {
+        let store = try await makeStore()
+        XCTAssertTrue(store.purchasedProductIDs.isEmpty)
+        XCTAssertEqual(ConsoleSkinType.allCases.filter(store.isUnlocked), [.classicGrey])
+        XCTAssertEqual(GameType.allCases.filter(store.isUnlocked), GameType.allCases.filter(\.isFree))
+        XCTAssertEqual(SoundPack.allCases.filter(store.isUnlocked), [.classic])
+        XCTAssertEqual(ScreenMode.allCases.filter(store.isUnlocked), [.crt])
+        XCTAssertFalse(store.canTuneScreen)
+    }
+
+    func testCollectorPackUnlocksItsContents() async throws {
+        let store = try await makeStore()
+        try await buy(ProductIdentifiers.retroCollectorPack, in: store)
+
+        // Six skins, all but Gold Edition
+        let skins = ConsoleSkinType.allCases.filter { !$0.isFree && store.isUnlocked($0) }
+        XCTAssertEqual(skins.count, 6)
+        XCTAssertFalse(store.isUnlocked(.goldEdition))
+        // Maze Muncher, Frog Hop and Astro Drift, not Lunar Hinge
+        XCTAssertEqual(GameType.allCases.filter { !$0.isFree && store.isUnlocked($0) }, [.mazeMuncher, .frogHop, .astroDrift])
+        XCTAssertFalse(store.isUnlocked(.lunarHinge))
+        // Three sound packs
+        XCTAssertEqual(SoundPack.allCases.filter(store.isUnlocked), [.classic, .pocket, .arcade, .mellow])
+        // No screen modes or tuning
+        XCTAssertEqual(ScreenMode.allCases.filter(store.isUnlocked), [.crt])
+        XCTAssertFalse(store.canTuneScreen)
+    }
+
+    func testLifetimeProUnlocksEverything() async throws {
+        let store = try await makeStore()
+        try await buy(ProductIdentifiers.lifetimePro, in: store)
+
+        XCTAssertTrue(store.hasLifetimePro)
+        XCTAssertEqual(ConsoleSkinType.allCases.filter(store.isUnlocked), ConsoleSkinType.allCases)
+        XCTAssertEqual(GameType.allCases.filter(store.isUnlocked), GameType.allCases)
+        XCTAssertEqual(SoundPack.allCases.filter(store.isUnlocked), SoundPack.allCases)
+        XCTAssertEqual(ScreenMode.allCases.filter(store.isUnlocked), ScreenMode.allCases)
+        XCTAssertTrue(store.canTuneScreen)
+        let tuned = ScreenSettings(mode: .trinitron, curvature: 0.9, scanlines: 0.2, bleed: 0.8)
+        XCTAssertEqual(store.effectiveScreenSettings(tuned), tuned)
+    }
+
+    func testRestoreBringsPurchasesBackToAFreshStore() async throws {
+        let first = try await makeStore()
+        try await buy(ProductIdentifiers.retroCollectorPack, in: first)
+
+        // A new install knows nothing until it restores
+        let reinstalled = StoreManager()
+        XCTAssertFalse(reinstalled.isPurchased(ProductIdentifiers.retroCollectorPack))
+        await reinstalled.restorePurchases()
+        XCTAssertNil(reinstalled.errorMessage)
+        XCTAssertTrue(reinstalled.isPurchased(ProductIdentifiers.retroCollectorPack))
+        XCTAssertFalse(reinstalled.isPurchased(ProductIdentifiers.lifetimePro))
+        XCTAssertTrue(reinstalled.isUnlocked(.mazeMuncher))
+    }
+
+    func testRefundsFallBackToTheFreeChoices() async throws {
+        let store = try await makeStore()
+        try await buy(ProductIdentifiers.retroCollectorPack, in: store)
+        try await buy(ProductIdentifiers.lifetimePro, in: store)
+
+        let tuned = ScreenSettings(mode: .trinitron, curvature: 0.9, scanlines: 0.2, bleed: 0.8)
+        XCTAssertEqual(store.effectiveSkin(.goldEdition), .goldEdition)
+
+        // Refunding Lifetime Pro takes its extras; the Collector Pack stays
+        try await refund(ProductIdentifiers.lifetimePro, in: store)
+        XCTAssertFalse(store.isUnlocked(.lunarHinge))
+        XCTAssertEqual(store.effectiveScreenSettings(tuned), ScreenSettings.standard)
+        XCTAssertEqual(store.effectiveSkin(.goldEdition), .classicGrey)
+        XCTAssertEqual(store.effectiveSkin(.atomicPurple), .atomicPurple)
+        XCTAssertEqual(store.effectiveSoundPack(.arcade), .arcade)
+        XCTAssertTrue(store.isUnlocked(.astroDrift))
+
+        // Refunding the Collector Pack leaves only the free tier
+        try await refund(ProductIdentifiers.retroCollectorPack, in: store)
+        XCTAssertEqual(store.effectiveSkin(.atomicPurple), .classicGrey)
+        XCTAssertEqual(store.effectiveSoundPack(.arcade), .classic)
+        XCTAssertFalse(store.isUnlocked(.astroDrift))
+        XCTAssertFalse(store.isUnlocked(.mazeMuncher))
+
+        // A fresh launch agrees: refunded products aren't entitlements
+        let relaunched = try await makeStore()
+        XCTAssertTrue(relaunched.purchasedProductIDs.isEmpty)
     }
 }
