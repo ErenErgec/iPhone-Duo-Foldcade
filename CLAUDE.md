@@ -73,9 +73,11 @@ xcodebuild -project RetroCartridge/RetroCartridge.xcodeproj -scheme RetroCartrid
   - Text-only or custom-view items stay horizontal.
 - **Appearance:** the window forces the dark style so system bars and titles read on the dark console.
 
-## Project status (2026-09-29)
+## Project status (2026-10-14)
 
-- **Git:** `main` is the working branch; PR #1 (`gameplay-fixes`) was merged on 2026-09-28. The design and variety plan (Phases 0–7 below) is on `claude/festive-dirac-8zepxk`, in review as a PR into `main`. The GitHub repo is private. Commit and push only when the user asks; they usually test in Device Hub first.
+- **Git:** `main` is the only branch. PR #1 (`gameplay-fixes`) was merged on 2026-09-28 and PR #2 (design and variety plan, App Store prep, pixel font) on 2026-10-14. The GitHub repo is private.
+  - Commit and push only when the user asks; they usually test in Device Hub first.
+  - The user merges PRs themselves: `gh pr merge` from Claude Code is blocked as a merge without review.
 - **Done and verified by the user on the simulator (before the plan):**
   - games running at 60 FPS;
   - CRT shader;
@@ -83,27 +85,41 @@ xcodebuild -project RetroCartridge/RetroCartridge.xcodeproj -scheme RetroCartrid
   - Duo-native layout (outer display locked landscape, inner display adaptive fold split);
   - vertical toolbar;
   - real hinge angle and 90° chime.
-- **Design and variety plan, built by the user after every phase (runtime not yet checked):**
+- **Design and variety plan (Phases 0–7, all built and merged):**
   - Phase 0: role-based palettes, cartridge metadata, modes, `ProgressStore`, fold-aware library grid.
   - Phase 1: screen modes (CRT, LCD, Trinitron, Arcade) with tuning, skin finishes, cartridge shells and pixel-art labels, shelf, cover attract mode, insert and eject transitions, in-tube pause menu.
   - Phase 2: seeded games and daily rounds, mode picker, shared palettes, deeper original four games, five new cartridges (Pixel Invaders, Mine Sweep, Maze Muncher, Frog Hop, Lunar Hinge with hinge thrust), achievements, sound packs, four new skins.
+  - Phase 3: store aligned with its contents (Maze Muncher, Frog Hop and Astro Drift in the Collector Pack; Lunar Hinge, Gold Edition, screen modes and tuning in Lifetime Pro), derived store copy, locked-item highlighting.
   - Phase 4: Records overlay, toolbar groups with visibility priorities, occlusion avoidance; `ArrangementView` evaluated and not adopted for the console.
-  - Phase 3: store aligned with its contents (six free cartridges at the time; Maze Muncher and Frog Hop in the Collector Pack; Lunar Hinge, Gold Edition, screen modes and tuning in Lifetime Pro), derived store copy, locked-item highlighting.
-  - Phase 5: a looping chiptune theme per cartridge (MUSIC in the pause menu), VoiceOver play and Reduce Transparency, Turkish localization.
-  - Phase 7 (not yet built): first-launch How to Play intro, replayable from Records.
+  - Phase 5: a looping chiptune theme per cartridge, VoiceOver play and Reduce Transparency. Its Turkish localization was later removed (see Language).
   - Phase 6: label designer (Labels toolbar item), three new cartridges (Paddle Duel and Tower Stack free, Astro Drift in the Collector Pack), overlay text following Dynamic Type and Bold Text.
-- **Verified on the simulator (2026-09-30, end-to-end test pass):** all unit tests on the Duo simulator, including StoreKit purchases, restore and refunds (`StoreKitPurchaseTests`); screenshots of every game and overlay on both displays, in Turkish and at accessibility text sizes; music rendered offline.
+  - Phase 7: first-launch How to Play intro, replayable from Records.
+- **App Store prep (2026-10-12 to 10-14):**
+  - Release settings: iPhone-only device family, signing team, privacy manifest, no non-exempt encryption (see Project file).
+  - App icon: a folding console with the app's own Octopus invader. The CoreGraphics script that draws it and the other drafts are in the git-excluded `TestReport/icon-drafts/`.
+  - Silkscreen pixel font for overlay, library and console text, and English only (see Overlay text and Language).
+  - A SOUND switch in the pause menu, separate from MUSIC (see Sound switches).
+- **Verified on the simulator:**
+  - 2026-09-30, end-to-end test pass: all unit tests, including StoreKit purchases, restore and refunds (`StoreKitPurchaseTests`); screenshots of every game and overlay on both displays (then in Turkish) and at accessibility text sizes; music rendered offline.
+  - 2026-10-14: all 113 unit tests pass. Screenshots of the overlays, the library, the tube panels and the pause menu in Silkscreen look right on the inner display.
 - **Not yet verified:**
   - the plan's visuals and interactions in Device Hub, in both inner-display orientations and on the cover;
+  - Silkscreen on the outer display and at accessibility text sizes and with Bold Text (Bold cut);
   - Lunar Hinge played by folding (the simulator may not deliver hinge readings; ▲ / A always thrust);
-  - sound effects, music and the four sound packs by ear (music was checked only by rendering it offline);
+  - sound effects, music, the four sound packs and the SOUND / MUSIC switches by ear (music was checked only by rendering it offline);
   - the label designer on both displays (drawing inside the scrolling panel on the cover), and the three new cartridges;
-  - the overlays at large and accessibility text sizes and with Bold Text;
   - the intro on a fresh install (delete the app first), on the cover and after unfolding;
-  - VoiceOver play on the console, and the app in Turkish (set the simulator's language, or the scheme's App Language, to Turkish);
+  - VoiceOver play on the console;
   - StoreKit purchases end to end (run from Xcode with `Products.storekit` selected in the scheme);
   - anything on real iPhone Duo hardware (ships 2026-10-23).
-- **Possible next steps:** run the tests and check the plan in Device Hub (including the toolbar overflow on the outer display, now with five items, and the console with the inner camera active), check sound and purchases, and Game Center leaderboards (needs App Store Connect setup).
+- **Before App Store submission:**
+  - The installed Xcode 27.1 (27A9269) may be a beta, and App Store Connect rejects beta builds. Build with the released Xcode 27.1 (RC or GM).
+  - App Store Connect: nothing is created yet, and the user signs in themselves. Set the primary language to English (U.S.), and set up the two non-consumable IAPs from `Products.storekit`, the privacy answers (no data collected), the age rating, iPhone Duo screenshots, and privacy policy and support URLs.
+- **Possible next steps:**
+  - Check the plan and the new font in Device Hub, including the toolbar overflow on the outer display (five items) and the console with the inner camera active.
+  - Check sound and purchases.
+  - Set up Game Center leaderboards (needs App Store Connect setup).
+  - Maybe add a sound switch outside the pause menu (e.g. in the library toolbar).
 
 ## Conventions
 
