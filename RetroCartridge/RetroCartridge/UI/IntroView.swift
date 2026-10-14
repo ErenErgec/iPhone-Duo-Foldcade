@@ -41,7 +41,7 @@ enum IntroPage: Int, CaseIterable, Identifiable {
         case .unfold:
             return String(localized: "Open the device and the cartridge goes in, with the screen on one side of the fold and the controls on the other. Fold it again to pause.")
         case .controls:
-            return String(localized: "Play with the D-Pad and A / B. A starts a round, ◀ ▶ on the title screen switch modes, and Start pauses. The pause menu changes the screen, the palette and the music.")
+            return String(localized: "Play with the D-Pad and A / B. A starts a round, left and right on the title screen switch modes, and Start pauses. The pause menu changes the screen, the palette and the music.")
         case .eject:
             return String(localized: "Press Select to eject the cartridge. The screen powers off and the shelf comes back.")
         case .customize:

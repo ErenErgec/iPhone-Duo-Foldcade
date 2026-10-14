@@ -508,7 +508,7 @@ final class BrickBreakerGame: PixelGameProtocol {
             context.fill(Path(roundedRect: rect, cornerRadius: 6), with: .color(color(of: p.type)))
             context.draw(
                 Text(p.type.letter)
-                    .font(.system(size: 9, weight: .black, design: .monospaced))
+                    .font(.pixel(9))
                     .foregroundStyle(palette.background),
                 at: CGPoint(x: rect.midX, y: rect.midY)
             )

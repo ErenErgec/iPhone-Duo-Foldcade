@@ -131,10 +131,9 @@ public struct ControllerView: View {
                 .fill(theme.actionButtonColor)
                 .frame(width: unit * 0.09, height: unit * 0.09)
             Text("RETRO")
-                .font(.system(size: unit * 0.17, weight: .black, design: .rounded))
-                .italic()
+                .font(.pixel(unit * 0.17, bold: true))
             Text("CARTRIDGE")
-                .font(.system(size: unit * 0.17, weight: .medium, design: .monospaced))
+                .font(.pixel(unit * 0.17))
                 .tracking(unit * 0.02)
         }
         .foregroundStyle(theme.textColor.opacity(0.7))
@@ -439,7 +438,7 @@ struct RoundActionButton: View {
             }
 
             Text(letter)
-                .font(.system(size: size * 0.26, weight: .heavy, design: .rounded))
+                .font(.pixel(size * 0.26, bold: true))
                 .foregroundStyle(theme.textColor.opacity(0.7))
         }
         .animation(.spring(response: 0.12, dampingFraction: 0.6), value: isPressed)
@@ -463,7 +462,7 @@ struct PillButton: View {
                 .rotationEffect(.degrees(-25))
 
             Text(title)
-                .font(.system(size: unit * 0.12, weight: .bold, design: .monospaced))
+                .font(.pixel(unit * 0.12))
                 .tracking(unit * 0.015)
                 .foregroundStyle(theme.textColor.opacity(0.6))
         }

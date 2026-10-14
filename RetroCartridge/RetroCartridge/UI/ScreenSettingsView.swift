@@ -223,7 +223,7 @@ struct ScreenSettingsView: View {
 
             Slider(value: value, in: 0...1)
                 .tint(RetroPalette.phosphor)
-                .accessibilityLabel(title.localizedCapitalized)
+                .accessibilityLabel(title.capitalized)
                 .accessibilityValue(String(localized: "\(String(format: "%.1f", value.wrappedValue * 2)) times"))
         }
     }

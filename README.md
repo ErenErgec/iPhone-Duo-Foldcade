@@ -113,7 +113,8 @@ Every game also has a **Daily** mode: the same round for everyone that day (seed
   - VoiceOver: the controls are buttons with the direct-interaction trait, so games can be played by touch; a double tap presses a button, and the D-Pad has Up/Down/Left/Right actions for single steps. The game screen describes the game in words (title screen, score and level, pause menu, final score), and new achievements are announced.
   - Reduce Motion skips decorative motion; Reduce Transparency draws translucent shells solid, turns off the faded attract mode and makes overlay backdrops nearly opaque.
 - **Text size and Bold Text:** overlay and library text follows Dynamic Type and Bold Text, and wraps rather than shrinking at accessibility sizes. The console's printed text scales with the console.
-- **Languages:** English and Turkish, from a String Catalog (`Localizable.xcstrings`). Game titles, skin and product names and the console's silkscreen stay in English.
+- **Language:** English, from a String Catalog (`Localizable.xcstrings`), so translations can be added later.
+- **Type:** overlay and library text uses the pixel font [Silkscreen](https://github.com/googlefonts/silkscreen) by Jason Kottke (SIL Open Font License 1.1, license in `Resources/Silkscreen-OFL.txt`), sized with Dynamic Type and Bold Text.
 
 ---
 
@@ -172,14 +173,15 @@ RetroCartridge/
 │   │   ├── RecordsView.swift          # High scores per mode and achievements overlay
 │   │   ├── LabelDesignerView.swift    # 16×16 cartridge label editor overlay
 │   │   ├── IntroView.swift            # First-launch How to Play pages
-│   │   ├── RetroTypography.swift      # retroFont: Dynamic Type and Bold Text for overlay text
+│   │   ├── RetroTypography.swift      # retroFont: Silkscreen pixel font, Dynamic Type and Bold Text
 │   │   ├── SkinPickerView.swift       # Skin picker overlay
 │   │   ├── StoreView.swift            # Store overlay
 │   │   ├── OverlayPanel.swift         # Overlay panel chrome + LibraryOverlays (skin picker, store host)
 │   │   └── Skins/                     # SkinTheme definitions, ShellSurface finishes, console previews
 │   ├── Games/                         # PixelGameProtocol, factory, GameRNG, AttractPilot, and the twelve games
 │   ├── Models/GameModels.swift        # Game, cartridge metadata, mode, input, posture, skin and sound types
-│   ├── Localizable.xcstrings          # String Catalog: English source, Turkish translations
+│   ├── Localizable.xcstrings          # String Catalog (English)
+│   ├── Resources/                     # Silkscreen pixel font (Regular, Bold) and its OFL license
 │   └── Store/                         # StoreManager + product identifiers
 └── RetroCartridgeTests/               # Unit tests
 DESIGN.md                              # iPhone Duo platform reference: Apple guidance + measurements
@@ -213,4 +215,4 @@ The iOS 27.1 simulator runtime only supports iPhone Duo.
 ---
 
 ## 📄 License
-Distributed under the MIT License. See `LICENSE` for more information.
+Distributed under the MIT License. See `LICENSE` for more information. The bundled Silkscreen font is licensed separately under the SIL Open Font License 1.1 (`RetroCartridge/RetroCartridge/Resources/Silkscreen-OFL.txt`).

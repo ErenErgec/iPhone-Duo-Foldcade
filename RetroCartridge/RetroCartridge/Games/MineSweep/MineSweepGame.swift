@@ -190,7 +190,7 @@ final class MineSweepGame: PixelGameProtocol {
                         if count > 0 {
                             context.draw(
                                 Text("\(count)")
-                                    .font(.system(size: cellSize * 0.6, weight: .black, design: .monospaced))
+                                    .font(.pixel(cellSize * 0.6))
                                     .foregroundStyle(palette.spectrumColor(count - 1)),
                                 at: CGPoint(x: frame.midX, y: frame.midY)
                             )

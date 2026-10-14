@@ -349,7 +349,7 @@ final class LunarHingeGame: PixelGameProtocol, HingeControllable {
 
     private func hudText(_ text: String, size: Double, color: Color) -> Text {
         Text(text)
-            .font(.system(size: size, weight: .heavy, design: .monospaced))
+            .font(.pixel(size))
             .foregroundStyle(color)
     }
 

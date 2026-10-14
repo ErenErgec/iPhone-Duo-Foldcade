@@ -23,7 +23,7 @@ struct RecordsView: View {
     var body: some View {
         OverlayPanel(
             title: "RECORDS",
-            subtitle: "HIGH SCORES & ACHIEVEMENTS",
+            subtitle: "HIGH SCORES AND ACHIEVEMENTS",
             onClose: close
         ) {
             VStack(spacing: 16) {
@@ -154,7 +154,7 @@ struct RecordsView: View {
             ForEach(game.modes) { mode in
                 let best = appState.progress.highScore(for: game, mode: mode)
                 HStack(spacing: 6) {
-                    Text((mode.isDaily ? String(localized: "TODAY") : mode.title).localizedUppercase)
+                    Text((mode.isDaily ? String(localized: "TODAY") : mode.title).uppercased())
                         .foregroundStyle(.white.opacity(0.45))
                     Text(best > 0 ? "\(best)" : "—")
                         .foregroundStyle(best > 0 ? RetroPalette.phosphor : Color.white.opacity(0.3))

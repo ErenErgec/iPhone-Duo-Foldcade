@@ -121,7 +121,7 @@ struct GameCanvasView: View {
                                     toastUntil = newDate.addingTimeInterval(2.5)
                                     audioManager.playGameSound(.powerUp)
                                     hapticManager.playHaptic(.gameEvent)
-                                    AccessibilityNotification.Announcement(String(localized: "Achievement earned: \(earned.title.localizedCapitalized)")).post()
+                                    AccessibilityNotification.Announcement(String(localized: "Achievement earned: \(earned.title.capitalized)")).post()
                                 }
 
                                 // Persist the score as soon as a round ends, since pressing A
@@ -166,13 +166,13 @@ struct GameCanvasView: View {
                 .frame(width: 7, height: 7)
                 .shadow(color: appState.isGameActive ? theme.ledColor : .clear, radius: 4)
             Text("POWER")
-                .font(.system(size: max(8, inset * 0.36), weight: .bold, design: .monospaced))
+                .font(.pixel(max(8, inset * 0.36)))
                 .foregroundStyle(Color.white.opacity(0.35))
 
             Spacer()
 
             Text(screenSettings.mode.bezelLabel)
-                .font(.system(size: max(8, inset * 0.36), weight: .bold, design: .monospaced))
+                .font(.pixel(max(8, inset * 0.36)))
                 .tracking(2)
                 .foregroundStyle(Color.white.opacity(0.3))
             Rectangle()
@@ -250,7 +250,7 @@ struct GameCanvasView: View {
         case .playing:
             return String(localized: "Playing. Score \(game.score), level \(game.level).")
         case .paused:
-            let selection = appState.pauseMenuSelection.title.localizedCapitalized
+            let selection = appState.pauseMenuSelection.title.capitalized
             let screen = screenSettings.mode.title
             let palette = appState.paletteChoice.title
             let music = appState.isMusicOn ? String(localized: "on") : String(localized: "off")
@@ -278,7 +278,7 @@ private struct BezelReadout: View {
             item("LV", String(format: "%02d", level))
             item("HI", String(format: "%06d", highScore))
         }
-        .font(.system(size: fontSize, weight: .bold, design: .monospaced))
+        .font(.pixel(fontSize))
         .lineLimit(1)
         .minimumScaleFactor(0.6)
         .accessibilityElement(children: .ignore)
@@ -310,14 +310,14 @@ private struct AchievementToast: View {
             Text("★ \(achievement.title)")
                 .foregroundStyle(gold)
                 .shadow(color: gold.opacity(0.6), radius: 3)
-            Text(achievement.detail.localizedUppercase)
+            Text(achievement.detail.uppercased())
                 .foregroundStyle(Color.white.opacity(0.55))
         }
-        .font(.system(size: fontSize, weight: .bold, design: .monospaced))
+        .font(.pixel(fontSize))
         .lineLimit(1)
         .minimumScaleFactor(0.6)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("Achievement earned: \(achievement.title.localizedCapitalized). \(achievement.detail).")
+        .accessibilityLabel("Achievement earned: \(achievement.title.capitalized). \(achievement.detail).")
     }
 }
 
@@ -352,7 +352,7 @@ private struct GameStatePanel: View {
                     panel(
                         u: u,
                         title: title.uppercased(),
-                        lines: hasModes ? ["◀ \(mode.title.localizedUppercase) ▶", mode.summary.localizedUppercase] : [],
+                        lines: hasModes ? ["< \(mode.title.uppercased()) >", mode.summary.uppercased()] : [],
                         prompt: String(localized: "PRESS A TO START")
                     )
                 case .paused:
@@ -372,7 +372,7 @@ private struct GameStatePanel: View {
                         lines: (finalScore > 0 && finalScore >= highScore
                                 ? [String(localized: "NEW HIGH SCORE!"), "\(finalScore)"]
                                 : [String(localized: "SCORE \(finalScore)")])
-                            + (hasModes ? ["◀ \(mode.title.localizedUppercase) ▶"] : []),
+                            + (hasModes ? ["< \(mode.title.uppercased()) >"] : []),
                         prompt: String(localized: "PRESS A TO RETRY")
                     )
                 case .playing:
@@ -387,7 +387,7 @@ private struct GameStatePanel: View {
     private func panel(u: CGFloat, title: String, lines: [String], prompt: String) -> some View {
         VStack(spacing: u * 0.6) {
             Text(title)
-                .font(.system(size: u * 1.5, weight: .black, design: .monospaced))
+                .font(.pixel(u * 1.5))
                 .foregroundStyle(.white)
                 .shadow(color: phosphor.opacity(0.8), radius: 6)
                 .lineLimit(1)
@@ -395,14 +395,14 @@ private struct GameStatePanel: View {
 
             ForEach(Array(lines.enumerated()), id: \.offset) { _, line in
                 Text(line)
-                    .font(.system(size: u * 0.85, weight: .bold, design: .monospaced))
+                    .font(.pixel(u * 0.85))
                     .foregroundStyle(phosphor)
                     .lineLimit(1)
                     .minimumScaleFactor(0.5)
             }
 
             Text(prompt)
-                .font(.system(size: u * 0.8, weight: .bold, design: .monospaced))
+                .font(.pixel(u * 0.8))
                 .foregroundStyle(phosphor)
                 .opacity(blinkOn ? 1 : 0.15)
                 .padding(.top, u * 0.4)

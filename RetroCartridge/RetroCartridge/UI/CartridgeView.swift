@@ -91,14 +91,14 @@ struct CartridgeView: View {
                     // Embossed footer
                     VStack(spacing: h * 0.012) {
                         Text("RETRO CARTRIDGE")
-                            .font(.system(size: w * 0.05, weight: .bold, design: .monospaced))
+                            .font(.pixel(w * 0.05))
                             .tracking(w * 0.006)
                             .foregroundStyle(Color.black.opacity(0.45))
                             .shadow(color: .white.opacity(0.12), radius: 0, y: 0.5)
 
                         if let highScore, highScore > 0 {
                             Text("HI \(highScore)")
-                                .font(.system(size: w * 0.055, weight: .semibold, design: .monospaced))
+                                .font(.pixel(w * 0.055))
                                 .foregroundStyle(Color.white.opacity(0.6))
                         }
 
@@ -169,7 +169,7 @@ struct CartridgeView: View {
 
             VStack(spacing: h * 0.015) {
                 Text(game.genre)
-                    .font(.system(size: w * 0.045, weight: .heavy, design: .monospaced))
+                    .font(.pixel(w * 0.045))
                     .tracking(w * 0.01)
                     .foregroundStyle(Color.black.opacity(0.55))
                     .lineLimit(1)
@@ -186,7 +186,7 @@ struct CartridgeView: View {
                     .shadow(color: .black.opacity(0.25), radius: 2, y: 1)
 
                 Text(game.rawValue.uppercased())
-                    .font(.system(size: w * 0.075, weight: .heavy, design: .monospaced))
+                    .font(.pixel(w * 0.075))
                     .foregroundStyle(Color.black.opacity(0.78))
                     .lineLimit(1)
                     .minimumScaleFactor(0.5)

@@ -6,6 +6,7 @@
 import XCTest
 import SwiftUI
 import AVFoundation
+import CoreText
 import StoreKit
 import StoreKitTest
 @testable import RetroCartridge
@@ -1275,35 +1276,29 @@ final class RetroCartridgeTests: XCTestCase {
         XCTAssertEqual(RetroType.weight(.black, isBold: true), .black)
     }
 
-    // MARK: - Localization
-
-    /// The Turkish strings from the String Catalog, as the app bundle ships them.
-    private func turkishBundle() throws -> Bundle {
-        let path = try XCTUnwrap(Bundle.main.path(forResource: "tr", ofType: "lproj"), "No Turkish localization in the app bundle")
-        return try XCTUnwrap(Bundle(path: path))
+    func testOverlayTextUsesTheBundledPixelFont() {
+        for name in [RetroType.pixelRegular, RetroType.pixelBold] {
+            let font = CTFontCreateWithName(name as CFString, 12, nil)
+            XCTAssertEqual(CTFontCopyPostScriptName(font) as String, name, "Pixel font not registered (UIAppFonts)")
+        }
     }
 
-    func testTurkishTranslationsShip() throws {
-        let turkish = try turkishBundle()
-        func tr(_ key: String) -> String { turkish.localizedString(forKey: key, value: nil, table: nil) }
-
-        XCTAssertEqual(tr("GAME OVER"), "OYUN BİTTİ")
-        XCTAssertEqual(tr("Skins"), "Kaplamalar")
-        XCTAssertEqual(tr("SCORE %lld"), "SKOR %lld")
-        XCTAssertEqual(tr(" and "), " ve ")
-        // Names and silkscreen stay in English
-        XCTAssertEqual(tr("LIFETIME PRO"), "LIFETIME PRO")
-        XCTAssertEqual(tr("POWER"), "POWER")
+    func testPixelFontStillGetsHeavierWithBoldText() {
+        XCTAssertEqual(RetroType.pixelFontName(isBold: false), RetroType.pixelRegular)
+        XCTAssertEqual(RetroType.pixelFontName(isBold: true), RetroType.pixelBold)
     }
 
-    func testTurkishCasingKeepsTheDots() {
-        let turkish = Locale(identifier: "tr")
-        // Mode titles are uppercased with the user's locale: i → İ
-        XCTAssertEqual("Geçişli".uppercased(with: turkish), "GEÇİŞLİ")
-        // Trinitron is a name too: TRINITRON, not TRİNİTRON
-        XCTAssertEqual(ScreenMode.trinitron.uppercasedTitle(in: turkish), "TRINITRON")
-        XCTAssertEqual(ScreenMode.crt.uppercasedTitle(in: turkish), ScreenMode.crt.title.uppercased(with: turkish))
-        // Product names are English everywhere and uppercased by English rules
+    // MARK: - Language
+
+    func testAppShipsInEnglishOnly() {
+        // The pixel font has no Turkish letters, so the app ships English only
+        XCTAssertNil(Bundle.main.path(forResource: "tr", ofType: "lproj"))
+        XCTAssertFalse(Bundle.main.localizations.contains("tr"))
+    }
+
+    func testCapitalsFollowEnglishRules() {
+        // Capitals never depend on the device's region (no Turkish İ)
+        XCTAssertEqual(ScreenMode.trinitron.uppercasedTitle, "TRINITRON")
         XCTAssertEqual(ProductIdentifiers.fallbackDisplayName(for: ProductIdentifiers.lifetimePro).uppercased(), "LIFETIME PRO")
         XCTAssertEqual(ProductIdentifiers.shortName(for: "com.example.unknown"), "COM.EXAMPLE.UNKNOWN")
     }

@@ -181,7 +181,7 @@ final class RetroRacerGame: PixelGameProtocol {
         let kmh = Int(speed * 240)
         context.draw(
             Text("\(kmh) KM/H")
-                .font(.system(size: max(10, size.height * 0.045), weight: .heavy, design: .monospaced))
+                .font(.pixel(max(10, size.height * 0.045)))
                 .foregroundStyle(palette.playerHighlight.opacity(0.8)),
             at: CGPoint(x: size.width - 8, y: 8),
             anchor: .topTrailing

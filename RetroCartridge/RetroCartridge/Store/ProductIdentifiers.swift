@@ -35,9 +35,7 @@ enum ProductIdentifiers {
     // MARK: - Fallback catalog
 
     /// Name shown when the StoreKit product couldn't be loaded, and spoken
-    /// by VoiceOver. Product names stay in English in every language, and
-    /// capitalizing the uppercase short name would misspell them in Turkish
-    /// ("LIFETIME" → "Lıfetıme").
+    /// by VoiceOver.
     static func fallbackDisplayName(for productID: String) -> String {
         switch productID {
         case retroCollectorPack: return "Retro Collector Pack"
@@ -131,8 +129,7 @@ enum ProductIdentifiers {
         return parts.isEmpty ? "" : String(localized: "\(list(parts)).", comment: "A product summary sentence")
     }
 
-    /// "a", "a and b", "a, b and c", with the conjunction in the reader's
-    /// language (Turkish "ve").
+    /// "a", "a and b", "a, b and c".
     private static func list(_ items: [String]) -> String {
         guard items.count > 1 else { return items.first ?? "" }
         let and = String(localized: " and ", comment: "Joins the last two items of a list, with spaces")

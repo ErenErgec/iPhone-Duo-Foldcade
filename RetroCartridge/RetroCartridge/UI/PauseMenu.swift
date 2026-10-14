@@ -149,7 +149,7 @@ struct PauseMenuPanel: View {
     var body: some View {
         VStack(alignment: .leading, spacing: u * 0.55) {
             Text("PAUSED")
-                .font(.system(size: u * 1.4, weight: .black, design: .monospaced))
+                .font(.pixel(u * 1.4))
                 .foregroundStyle(.white)
                 .shadow(color: phosphor.opacity(0.8), radius: 6)
                 .frame(maxWidth: .infinity)
@@ -160,7 +160,7 @@ struct PauseMenuPanel: View {
             }
 
             Text("START RESUMES")
-                .font(.system(size: u * 0.65, weight: .bold, design: .monospaced))
+                .font(.pixel(u * 0.65))
                 .foregroundStyle(phosphor.opacity(0.6))
                 .frame(maxWidth: .infinity)
                 .padding(.top, u * 0.3)
@@ -176,18 +176,18 @@ struct PauseMenuPanel: View {
         )
         .padding(u)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Paused. \(selection.title.localizedCapitalized) selected. Screen: \(screenMode.title). Palette: \(paletteTitle).")
+        .accessibilityLabel("Paused. \(selection.title.capitalized) selected. Screen: \(screenMode.title). Palette: \(paletteTitle).")
     }
 
     /// The setting shown at the end of a row, with arrows when it can change.
     private func value(of item: PauseMenuItem) -> String? {
         switch item {
         case .screen:
-            return canChangeScreen ? "◀ \(screenMode.uppercasedTitle) ▶" : screenMode.uppercasedTitle
+            return canChangeScreen ? "< \(screenMode.uppercasedTitle) >" : screenMode.uppercasedTitle
         case .palette:
-            return "◀ \(paletteTitle.localizedUppercase) ▶"
+            return "< \(paletteTitle.uppercased()) >"
         case .music:
-            return "◀ \(isMusicOn ? String(localized: "ON") : String(localized: "OFF")) ▶"
+            return "< \(isMusicOn ? String(localized: "ON") : String(localized: "OFF")) >"
         case .resume, .eject:
             return nil
         }
@@ -197,7 +197,7 @@ struct PauseMenuPanel: View {
         let isSelected = item == selection
 
         return HStack(spacing: u * 0.5) {
-            Text("▶")
+            Text(verbatim: ">")
                 .opacity(isSelected ? (blinkOn ? 1 : 0.35) : 0)
             Text(item.title)
             if let value = value(of: item) {
@@ -206,7 +206,7 @@ struct PauseMenuPanel: View {
                     .foregroundStyle(phosphor.opacity(isSelected ? 1 : 0.6))
             }
         }
-        .font(.system(size: u * 0.85, weight: .bold, design: .monospaced))
+        .font(.pixel(u * 0.85))
         .foregroundStyle(isSelected ? Color.white : phosphor.opacity(0.75))
     }
 }

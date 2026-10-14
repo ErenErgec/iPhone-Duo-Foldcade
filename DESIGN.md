@@ -265,7 +265,7 @@ The update rate and precision are system policy; prefer `status` when you only n
 **Decided on 2026-09-29 (Phase 5, music, accessibility, languages):**
 - **VoiceOver play.** The console's controls carry `.allowsDirectInteraction`, so a VoiceOver user can play in real time by touch, as with any game. Every control also works with a double tap, and the D-Pad has named actions, so nothing depends on direct touch.
 - **Reduce Transparency.** Backgrounds become more opaque, as with the system's own bars (§5). Translucent shells and cartridges are drawn solid, overlay backdrops go nearly opaque, and the faded attract mode stays off.
-- **Localization.** A String Catalog with English as the source and Turkish. Casing uses the user's locale; product names and the console silkscreen stay English. Layout already adapts to longer text (monospaced labels scale down with `minimumScaleFactor`).
+- **Localization.** English only since 2026-10-14. The overlay pixel font (Silkscreen) lacks Turkish letters, so the earlier Turkish translation was removed. Casing follows English rules (`uppercased()`). Strings still go through a String Catalog, and labels scale down with `minimumScaleFactor`, so a language can return with a font that covers it.
 
 **Decided on 2026-09-29 (Phase 6, designer, cartridges, text size):**
 - **Labels toolbar item.** The designer is customization, so Labels joins Skins and Screen in the high-priority group ("Group related toolbar items"); Store and Records still overflow first. Like the other overlays, it's reachable on both displays. The grid is smaller on the cover (15 pt pixels) than inside (22 pt), and a stroke is saved when the finger lifts.

@@ -65,6 +65,9 @@
 		8E79ED25D9AAA2317A7D2C70 /* OcclusionAvoidance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 830382F6F2D6048BD2EF3AEE /* OcclusionAvoidance.swift */; };
 		C4BCD40E8E83BB13B8E3DF42 /* ChipMusic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ADE1ACC998C07CCDF807E12 /* ChipMusic.swift */; };
 		7A1C0DE5F00D000000000A01 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 7A1C0DE5F00D000000000A02 /* PrivacyInfo.xcprivacy */; };
+		7A1C0DE5F00D000000000B05 /* Silkscreen-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7A1C0DE5F00D000000000B06 /* Silkscreen-Bold.ttf */; };
+		7A1C0DE5F00D000000000B01 /* Silkscreen-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7A1C0DE5F00D000000000B02 /* Silkscreen-Regular.ttf */; };
+		7A1C0DE5F00D000000000B03 /* Silkscreen-OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = 7A1C0DE5F00D000000000B04 /* Silkscreen-OFL.txt */; };
 		B8F6112F557397486E0B90CC /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = E87486F61B23DCF5C81EBCE9 /* Localizable.xcstrings */; };
 		D7257D5B6DA215E33081FF69 /* LabelStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA84B40BBEDD48CAE102AE3 /* LabelStore.swift */; };
 		D2DAAEB38E69A008A43CEB05 /* LabelDesignerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7E70AF52E2FA8E338FCE243 /* LabelDesignerView.swift */; };
@@ -148,6 +151,9 @@
 		830382F6F2D6048BD2EF3AEE /* OcclusionAvoidance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OcclusionAvoidance.swift; sourceTree = "<group>"; };
 		1ADE1ACC998C07CCDF807E12 /* ChipMusic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChipMusic.swift; sourceTree = "<group>"; };
 		7A1C0DE5F00D000000000A02 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		7A1C0DE5F00D000000000B06 /* Silkscreen-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Silkscreen-Bold.ttf"; sourceTree = "<group>"; };
+		7A1C0DE5F00D000000000B02 /* Silkscreen-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Silkscreen-Regular.ttf"; sourceTree = "<group>"; };
+		7A1C0DE5F00D000000000B04 /* Silkscreen-OFL.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Silkscreen-OFL.txt"; sourceTree = "<group>"; };
 		E87486F61B23DCF5C81EBCE9 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		BDA84B40BBEDD48CAE102AE3 /* LabelStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelStore.swift; sourceTree = "<group>"; };
 		F7E70AF52E2FA8E338FCE243 /* LabelDesignerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelDesignerView.swift; sourceTree = "<group>"; };
@@ -202,6 +208,9 @@
 		30764D4F6C124BC2530C8B64 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				7A1C0DE5F00D000000000B02 /* Silkscreen-Regular.ttf */,
+				7A1C0DE5F00D000000000B06 /* Silkscreen-Bold.ttf */,
+				7A1C0DE5F00D000000000B04 /* Silkscreen-OFL.txt */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -494,7 +503,6 @@
 			knownRegions = (
 				Base,
 				en,
-				tr,
 			);
 			mainGroup = 0BA92A6059E0BC1749E385C8;
 			minimizedProjectReferenceProxies = 1;
@@ -517,6 +525,9 @@
 				6BFAF0CCBF220E9DF5F208CC /* Assets.xcassets in Resources */,
 				B8F6112F557397486E0B90CC /* Localizable.xcstrings in Resources */,
 				7A1C0DE5F00D000000000A01 /* PrivacyInfo.xcprivacy in Resources */,
+				7A1C0DE5F00D000000000B01 /* Silkscreen-Regular.ttf in Resources */,
+				7A1C0DE5F00D000000000B05 /* Silkscreen-Bold.ttf in Resources */,
+				7A1C0DE5F00D000000000B03 /* Silkscreen-OFL.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

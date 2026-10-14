@@ -318,7 +318,7 @@ final class FallingBlocksGame: PixelGameProtocol {
 
     private func label(_ text: String, size: Double, bright: Bool = false) -> Text {
         Text(text)
-            .font(.system(size: size, weight: .heavy, design: .monospaced))
+            .font(.pixel(size))
             .foregroundStyle(palette.playerHighlight.opacity(bright ? 0.95 : 0.55))
     }
     

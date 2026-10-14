@@ -178,7 +178,7 @@ struct SkinPickerView: View {
             audioManager.playGameSound(.levelUp)
         } label: {
             RetroCapsuleLabel(
-                title: pack.title.localizedUppercase,
+                title: pack.title.uppercased(),
                 systemImage: isUnlocked ? (isSelected ? "checkmark" : "speaker.wave.2.fill") : "lock.fill",
                 tint: isUnlocked ? RetroPalette.phosphor : RetroPalette.amber,
                 filled: isSelected

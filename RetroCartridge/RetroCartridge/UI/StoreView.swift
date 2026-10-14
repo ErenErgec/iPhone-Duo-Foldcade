@@ -23,7 +23,7 @@ struct StoreView: View {
     var body: some View {
         OverlayPanel(
             title: "CARTRIDGE SHOP",
-            subtitle: "CARTRIDGES, SKINS & UPGRADES",
+            subtitle: "CARTRIDGES, SKINS AND UPGRADES",
             onClose: close
         ) {
             VStack(spacing: 16) {
@@ -158,8 +158,6 @@ struct StoreView: View {
                 .frame(width: 58)
 
                 VStack(alignment: .leading, spacing: 6) {
-                    // Product names are English in every language, so they're
-                    // uppercased by English rules ("LIFETIME", not "LİFETİME").
                     Text((product?.displayName ?? ProductIdentifiers.fallbackDisplayName(for: productID)).uppercased())
                         .retroFont(16, weight: .black)
                         .tracking(1.5)
@@ -251,7 +249,7 @@ struct StoreView: View {
             if !soundPacks.isEmpty {
                 section("SOUND PACKS", tint: tint) {
                     ForEach(soundPacks) { pack in
-                        RetroCapsuleLabel(title: pack.title.localizedUppercase, systemImage: "speaker.wave.2.fill", tint: tint)
+                        RetroCapsuleLabel(title: pack.title.uppercased(), systemImage: "speaker.wave.2.fill", tint: tint)
                     }
                 }
             }
@@ -269,7 +267,7 @@ struct StoreView: View {
 
             if isPro {
                 VStack(alignment: .leading, spacing: 6) {
-                    perk("ALL FUTURE SKINS & CARTRIDGES")
+                    perk("ALL FUTURE SKINS AND CARTRIDGES")
                     perk("ONE-TIME PURCHASE")
                 }
             }
