@@ -29,6 +29,7 @@ xcodebuild -project RetroCartridge/RetroCartridge.xcodeproj -scheme RetroCartrid
 
 - There is no project generator. The committed `project.pbxproj` and the shared scheme (with the StoreKit config) are the source of truth. XcodeGen was removed because regenerating dropped settings.
 - Add a new source file by hand: copy an existing file's four entries (PBXBuildFile, PBXFileReference, group child, Sources build phase) with fresh 24-hex IDs, or add it in Xcode.
+- App Store settings: the app target is iPhone-only (`TARGETED_DEVICE_FAMILY = 1`) and signs with team `DBF2DNKP73`. `PrivacyInfo.xcprivacy` declares `UserDefaults` (reason `CA92.1`), no tracking and no collected data. If you start using another required-reason API (file timestamps, system boot time, disk space, keyboards), add it there.
 
 ## Invariants (each was learned the hard way)
 
