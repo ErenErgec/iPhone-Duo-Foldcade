@@ -242,10 +242,39 @@ The update rate and precision are system policy; prefer `status` when you only n
 | Area | Implementation |
 | :--- | :--- |
 | Toolchain | Deployment target and SDK iOS 27.1 (Xcode 27.1+) |
-| Toolbar | `NavigationStack` root. `navigationTitle("Retro Cartridge")` plus `Label` items Skins/Store in a `.topBarTrailing` group, which go vertical in the side column. Hidden over a running console. The library's custom header buttons were removed. |
+| Toolbar | `NavigationStack` root. `navigationTitle("Retro Cartridge")` plus `Label` items in two `.topBarTrailing` groups: Skins/Screen/Labels (`.visibilityPriority(.high)`) and Store/Records, which go vertical in the side column. Hidden over a running console. The library's custom header buttons were removed. |
 | Hinge | `onHingeChange` → `HingeEngine.updateFromHardware(_:)` (real angle and status), with a fallback to the display posture. It drives the CRT curvature and the 90° chime. |
 | Appearance | The window forces the dark style so the title and glass bars read on the dark console |
 | Status bar | Visible, and part of the safe area. Each console half respects its own edge insets. |
+
+**Decided on 2026-09-29 (Phase 1 design), following the HIG sections quoted above:**
+- **Screen toolbar item:** `Label("Screen", systemImage: "tv")` joins Skins and Store in the same `ToolbarItemGroup` (icon + title, grouped, no manual spacing). The screen overlay is reachable on both displays, like the others ("Create a consistent experience across displays").
+- **Pause menu inside the tube:** it changes the screen and the session, so it sits in the CRT ("Locate controls near the content they affect") and works the same in every pose.
+- **Neon shell edge:** drawn with `ConcentricRectangle()` so it follows the display's corners (§6).
+- **Cover attract mode:** a full-bleed, faded background behind inset content ("letting a background image or header span the full width while scrollable content stays inset"), faded toward the vertical toolbar column so its items keep their contrast.
+- **Hinge:** still visuals only. The cover's "unfold to play" prompt was kept rather than animating it with the hinge, because the outer display goes dark as the device opens.
+
+**Decided on 2026-09-29 (Phase 2):**
+- **Lunar Hinge uses the hinge as input.** §8: "Hinge data is observed live, and is ideal for driving interactions or effects." Thrust grows as the device folds up to 30° past the most-open angle of the attempt, so it works from any starting pose; the smoothed `HingeEngine.hingeAngle` is used. §2 / HIG: "You don't want to tie functionality to a specific pose", so ▲ and A always thrust too. The hinge is still never used for layout.
+
+**Decided on 2026-09-29 (Phase 4, Duo polish):**
+- **Toolbar groups and priorities.** HIG: "Group related toolbar items instead of spacing them manually" and "Assign each item a visibility priority… starting with whole groups". Two `ToolbarItemGroup`s: Skins and Screen with `.visibilityPriority(.high)`, then Store and Records. Items overflow from bottom to top, so Records, the least used, goes first.
+- **Occlusion.** HIG: "For custom components, ReservedRegion… provide[s] a way to reposition content away from reserved regions"; "when the camera activates, the UI moves aside". `avoidingOcclusion()` pads the console halves and overlay panels in from the nearest edge by the reach of active `.occlusion` regions (`OcclusionInsets`). The cover needs nothing extra: its content stays in the safe area, and "When controls are on the side, the system automatically accounts for" the outer camera.
+- **`ArrangementView` evaluated, not adopted for the console.** Apple recommends it ("Consider an arrangement view when your layout already resembles one"), and the console is a split. But a split arrangement picks its axis and ratio itself and doesn't expose where it splits. The console needs the split exactly on the fold (verified 2026-09-23), with the shell continuous behind both halves and the hinge groove drawn on the split line. `FoldSplit` gets that from the same `.division` reserved region Apple offers custom layouts. The HIG phrasing is "prefer", so the custom layout stays. Revisit if `ArrangementView` gains a way to read or pin its split.
+
+**Decided on 2026-09-29 (Phase 5, music, accessibility, languages):**
+- **VoiceOver play.** The console's controls carry `.allowsDirectInteraction`, so a VoiceOver user can play in real time by touch, as with any game. Every control also works with a double tap, and the D-Pad has named actions, so nothing depends on direct touch.
+- **Reduce Transparency.** Backgrounds become more opaque, as with the system's own bars (§5). Translucent shells and cartridges are drawn solid, overlay backdrops go nearly opaque, and the faded attract mode stays off.
+- **Localization.** English only since 2026-10-14. The overlay pixel font (Silkscreen) lacks Turkish letters, so the earlier Turkish translation was removed. Casing follows English rules (`uppercased()`). Strings still go through a String Catalog, and labels scale down with `minimumScaleFactor`, so a language can return with a font that covers it.
+
+**Decided on 2026-09-29 (Phase 6, designer, cartridges, text size):**
+- **Labels toolbar item.** The designer is customization, so Labels joins Skins and Screen in the high-priority group ("Group related toolbar items"); Store and Records still overflow first. Like the other overlays, it's reachable on both displays. The grid is smaller on the cover (15 pt pixels) than inside (22 pt), and a stroke is saved when the finger lifts.
+- **VoiceOver drawing.** The grid takes direct touches (`.allowsDirectInteraction`), as the console controls do; swatches are named by the role of their color.
+- **Dynamic Type and Bold Text.** Overlay and library text follows the body style's size steps and gets heavier with Bold Text; at accessibility sizes one-line text wraps instead of shrinking. The console's printed text is part of the hardware and scales with the console, not the text size.
+
+**Decided on 2026-09-29 (Phase 7, intro):**
+- **An in-hierarchy intro, not a sheet,** like the other overlays: it opens on whichever display the app starts on and keeps the retro look. It's short (five pages), can be closed at any point, and can be replayed from Records.
+- **Unfolding waits for the intro.** It explains unfolding, so a cartridge going in mid-read would cut it off. While it shows, unfolding only moves it to the inner display. Its last button inserts the selected cartridge.
 
 **Verified by the user in Device Hub (2026-09-23):**
 - Closed with the hinge on top, the outer display comes up in landscape.

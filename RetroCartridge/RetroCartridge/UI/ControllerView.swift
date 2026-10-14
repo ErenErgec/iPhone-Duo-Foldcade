@@ -12,11 +12,13 @@ import SwiftUI
 public struct ControllerView: View {
     @Environment(AppState.self) private var appState
     @Environment(HapticManager.self) private var hapticManager
+    @Environment(AudioManager.self) private var audioManager
+    @Environment(StoreManager.self) private var storeManager
 
     public init() {}
 
     public var body: some View {
-        let theme = SkinManager.theme(for: appState.selectedSkin)
+        let theme = SkinManager.theme(for: storeManager.effectiveSkin(appState.selectedSkin))
 
         GeometryReader { geo in
             let unit = min(geo.size.width / 5.2, geo.size.height / 4.2, 110)
@@ -26,6 +28,7 @@ public struct ControllerView: View {
                     Spacer(minLength: unit * 0.2)
 
                     brandLabel(theme: theme, unit: unit)
+                        .accessibilityHidden(true)
 
                     Spacer(minLength: unit * 0.3)
 
@@ -34,6 +37,16 @@ public struct ControllerView: View {
                             press(action)
                         } onRelease: { action in
                             appState.activeGame?.handleInput(action: action)
+                        }
+                        .accessibilityElement(children: .ignore)
+                        .accessibilityLabel("Directional pad")
+                        .accessibilityHint("Touch and drag to steer, or use the actions for a single step.")
+                        .accessibilityAddTraits(.allowsDirectInteraction)
+                        .accessibilityActions {
+                            Button("Up") { tapDirection(.dpadUpPressed, release: .dpadUpReleased) }
+                            Button("Down") { tapDirection(.dpadDownPressed, release: .dpadDownReleased) }
+                            Button("Left") { tapDirection(.dpadLeftPressed, release: .dpadLeftReleased) }
+                            Button("Right") { tapDirection(.dpadRightPressed, release: .dpadRightReleased) }
                         }
 
                         Spacer(minLength: unit * 0.3)
@@ -53,6 +66,7 @@ public struct ControllerView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
                     .padding(unit * 0.3)
                     .allowsHitTesting(false)
+                    .accessibilityHidden(true)
             }
         }
     }
@@ -60,8 +74,53 @@ public struct ControllerView: View {
     // MARK: - Input
 
     private func press(_ action: GameInputAction) {
-        appState.activeGame?.handleInput(action: action)
+        // The console ignores input while the tube powers off
+        guard !appState.isEjecting else { return }
         hapticManager.playHaptic(.buttonPress)
+
+        // While paused, the D-Pad and A / B drive the pause menu. Start
+        // still reaches the game, which resumes itself.
+        if appState.isPauseMenuActive {
+            guard action != .buttonStartPressed else {
+                appState.pauseMenuSelection = .resume
+                appState.activeGame?.handleInput(action: action)
+                return
+            }
+            let outcome = PauseMenu.handle(
+                action,
+                appState: appState,
+                screenModes: PauseMenu.availableScreenModes(store: storeManager),
+                currentScreen: storeManager.effectiveScreenSettings(appState.screenSettings).mode
+            )
+            switch outcome {
+            case .moved, .changed:
+                audioManager.playGameSound(.moveTick)
+            case .confirmed:
+                audioManager.playCartridgeClick()
+            case .ignored:
+                break
+            }
+            return
+        }
+
+        // On the title and game-over screens, left / right switch modes
+        if action == .dpadLeftPressed || action == .dpadRightPressed,
+           appState.cycleMode(by: action == .dpadLeftPressed ? -1 : 1) {
+            audioManager.playGameSound(.moveTick)
+            return
+        }
+
+        appState.activeGame?.handleInput(action: action)
+    }
+
+    /// One D-Pad step for VoiceOver actions: a press, then the release a
+    /// moment later, as a quick tap would send.
+    private func tapDirection(_ action: GameInputAction, release: GameInputAction) {
+        press(action)
+        Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(150))
+            appState.activeGame?.handleInput(action: release)
+        }
     }
 
     // MARK: - Pieces
@@ -72,10 +131,9 @@ public struct ControllerView: View {
                 .fill(theme.actionButtonColor)
                 .frame(width: unit * 0.09, height: unit * 0.09)
             Text("RETRO")
-                .font(.system(size: unit * 0.17, weight: .black, design: .rounded))
-                .italic()
+                .font(.pixel(unit * 0.17, bold: true))
             Text("CARTRIDGE")
-                .font(.system(size: unit * 0.17, weight: .medium, design: .monospaced))
+                .font(.pixel(unit * 0.17))
                 .tracking(unit * 0.02)
         }
         .foregroundStyle(theme.textColor.opacity(0.7))
@@ -91,6 +149,11 @@ public struct ControllerView: View {
             } label: { isPressed in
                 RoundActionButton(letter: "B", size: unit * 0.78, theme: theme, isPressed: isPressed)
             }
+            .consoleControl("B button") {
+                press(.buttonBPressed)
+            } release: {
+                appState.activeGame?.handleInput(action: .buttonBReleased)
+            }
             .offset(y: unit * 0.3)
 
             ConsoleButton {
@@ -100,6 +163,11 @@ public struct ControllerView: View {
             } label: { isPressed in
                 RoundActionButton(letter: "A", size: unit * 0.78, theme: theme, isPressed: isPressed)
             }
+            .consoleControl("A button") {
+                press(.buttonAPressed)
+            } release: {
+                appState.activeGame?.handleInput(action: .buttonAReleased)
+            }
             .offset(y: -unit * 0.15)
         }
         .rotationEffect(.degrees(-8))
@@ -108,11 +176,12 @@ public struct ControllerView: View {
     private func startSelectButtons(theme: SkinTheme, unit: CGFloat) -> some View {
         HStack(spacing: unit * 0.45) {
             ConsoleButton {
-                // Select ejects the cartridge and returns to the game menu
-                press(.buttonSelectPressed)
-                appState.endGame()
+                eject()
             } label: { isPressed in
                 PillButton(title: "SELECT", unit: unit, theme: theme, isPressed: isPressed)
+            }
+            .consoleControl("Select", hint: "Ejects the cartridge.") {
+                eject()
             }
 
             ConsoleButton {
@@ -120,7 +189,42 @@ public struct ControllerView: View {
             } label: { isPressed in
                 PillButton(title: "START", unit: unit, theme: theme, isPressed: isPressed)
             }
+            .consoleControl("Start", hint: "Pauses or resumes the game.") {
+                press(.buttonStartPressed)
+            }
         }
+    }
+
+    /// Select ejects the cartridge: the tube powers off, then the library returns.
+    private func eject() {
+        guard !appState.isEjecting else { return }
+        hapticManager.playHaptic(.buttonPress)
+        audioManager.playCartridgeClick()
+        appState.ejectCartridge()
+    }
+}
+
+// MARK: - Accessibility
+
+extension View {
+    /// Exposes a console control to VoiceOver as a named button. It can be
+    /// played directly (touches pass straight through for real-time play) or
+    /// activated with a double tap, which presses and releases it.
+    func consoleControl(
+        _ name: LocalizedStringKey,
+        hint: LocalizedStringKey = "",
+        press: @escaping () -> Void,
+        release: @escaping () -> Void = {}
+    ) -> some View {
+        self
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(name)
+            .accessibilityHint(hint)
+            .accessibilityAddTraits([.isButton, .allowsDirectInteraction])
+            .accessibilityAction {
+                press()
+                release()
+            }
     }
 }
 
@@ -334,7 +438,7 @@ struct RoundActionButton: View {
             }
 
             Text(letter)
-                .font(.system(size: size * 0.26, weight: .heavy, design: .rounded))
+                .font(.pixel(size * 0.26, bold: true))
                 .foregroundStyle(theme.textColor.opacity(0.7))
         }
         .animation(.spring(response: 0.12, dampingFraction: 0.6), value: isPressed)
@@ -358,7 +462,7 @@ struct PillButton: View {
                 .rotationEffect(.degrees(-25))
 
             Text(title)
-                .font(.system(size: unit * 0.12, weight: .bold, design: .monospaced))
+                .font(.pixel(unit * 0.12))
                 .tracking(unit * 0.015)
                 .foregroundStyle(theme.textColor.opacity(0.6))
         }

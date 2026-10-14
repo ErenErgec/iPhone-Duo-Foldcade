@@ -34,6 +34,8 @@ struct SkinPickerView: View {
                     }
                 }
 
+                soundPacks
+
                 if ConsoleSkinType.allCases.contains(where: { !storeManager.isUnlocked($0) }) {
                     upsell
                 }
@@ -60,8 +62,8 @@ struct SkinPickerView: View {
         hapticManager.playHaptic(.buttonPress)
 
         guard storeManager.isUnlocked(skin) else {
-            withAnimation(.spring(response: 0.38, dampingFraction: 0.86)) {
-                appState.isStoreVisible = true
+            withAnimation(LibraryOverlays.animation) {
+                appState.openStore(highlighting: skin.requiredProductID)
             }
             return
         }
@@ -76,7 +78,7 @@ struct SkinPickerView: View {
     // MARK: - Pieces
 
     private func skinCard(_ skin: ConsoleSkinType) -> some View {
-        let isSelected = skin == appState.selectedSkin
+        let isSelected = skin == storeManager.effectiveSkin(appState.selectedSkin)
         let isUnlocked = storeManager.isUnlocked(skin)
 
         return Button {
@@ -88,7 +90,7 @@ struct SkinPickerView: View {
                     .saturation(isUnlocked ? 1 : 0.55)
                     .overlay {
                         if !isUnlocked {
-                            lockBadge
+                            OverlayLockBadge()
                         }
                     }
                     .frame(maxWidth: .infinity)
@@ -96,39 +98,30 @@ struct SkinPickerView: View {
 
                 VStack(spacing: 5) {
                     Text(skin.rawValue.uppercased())
-                        .font(.system(size: 13, weight: .heavy, design: .monospaced))
+                        .retroFont(13, weight: .heavy)
                         .tracking(1.5)
                         .foregroundStyle(.white)
                         .lineLimit(1)
                         .minimumScaleFactor(0.6)
 
-                    status(isSelected: isSelected, isUnlocked: isUnlocked)
+                    status(isSelected: isSelected, isUnlocked: isUnlocked, product: productName(for: skin))
                 }
             }
-            .padding(14)
-            .frame(maxWidth: .infinity)
-            .background(
-                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .fill(Color.white.opacity(isSelected ? 0.07 : 0.035))
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .stroke(
-                        isSelected ? RetroPalette.phosphor : Color.white.opacity(0.08),
-                        lineWidth: isSelected ? 2 : 1
-                    )
-            )
-            .shadow(color: isSelected ? RetroPalette.phosphor.opacity(0.25) : .clear, radius: 14)
-            .contentShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+            .overlayCard(isSelected: isSelected)
         }
         .buttonStyle(CartridgePressStyle())
         .accessibilityLabel(skin.rawValue)
-        .accessibilityValue(isSelected ? "Equipped" : (isUnlocked ? "Unlocked" : "Locked, part of the Collector Pack"))
+        .accessibilityValue(isSelected ? String(localized: "Equipped") : (isUnlocked ? String(localized: "Unlocked") : String(localized: "Locked, part of \(ProductIdentifiers.fallbackDisplayName(for: skin.requiredProductID ?? ""))")))
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 
+    /// The product that unlocks a skin, e.g. "COLLECTOR PACK".
+    private func productName(for skin: ConsoleSkinType) -> String {
+        skin.requiredProductID.map(ProductIdentifiers.shortName(for:)) ?? ""
+    }
+
     @ViewBuilder
-    private func status(isSelected: Bool, isUnlocked: Bool) -> some View {
+    private func status(isSelected: Bool, isUnlocked: Bool, product: String) -> some View {
         Group {
             if isSelected {
                 Label("EQUIPPED", systemImage: "checkmark.circle.fill")
@@ -137,32 +130,72 @@ struct SkinPickerView: View {
                 Label("TAP TO EQUIP", systemImage: "hand.tap.fill")
                     .foregroundStyle(.white.opacity(0.45))
             } else {
-                Label("COLLECTOR PACK", systemImage: "lock.fill")
+                Label(product, systemImage: "lock.fill")
                     .foregroundStyle(RetroPalette.amber)
             }
         }
-        .font(.system(size: 11, weight: .bold, design: .monospaced))
+        .retroFont(11, weight: .bold)
         .tracking(1)
         .labelStyle(.titleAndIcon)
         .lineLimit(1)
         .minimumScaleFactor(0.7)
     }
 
-    private var lockBadge: some View {
-        Image(systemName: "lock.fill")
-            .font(.system(size: 20, weight: .heavy))
-            .foregroundStyle(.white)
-            .frame(width: 48, height: 48)
-            .background(Circle().fill(Color.black.opacity(0.7)))
-            .overlay(Circle().stroke(RetroPalette.amber.opacity(0.7), lineWidth: 1.5))
-            .shadow(color: .black.opacity(0.5), radius: 6, y: 3)
+    // MARK: - Sound packs
+
+    /// The sound pack chips: tap to hear and use one; locked packs open the store.
+    private var soundPacks: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("SOUND PACK")
+                .retroFont(12, weight: .heavy)
+                .tracking(2.5)
+                .foregroundStyle(RetroPalette.phosphor.opacity(0.85))
+
+            HStack(spacing: 8) {
+                ForEach(SoundPack.allCases) { pack in
+                    soundPackChip(pack)
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
+
+    private func soundPackChip(_ pack: SoundPack) -> some View {
+        let isUnlocked = storeManager.isUnlocked(pack)
+        let isSelected = storeManager.effectiveSoundPack(appState.soundPack) == pack
+
+        return Button {
+            hapticManager.playHaptic(.buttonPress)
+            guard isUnlocked else {
+                withAnimation(LibraryOverlays.animation) {
+                    appState.openStore(highlighting: pack.requiredProductID)
+                }
+                return
+            }
+            appState.soundPack = pack
+            // A sample in the new voice (RootView applies the pack right away)
+            audioManager.soundPack = pack
+            audioManager.playGameSound(.levelUp)
+        } label: {
+            RetroCapsuleLabel(
+                title: pack.title.uppercased(),
+                systemImage: isUnlocked ? (isSelected ? "checkmark" : "speaker.wave.2.fill") : "lock.fill",
+                tint: isUnlocked ? RetroPalette.phosphor : RetroPalette.amber,
+                filled: isSelected
+            )
+        }
+        .buttonStyle(CartridgePressStyle())
+        .accessibilityLabel("\(pack.title) sound pack")
+        .accessibilityValue(isSelected ? String(localized: "In use") : (isUnlocked ? String(localized: "Unlocked") : String(localized: "Locked")))
+    }
+
+    // MARK: - Upsell
 
     private var upsell: some View {
         Button {
             hapticManager.playHaptic(.buttonPress)
-            withAnimation(.spring(response: 0.38, dampingFraction: 0.86)) {
-                appState.isStoreVisible = true
+            withAnimation(LibraryOverlays.animation) {
+                appState.openStore(highlighting: ProductIdentifiers.retroCollectorPack)
             }
         } label: {
             HStack(spacing: 12) {
@@ -170,14 +203,14 @@ struct SkinPickerView: View {
                     .font(.system(size: 16, weight: .bold))
                     .foregroundStyle(RetroPalette.amber)
                 Text("UNLOCK \(ProductIdentifiers.skins(unlockedBy: ProductIdentifiers.retroCollectorPack).count) SKINS WITH THE COLLECTOR PACK")
-                    .font(.system(size: 12, weight: .bold, design: .monospaced))
+                    .retroFont(12, weight: .bold)
                     .tracking(1)
                     .foregroundStyle(.white.opacity(0.75))
                     .lineLimit(2)
                     .multilineTextAlignment(.leading)
                     .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 8)
-                RetroCapsuleLabel(title: "STORE", systemImage: "bag.fill", tint: RetroPalette.phosphor, filled: true)
+                RetroCapsuleLabel(title: String(localized: "STORE"), systemImage: "bag.fill", tint: RetroPalette.phosphor, filled: true)
             }
             .padding(14)
             .background(

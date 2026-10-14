@@ -1,5 +1,10 @@
 // FallingBlocksGame.swift
 // RetroCartridge
+//
+// Falling Blocks in three modes: Marathon (endless, faster every ten
+// lines), Sprint (clear forty lines; time left becomes bonus points) and
+// Ultra (score as much as possible in two minutes). The next three pieces
+// are shown beside the well, the lines and time on the other side.
 
 import SwiftUI
 
@@ -10,16 +15,21 @@ final class FallingBlocksGame: PixelGameProtocol {
     var score: Int = 0
     var level: Int = 1
     var highScore: Int = 0
+    var mode: GameMode = .standard
+    var palette: GamePalette = .fallingBlocks
+    var rng = GameRNG()
     var pendingSounds: [GameSound] = []
     
     let cols = 10
     let rows = 20
     
-    var grid: [[Color?]] = Array(repeating: Array(repeating: nil, count: 10), count: 20)
+    /// Locked cells, holding the spectrum index of the piece that filled them.
+    var grid: [[Int?]] = Array(repeating: Array(repeating: nil, count: 10), count: 20)
     
     struct Tetromino {
         var shape: [[Int]]
-        var color: Color
+        /// Index into the palette's spectrum, one per piece kind.
+        var colorIndex: Int
         var x: Int
         var y: Int
         
@@ -46,43 +56,67 @@ final class FallingBlocksGame: PixelGameProtocol {
         }
     }
     
-    let pieceTypes: [([[Int]], Color)] = [
-        ([[0,0,0,0], [1,1,1,1], [0,0,0,0], [0,0,0,0]], .cyan), // I
-        ([[1,1], [1,1]], .yellow), // O
-        ([[0,1,0], [1,1,1], [0,0,0]], .purple), // T
-        ([[0,1,1], [1,1,0], [0,0,0]], .green), // S
-        ([[1,1,0], [0,1,1], [0,0,0]], .red), // Z
-        ([[0,0,1], [1,1,1], [0,0,0]], .orange), // L
-        ([[1,0,0], [1,1,1], [0,0,0]], .blue) // J
+    /// Piece shapes; each one's index is also its spectrum color index.
+    let pieceShapes: [[[Int]]] = [
+        [[0,0,0,0], [1,1,1,1], [0,0,0,0], [0,0,0,0]], // I
+        [[1,1], [1,1]], // O
+        [[0,1,0], [1,1,1], [0,0,0]], // T
+        [[0,1,1], [1,1,0], [0,0,0]], // S
+        [[1,1,0], [0,1,1], [0,0,0]], // Z
+        [[0,0,1], [1,1,1], [0,0,0]], // L
+        [[1,0,0], [1,1,1], [0,0,0]] // J
     ]
     
     var currentPiece: Tetromino!
-    var nextPiece: Tetromino!
+    /// The pieces after the current one, next first.
+    var upcoming: [Tetromino] = []
+    /// How many upcoming pieces are shown.
+    let previewCount = 3
     
     var dropTimer: TimeInterval = 0
     var dropInterval: TimeInterval = 0.8
     var linesClearedTotal = 0
+
+    /// Seconds played this round.
+    var elapsed: TimeInterval = 0
+
+    /// Lines to clear in Sprint.
+    let sprintLines = 40
+    /// Length of an Ultra round, in seconds.
+    let ultraDuration: TimeInterval = 120
+    /// Seconds in which a Sprint still earns a time bonus.
+    let sprintBonusWindow: TimeInterval = 240
     
     init() {
         reset()
     }
     
     func spawnPiece() {
-        if nextPiece == nil {
-            let type = pieceTypes.randomElement()!
-            nextPiece = Tetromino(shape: type.0, color: type.1, x: cols/2 - type.0.count/2, y: 0)
+        while upcoming.count <= previewCount {
+            upcoming.append(randomPiece())
         }
-        currentPiece = nextPiece
-        let type = pieceTypes.randomElement()!
-        nextPiece = Tetromino(shape: type.0, color: type.1, x: cols/2 - type.0.count/2, y: 0)
+        currentPiece = upcoming.removeFirst()
         
         if checkCollision(piece: currentPiece, dx: 0, dy: 0) {
             die()
         }
     }
     
+    /// A random piece at the top center of the board.
+    func randomPiece() -> Tetromino {
+        let kind = Int.random(in: 0..<pieceShapes.count, using: &rng)
+        let shape = pieceShapes[kind]
+        return Tetromino(shape: shape, colorIndex: kind, x: cols/2 - shape.count/2, y: 0)
+    }
+    
     func update(deltaTime: TimeInterval) {
         guard gameState == .playing else { return }
+
+        elapsed += deltaTime
+        if mode == .blocksUltra && elapsed >= ultraDuration {
+            finish()
+            return
+        }
         
         dropTimer += deltaTime
         if dropTimer >= dropInterval {
@@ -105,13 +139,15 @@ final class FallingBlocksGame: PixelGameProtocol {
                     let r = currentPiece.y + i
                     let c = currentPiece.x + j
                     if r >= 0 && r < rows && c >= 0 && c < cols {
-                        grid[r][c] = currentPiece.color
+                        grid[r][c] = currentPiece.colorIndex
                     }
                 }
             }
         }
         
         clearLines()
+        // A completed Sprint ends here, without a next piece
+        guard gameState == .playing else { return }
         spawnPiece()
     }
     
@@ -142,7 +178,20 @@ final class FallingBlocksGame: PixelGameProtocol {
             case 4: score += 800 * level
             default: break
             }
+
+            if mode == .blocksSprint && linesClearedTotal >= sprintLines {
+                // Every second left in the bonus window is worth 50 points
+                score += max(0, Int((sprintBonusWindow - elapsed) * 50))
+                finish()
+            }
         }
+    }
+
+    /// Ends a Sprint or Ultra round that was completed rather than lost.
+    func finish() {
+        if score > highScore { highScore = score }
+        gameState = .gameOver(score: score)
+        emit(.levelUp)
     }
     
     func checkCollision(piece: Tetromino, dx: Int, dy: Int) -> Bool {
@@ -175,7 +224,7 @@ final class FallingBlocksGame: PixelGameProtocol {
     }
     
     func render(context: inout GraphicsContext, size: CGSize) {
-        context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(.black))
+        context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(palette.background))
         
         if gameState == .menu { return }
         
@@ -190,9 +239,9 @@ final class FallingBlocksGame: PixelGameProtocol {
         for r in 0..<rows {
             for c in 0..<cols {
                 let rect = CGRect(x: offsetX + Double(c) * cellSize, y: offsetY + Double(r) * cellSize, width: cellSize, height: cellSize)
-                if let color = grid[r][c] {
-                    context.fill(Path(rect), with: .color(color))
-                    context.stroke(Path(rect), with: .color(.black), lineWidth: 1)
+                if let colorIndex = grid[r][c] {
+                    context.fill(Path(rect), with: .color(palette.spectrumColor(colorIndex)))
+                    context.stroke(Path(rect), with: .color(palette.outline), lineWidth: 1)
                 }
             }
         }
@@ -205,7 +254,7 @@ final class FallingBlocksGame: PixelGameProtocol {
             for j in 0..<ghost.shape[i].count {
                 if ghost.shape[i][j] == 1 {
                     let rect = CGRect(x: offsetX + Double(ghost.x + j) * cellSize, y: offsetY + Double(ghost.y + i) * cellSize, width: cellSize, height: cellSize)
-                    context.stroke(Path(rect), with: .color(ghost.color.opacity(0.5)), lineWidth: 2)
+                    context.stroke(Path(rect), with: .color(palette.spectrumColor(ghost.colorIndex).opacity(0.5)), lineWidth: 2)
                 }
             }
         }
@@ -215,11 +264,62 @@ final class FallingBlocksGame: PixelGameProtocol {
             for j in 0..<currentPiece.shape[i].count {
                 if currentPiece.shape[i][j] == 1 {
                     let rect = CGRect(x: offsetX + Double(currentPiece.x + j) * cellSize, y: offsetY + Double(currentPiece.y + i) * cellSize, width: cellSize, height: cellSize)
-                    context.fill(Path(rect), with: .color(currentPiece.color))
-                    context.stroke(Path(rect), with: .color(.black), lineWidth: 1)
+                    context.fill(Path(rect), with: .color(palette.spectrumColor(currentPiece.colorIndex)))
+                    context.stroke(Path(rect), with: .color(palette.outline), lineWidth: 1)
                 }
             }
         }
+
+        // The well's outline
+        let well = CGRect(x: offsetX, y: offsetY, width: Double(cols) * cellSize, height: Double(rows) * cellSize)
+        context.stroke(Path(well), with: .color(palette.playerHighlight.opacity(0.25)), lineWidth: 1)
+
+        // Side panels, when the screen is wide enough
+        guard offsetX > cellSize * 3.5 else { return }
+        drawPreview(in: &context, left: well.maxX + cellSize * 0.8, top: offsetY + cellSize, cellSize: cellSize)
+        drawStats(in: &context, right: well.minX - cellSize * 0.8, top: offsetY + cellSize, cellSize: cellSize)
+    }
+
+    /// The next pieces, smaller, stacked beside the well.
+    private func drawPreview(in context: inout GraphicsContext, left: Double, top: Double, cellSize: Double) {
+        context.draw(label(String(localized: "NEXT", comment: "Falling Blocks HUD: the next piece"), size: cellSize * 0.7), at: CGPoint(x: left, y: top), anchor: .leading)
+
+        let mini = cellSize * 0.6
+        var y = top + cellSize
+        for piece in upcoming.prefix(previewCount) {
+            for i in 0..<piece.shape.count {
+                for j in 0..<piece.shape[i].count where piece.shape[i][j] == 1 {
+                    let rect = CGRect(x: left + Double(j) * mini, y: y + Double(i) * mini, width: mini, height: mini)
+                    context.fill(Path(rect), with: .color(palette.spectrumColor(piece.colorIndex)))
+                    context.stroke(Path(rect), with: .color(palette.outline), lineWidth: 1)
+                }
+            }
+            y += mini * 3.2
+        }
+    }
+
+    /// Lines and time, aligned to the left edge of the well.
+    private func drawStats(in context: inout GraphicsContext, right: Double, top: Double, cellSize: Double) {
+        let lines = mode == .blocksSprint ? "\(min(linesClearedTotal, sprintLines))/\(sprintLines)" : "\(linesClearedTotal)"
+        let seconds = mode == .blocksUltra ? max(0, ultraDuration - elapsed) : elapsed
+        let time = String(format: "%d:%02d", Int(seconds) / 60, Int(seconds) % 60)
+
+        let rows: [(String, String)] = [
+            (String(localized: "LINES", comment: "Falling Blocks HUD"), lines),
+            (String(localized: "TIME", comment: "Falling Blocks HUD"), time)
+        ]
+        var y = top
+        for (title, value) in rows {
+            context.draw(label(title, size: cellSize * 0.6), at: CGPoint(x: right, y: y), anchor: .trailing)
+            context.draw(label(value, size: cellSize * 0.85, bright: true), at: CGPoint(x: right, y: y + cellSize * 0.9), anchor: .trailing)
+            y += cellSize * 2.6
+        }
+    }
+
+    private func label(_ text: String, size: Double, bright: Bool = false) -> Text {
+        Text(text)
+            .font(.pixel(size))
+            .foregroundStyle(palette.playerHighlight.opacity(bright ? 0.95 : 0.55))
     }
     
     func handleInput(action: GameInputAction) {
@@ -291,15 +391,46 @@ final class FallingBlocksGame: PixelGameProtocol {
     }
     
     func reset() {
+        rng = makeRNG()
         gameState = .menu
         pendingSounds.removeAll()
         score = 0
         level = 1
         linesClearedTotal = 0
         dropInterval = 0.8
+        elapsed = 0
         grid = Array(repeating: Array(repeating: nil, count: 10), count: 20)
         currentPiece = nil
-        nextPiece = nil
+        upcoming = []
         spawnPiece()
     }
+}
+
+// MARK: - Palette
+
+extension GamePalette {
+    /// Falling Blocks's native palette.
+    static let fallingBlocks = GamePalette(
+        background: .black,
+        guide: Color(white: 0.1),
+        player: .cyan,
+        playerHighlight: .white,
+        pickup: .yellow,
+        pickupAlt: .green,
+        hazard: .red,
+        hazardAlt: .orange,
+        outline: .black,                   // cell edges
+        spectrum: [.cyan, .yellow, .purple, .green, .red, .orange, .blue] // I O T S Z L J
+    )
+}
+
+// MARK: - Modes
+
+extension GameMode {
+    /// Falling Blocks' standard rules.
+    static let blocksMarathon = GameMode(id: "standard", title: String(localized: "Marathon"), summary: String(localized: "Endless, faster every ten lines."))
+
+    static let blocksSprint = GameMode(id: "sprint", title: String(localized: "Sprint"), summary: String(localized: "Clear 40 lines fast. Time left is bonus."))
+
+    static let blocksUltra = GameMode(id: "ultra", title: String(localized: "Ultra"), summary: String(localized: "Score all you can in two minutes."))
 }

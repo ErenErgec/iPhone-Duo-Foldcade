@@ -16,6 +16,14 @@ public struct FullScreenLayout: View {
     @Environment(AppState.self) private var appState
     @Environment(HapticManager.self) private var hapticManager
     @Environment(AudioManager.self) private var audioManager
+    @Environment(StoreManager.self) private var storeManager
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    /// The cartridge sliding into the slot, just before the console powers on.
+    @State private var insertingGame: GameType?
+
+    /// Bumped when a cartridge goes in, jolting the console once.
+    @State private var consoleThunk = 0
 
     public init() {}
 
@@ -38,7 +46,7 @@ public struct FullScreenLayout: View {
     // MARK: - Console
 
     private var console: some View {
-        let theme = SkinManager.theme(for: appState.selectedSkin)
+        let theme = SkinManager.theme(for: storeManager.effectiveSkin(appState.selectedSkin))
         
         return GeometryReader { geo in
             let split = FoldSplit(
@@ -51,16 +59,30 @@ public struct FullScreenLayout: View {
                 ConsoleShell(theme: theme)
                 
                 // Halves are measured on the full display so the split lands on
-                // the fold; each half then keeps clear of its own screen edges.
-                GameCanvasView()
-                    .padding(split.firstHalfInsets(from: insets))
-                    .frame(width: split.first.width, height: split.first.height)
-                    .offset(x: split.first.minX, y: split.first.minY)
-                
-                ControllerView()
-                    .padding(split.secondHalfInsets(from: insets))
-                    .frame(width: split.second.width, height: split.second.height)
-                    .offset(x: split.second.minX, y: split.second.minY)
+                // the fold; each half then keeps clear of its own screen edges
+                // and of an active camera.
+                ZStack(alignment: .topLeading) {
+                    GameCanvasView()
+                        .avoidingOcclusion()
+                        .padding(split.firstHalfInsets(from: insets))
+                        .frame(width: split.first.width, height: split.first.height)
+                        .offset(x: split.first.minX, y: split.first.minY)
+
+                    ControllerView()
+                        .avoidingOcclusion()
+                        .padding(split.secondHalfInsets(from: insets))
+                        .frame(width: split.second.width, height: split.second.height)
+                        .offset(x: split.second.minX, y: split.second.minY)
+                }
+                // The cartridge seating: the parts jolt down and settle back
+                .keyframeAnimator(initialValue: 0.0, trigger: consoleThunk) { content, drop in
+                    content.offset(y: drop)
+                } keyframes: { _ in
+                    KeyframeTrack {
+                        CubicKeyframe(5, duration: 0.07)
+                        SpringKeyframe(0, duration: 0.35, spring: .bouncy)
+                    }
+                }
                 
                 HingeGroove(isVertical: split.isSideBySide)
                     .frame(
@@ -74,90 +96,242 @@ public struct FullScreenLayout: View {
             }
         }
         .ignoresSafeArea()
+        .onAppear {
+            if !reduceMotion {
+                consoleThunk += 1
+            }
+        }
     }
     
     // MARK: - Library
 
+    /// Margin around the library content.
+    private static let libraryPadding: CGFloat = 32
+
     private var library: some View {
-        libraryContent
-            .padding(32)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(ConsoleBackdrop(glowColor: Color(hex: appState.selectedGameType.cartridgeColorHex)))
+        GeometryReader { geo in
+            // Decided once per display, not per pose: `.includeInactive` also
+            // returns the fold while flat, so folding never reflows the grid.
+            let hasFold = !geo.reservedRegions(kind: .division, options: .includeInactive).isEmpty
+            let metrics = LibraryGridMetrics(
+                itemCount: GameType.allCases.count,
+                availableWidth: geo.size.width - Self.libraryPadding * 2,
+                hasFold: hasFold
+            )
+
+            ScrollView {
+                libraryContent(metrics: metrics)
+                    .padding(Self.libraryPadding)
+                    .frame(maxWidth: .infinity, minHeight: geo.size.height)
+            }
+            .scrollBounceBehavior(.basedOnSize)
+        }
+        .background(ConsoleBackdrop(glowColor: Color(hex: appState.selectedGameType.cartridgeColorHex)))
     }
 
-    private var libraryContent: some View {
+    private func libraryContent(metrics: LibraryGridMetrics) -> some View {
         VStack(spacing: 36) {
             VStack(spacing: 10) {
                 Text("RETRO CARTRIDGE")
-                    .font(.system(size: 34, weight: .black, design: .monospaced))
+                    .retroFont(34, weight: .black, maxScale: 1.35, wraps: false)
                     .tracking(4)
                     .foregroundStyle(.white)
                 Text("CHOOSE A CARTRIDGE")
-                    .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                    .retroFont(13, weight: .semibold)
                     .tracking(4)
                     .foregroundStyle(.white.opacity(0.45))
+                collectionCounter
+                    .padding(.top, 6)
             }
 
-            // One row of four when it fits, otherwise a balanced 2×2 grid
-            ViewThatFits(in: .horizontal) {
-                HStack(alignment: .top, spacing: 28) {
-                    ForEach(GameType.allCases) { cartridgeButton($0) }
-                }
-                Grid(horizontalSpacing: 28, verticalSpacing: 28) {
-                    GridRow {
-                        cartridgeButton(.brickBreaker)
-                        cartridgeButton(.retroRacer)
-                    }
-                    GridRow {
-                        cartridgeButton(.snake)
-                        cartridgeButton(.fallingBlocks)
-                    }
+            LazyVGrid(
+                columns: Array(
+                    repeating: GridItem(.fixed(metrics.itemWidth), spacing: LibraryGridMetrics.spacing, alignment: .top),
+                    count: metrics.columns
+                ),
+                spacing: LibraryGridMetrics.spacing
+            ) {
+                ForEach(GameType.allCases) { game in
+                    cartridgeSlot(game, width: metrics.itemWidth)
                 }
             }
         }
     }
     
-    private func cartridgeButton(_ game: GameType) -> some View {
-        Button {
-            audioManager.playCartridgeClick()
-            hapticManager.playHaptic(.cartridgeInsert)
-            appState.startGame(type: game)
-        } label: {
-            VStack(spacing: 12) {
+    /// How many cartridges are playable, out of all of them.
+    private var collectionCounter: some View {
+        let owned = GameType.allCases.filter { storeManager.isUnlocked($0) }.count
+        return RetroCapsuleLabel(
+            title: String(localized: "COLLECTION \(owned)/\(GameType.allCases.count)"),
+            systemImage: "square.stack.fill",
+            tint: RetroPalette.phosphor
+        )
+        .accessibilityLabel("\(owned) of \(GameType.allCases.count) cartridges in your collection")
+    }
+
+    /// A cartridge standing on its stretch of shelf, with its subtitle.
+    private func cartridgeSlot(_ game: GameType, width: CGFloat) -> some View {
+        let isLocked = !storeManager.isUnlocked(game)
+        let isInserting = insertingGame == game
+
+        return VStack(spacing: 0) {
+            Button {
+                insert(game)
+            } label: {
                 CartridgeView(
                     game: game,
                     highScore: appState.highScore(for: game),
-                    isSelected: game == appState.selectedGameType
+                    isSelected: game == appState.selectedGameType,
+                    isLocked: isLocked,
+                    achievements: AchievementTracker.tally(for: game, progress: appState.progress)
                 )
-                Text(game.subtitle)
-                    .font(.system(size: 12, weight: .medium, design: .monospaced))
-                    .foregroundStyle(.white.opacity(0.5))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.7)
+                // Sliding down into the slot, behind the shelf
+                .offset(y: isInserting ? width * 0.35 : 0)
+                .scaleEffect(isInserting ? 0.92 : 1)
+                .opacity(isInserting ? 0 : 1)
             }
-            .frame(width: 170)
+            .buttonStyle(CartridgePressStyle())
+            .opacity(insertingGame != nil && !isInserting ? 0.35 : 1)
+            .contextMenu {
+                if !isLocked {
+                    Button("Design Label", systemImage: "pencil.and.scribble") {
+                        designLabel(for: game)
+                    }
+                }
+            }
+            .accessibilityLabel(game.rawValue)
+            .accessibilityValue(isLocked ? String(localized: "Locked, part of \(ProductIdentifiers.fallbackDisplayName(for: game.info.requiredProductID ?? ""))") : game.subtitle)
+
+            // Neighboring planks meet across the grid spacing into one shelf
+            ShelfLedge()
+                .frame(width: width + LibraryGridMetrics.spacing, height: 12)
+
+            // Locked cartridges say which pack they come in
+            Group {
+                if isLocked, let productID = game.info.requiredProductID {
+                    Label(ProductIdentifiers.shortName(for: productID), systemImage: "lock.fill")
+                        .foregroundStyle(RetroPalette.amber)
+                } else {
+                    Text(game.subtitle)
+                        .foregroundStyle(.white.opacity(0.5))
+                }
+            }
+            .retroFont(12, weight: .medium)
+            .lineLimit(1)
+            .minimumScaleFactor(0.7)
+            .padding(.top, 10)
+            .accessibilityHidden(true)
         }
-        .buttonStyle(CartridgePressStyle())
+        .frame(width: width)
+    }
+
+    /// Opens the label designer on a cartridge.
+    private func designLabel(for game: GameType) {
+        hapticManager.playHaptic(.buttonPress)
+        appState.selectedGameType = game
+        withAnimation(LibraryOverlays.animation) {
+            appState.isSkinSelectorVisible = false
+            appState.isScreenSettingsVisible = false
+            appState.isRecordsVisible = false
+            appState.isLabelDesignerVisible = true
+        }
+    }
+
+    private func insert(_ game: GameType) {
+        guard insertingGame == nil else { return }
+        guard storeManager.isUnlocked(game) else {
+            hapticManager.playHaptic(.buttonPress)
+            withAnimation(LibraryOverlays.animation) {
+                appState.openStore(highlighting: game.info.requiredProductID)
+            }
+            return
+        }
+        audioManager.playCartridgeClick()
+
+        guard !reduceMotion else {
+            hapticManager.playHaptic(.cartridgeInsert)
+            appState.startGame(type: game)
+            return
+        }
+
+        // Slide the cartridge into the slot, then power on
+        withAnimation(.easeIn(duration: 0.25)) {
+            insertingGame = game
+        }
+        Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(250))
+            hapticManager.playHaptic(.cartridgeInsert)
+            appState.startGame(type: game)
+            insertingGame = nil
+        }
+    }
+}
+
+/// A shelf plank for cartridges to stand on: a lit top surface and a
+/// darker front edge.
+private struct ShelfLedge: View {
+    var body: some View {
+        VStack(spacing: 0) {
+            Rectangle()
+                .fill(LinearGradient(colors: [Color(white: 0.34), Color(white: 0.22)], startPoint: .top, endPoint: .bottom))
+                .frame(height: 4)
+            Rectangle()
+                .fill(LinearGradient(colors: [Color(white: 0.15), Color(white: 0.08)], startPoint: .top, endPoint: .bottom))
+        }
+        .shadow(color: .black.opacity(0.6), radius: 8, y: 6)
+        .accessibilityHidden(true)
+    }
+}
+
+// MARK: - Library grid
+
+/// Column count and cartridge width for the library grid.
+///
+/// Rows are balanced, so four cartridges become 2×2 rather than 3 + 1. On a
+/// display with a fold the column count is even, following the HIG ("In a
+/// grid-style layout, prefer an even number of columns so content divides
+/// cleanly"). Cartridges are sized from the container, not fixed dimensions.
+struct LibraryGridMetrics: Equatable {
+    /// Space between cartridges, in both directions.
+    static let spacing: CGFloat = 28
+
+    /// Narrowest a cartridge may get before a column is dropped.
+    static let minItemWidth: CGFloat = 150
+
+    /// Widest a cartridge may grow.
+    static let maxItemWidth: CGFloat = 190
+
+    let columns: Int
+    let itemWidth: CGFloat
+
+    init(itemCount: Int, availableWidth: CGFloat, hasFold: Bool) {
+        let spacing = Self.spacing
+        let fitting = max(1, Int((availableWidth + spacing) / (Self.minItemWidth + spacing)))
+
+        // As few rows as fit, with the cartridges spread evenly over them
+        let items = max(1, itemCount)
+        let rows = (items + fitting - 1) / fitting
+        var columns = (items + rows - 1) / rows
+
+        if hasFold && columns % 2 == 1 {
+            columns = columns + 1 <= fitting ? columns + 1 : max(1, columns - 1)
+        }
+
+        self.columns = columns
+        let widthPerColumn = (availableWidth - spacing * CGFloat(columns - 1)) / CGFloat(columns)
+        self.itemWidth = max(1, min(Self.maxItemWidth, widthPerColumn))
     }
 }
 
 // MARK: - Shell
 
-/// The molded plastic body of the console in the current skin.
+/// The molded body of the console in the current skin, edge to edge.
 private struct ConsoleShell: View {
     let theme: SkinTheme
 
     var body: some View {
-        ZStack {
-            Color.black
-            theme.bodyColor
-            LinearGradient(
-                colors: [.white.opacity(0.14), .clear, .black.opacity(0.2)],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-        }
-        .ignoresSafeArea()
+        ShellSurface(theme: theme)
+            .ignoresSafeArea()
     }
 }
 

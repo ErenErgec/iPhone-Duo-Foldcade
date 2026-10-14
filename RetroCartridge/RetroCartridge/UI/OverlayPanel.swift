@@ -2,7 +2,8 @@
 // OverlayPanel.swift
 // RetroCartridge
 //
-// Chrome shared by the in-hierarchy overlays (skin picker, store).
+// Chrome shared by the in-hierarchy overlays (skin picker, screen settings,
+// records, label designer, store).
 //
 // These are in-hierarchy panels rather than sheets, so they keep the console's
 // retro look and sit inside whichever display layout hosts them.
@@ -36,8 +37,11 @@ extension AnyTransition {
 struct OverlayBackdrop: View {
     let onDismiss: () -> Void
 
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+
     var body: some View {
-        Color.black.opacity(0.62)
+        // Nearly opaque with Reduce Transparency, so nothing shows through
+        Color.black.opacity(reduceTransparency ? 0.92 : 0.62)
             .ignoresSafeArea()
             .contentShape(Rectangle())
             .onTapGesture(perform: onDismiss)
@@ -47,12 +51,28 @@ struct OverlayBackdrop: View {
 }
 
 /// A dark, rounded console-accessory panel with a title bar and a close
-/// button. Content that doesn't fit vertically scrolls.
-struct OverlayPanel<Content: View>: View {
-    let title: String
-    let subtitle: String
+/// button. Content that doesn't fit vertically scrolls; an optional footer
+/// stays in view below it, for controls that must never scroll away.
+struct OverlayPanel<Content: View, Footer: View>: View {
+    let title: LocalizedStringKey
+    let subtitle: LocalizedStringKey
     let onClose: () -> Void
     @ViewBuilder let content: Content
+    @ViewBuilder let footer: Footer
+
+    init(
+        title: LocalizedStringKey,
+        subtitle: LocalizedStringKey,
+        onClose: @escaping () -> Void,
+        @ViewBuilder content: () -> Content,
+        @ViewBuilder footer: () -> Footer
+    ) {
+        self.title = title
+        self.subtitle = subtitle
+        self.onClose = onClose
+        self.content = content()
+        self.footer = footer()
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -70,6 +90,12 @@ struct OverlayPanel<Content: View>: View {
                         .padding(22)
                 }
                 .scrollIndicators(.hidden)
+            }
+
+            if Footer.self != EmptyView.self {
+                footer
+                    .padding(.horizontal, 22)
+                    .padding(.bottom, 18)
             }
         }
         .frame(maxWidth: 580)
@@ -98,6 +124,7 @@ struct OverlayPanel<Content: View>: View {
         .shadow(color: .black.opacity(0.6), radius: 30, y: 16)
         .padding(.horizontal, 24)
         .padding(.vertical, 28)
+        .avoidingOcclusion()
         .accessibilityElement(children: .contain)
         .accessibilityAddTraits(.isModal)
         .accessibilityAction(.escape, onClose)
@@ -112,14 +139,14 @@ struct OverlayPanel<Content: View>: View {
                         .frame(width: 7, height: 7)
                         .shadow(color: RetroPalette.phosphor.opacity(0.8), radius: 4)
                     Text(title)
-                        .font(.system(size: 20, weight: .black, design: .monospaced))
+                        .retroFont(20, weight: .black, maxScale: 1.5, wraps: false)
                         .tracking(3)
                         .foregroundStyle(.white)
                         .lineLimit(1)
                         .minimumScaleFactor(0.7)
                 }
                 Text(subtitle)
-                    .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                    .retroFont(11, weight: .semibold)
                     .tracking(3)
                     .foregroundStyle(.white.opacity(0.45))
                     .lineLimit(1)
@@ -145,6 +172,20 @@ struct OverlayPanel<Content: View>: View {
     }
 }
 
+extension OverlayPanel where Footer == EmptyView {
+    /// A panel without a footer: everything scrolls together.
+    init(
+        title: LocalizedStringKey,
+        subtitle: LocalizedStringKey,
+        onClose: @escaping () -> Void,
+        @ViewBuilder content: () -> Content
+    ) {
+        self.init(title: title, subtitle: subtitle, onClose: onClose, content: content) {
+            EmptyView()
+        }
+    }
+}
+
 /// A capsule label used for statuses and small actions in the overlays.
 struct RetroCapsuleLabel: View {
     let title: String
@@ -156,10 +197,10 @@ struct RetroCapsuleLabel: View {
         HStack(spacing: 6) {
             if let systemImage {
                 Image(systemName: systemImage)
-                    .font(.system(size: 11, weight: .heavy))
+                    .retroFont(11, weight: .heavy, design: .default)
             }
             Text(title)
-                .font(.system(size: 12, weight: .heavy, design: .monospaced))
+                .retroFont(12, weight: .heavy)
                 .tracking(2)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
@@ -174,10 +215,47 @@ struct RetroCapsuleLabel: View {
     }
 }
 
+// MARK: - Cards
+
+extension View {
+    /// Chrome for a selectable card in an overlay grid (skins, screens).
+    func overlayCard(isSelected: Bool) -> some View {
+        let shape = RoundedRectangle(cornerRadius: 20, style: .continuous)
+
+        return self
+            .padding(14)
+            .frame(maxWidth: .infinity)
+            .background(shape.fill(Color.white.opacity(isSelected ? 0.07 : 0.035)))
+            .overlay(
+                shape.stroke(
+                    isSelected ? RetroPalette.phosphor : Color.white.opacity(0.08),
+                    lineWidth: isSelected ? 2 : 1
+                )
+            )
+            .shadow(color: isSelected ? RetroPalette.phosphor.opacity(0.25) : .clear, radius: 14)
+            .contentShape(shape)
+    }
+}
+
+/// Padlock badge drawn over locked items in the overlays.
+struct OverlayLockBadge: View {
+    var body: some View {
+        Image(systemName: "lock.fill")
+            .font(.system(size: 20, weight: .heavy))
+            .foregroundStyle(.white)
+            .frame(width: 48, height: 48)
+            .background(Circle().fill(Color.black.opacity(0.7)))
+            .overlay(Circle().stroke(RetroPalette.amber.opacity(0.7), lineWidth: 1.5))
+            .shadow(color: .black.opacity(0.5), radius: 6, y: 3)
+    }
+}
+
 // MARK: - Library overlays
 
-/// Hosts the skin picker and store as in-hierarchy overlays. The store stacks
-/// above the picker, and each backdrop tap closes only the top panel.
+/// Hosts the skin picker, screen settings, records, label designer, store and
+/// intro as in-hierarchy overlays.
+/// The store stacks above the others, and each backdrop tap closes only the
+/// top panel.
 struct LibraryOverlays: View {
     @Environment(AppState.self) private var appState
     
@@ -188,7 +266,11 @@ struct LibraryOverlays: View {
     
     var body: some View {
         let showsSkinPicker = isEnabled && appState.isSkinSelectorVisible
+        let showsScreenSettings = isEnabled && appState.isScreenSettingsVisible
+        let showsRecords = isEnabled && appState.isRecordsVisible
+        let showsLabelDesigner = isEnabled && appState.isLabelDesignerVisible
         let showsStore = isEnabled && appState.isStoreVisible
+        let showsIntro = isEnabled && appState.isIntroVisible
         
         ZStack {
             if showsSkinPicker {
@@ -196,6 +278,33 @@ struct LibraryOverlays: View {
                     .transition(.opacity)
                     .zIndex(10)
                 SkinPickerView()
+                    .transition(.overlayPanel)
+                    .zIndex(11)
+            }
+            
+            if showsScreenSettings {
+                OverlayBackdrop { close(\.isScreenSettingsVisible) }
+                    .transition(.opacity)
+                    .zIndex(10)
+                ScreenSettingsView()
+                    .transition(.overlayPanel)
+                    .zIndex(11)
+            }
+            
+            if showsRecords {
+                OverlayBackdrop { close(\.isRecordsVisible) }
+                    .transition(.opacity)
+                    .zIndex(10)
+                RecordsView()
+                    .transition(.overlayPanel)
+                    .zIndex(11)
+            }
+            
+            if showsLabelDesigner {
+                OverlayBackdrop { close(\.isLabelDesignerVisible) }
+                    .transition(.opacity)
+                    .zIndex(10)
+                LabelDesignerView()
                     .transition(.overlayPanel)
                     .zIndex(11)
             }
@@ -208,9 +317,24 @@ struct LibraryOverlays: View {
                     .transition(.overlayPanel)
                     .zIndex(13)
             }
+
+            if showsIntro {
+                OverlayBackdrop {
+                    withAnimation(Self.animation) { appState.finishIntro() }
+                }
+                .transition(.opacity)
+                .zIndex(14)
+                IntroView()
+                    .transition(.overlayPanel)
+                    .zIndex(15)
+            }
         }
         .animation(Self.animation, value: showsSkinPicker)
+        .animation(Self.animation, value: showsScreenSettings)
+        .animation(Self.animation, value: showsRecords)
+        .animation(Self.animation, value: showsLabelDesigner)
         .animation(Self.animation, value: showsStore)
+        .animation(Self.animation, value: showsIntro)
     }
     
     private func close(_ flag: ReferenceWritableKeyPath<AppState, Bool>) {

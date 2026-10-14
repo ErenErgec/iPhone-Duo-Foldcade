@@ -20,7 +20,13 @@ final class PostureManager {
     /// Updates the posture from the display the app is on, measured by its full
     /// screen size. Unlike size classes this stays stable whatever orientation
     /// the scene is locked in.
+    ///
+    /// The first measurement at launch is 0×0, before the window has a
+    /// size. It's ignored: read as the outer display, it made a launch on
+    /// the inner display look like an unfold, which inserted the cartridge
+    /// instead of showing the shelf.
     func updateDisplay(fullScreenSize: CGSize) {
+        guard fullScreenSize.width > 0, fullScreenSize.height > 0 else { return }
         let display = DuoDisplay(size: fullScreenSize)
         isCompactWidth = display == .outer
         currentPosture = display == .inner ? .fullyOpen : .closed

@@ -1,0 +1,323 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    " and " : {
+      "comment" : "Joins the last two items of a list, with spaces"
+    },
+    "%@ screen" : {},
+    "%@ sound pack" : {},
+    "%@ times" : {},
+    "%@, unavailable" : {},
+    "%lld cartridges" : {},
+    "%lld KM/H" : {},
+    "%lld of %lld achievements" : {},
+    "%lld of %lld achievements earned" : {},
+    "%lld of %lld cartridges in your collection" : {},
+    "%lld pixels drawn" : {},
+    "%lld screen modes with tuning" : {},
+    "%lld skins" : {},
+    "%lld sound packs" : {},
+    "8-bit highway dodge" : {},
+    "A button" : {},
+    "Achievement earned: %@" : {},
+    "Achievement earned: %@. %@." : {},
+    "ACHIEVEMENTS" : {},
+    "ACTION" : {},
+    "all future content" : {},
+    "ALL FUTURE SKINS AND CARTRIDGES" : {},
+    "Alone against the wall. Keep the rally going." : {},
+    "APP STORE UNAVAILABLE" : {},
+    "ARCADE" : {},
+    "Arcade" : {
+      "comment" : "Sound pack name"
+    },
+    "Arcade Monitor" : {},
+    "B button" : {},
+    "BACK" : {},
+    "Beat the computer. Three misses and you're out." : {},
+    "Block stacking puzzle" : {},
+    "BUY %@" : {},
+    "Buy %@ for %@" : {},
+    "CARTRIDGE" : {
+      "shouldTranslate" : false
+    },
+    "CARTRIDGE SHOP" : {},
+    "CARTRIDGES" : {},
+    "CARTRIDGES, SKINS AND UPGRADES" : {},
+    "CHOOSE A CARTRIDGE" : {},
+    "CHOOSE YOUR DISPLAY" : {},
+    "CHOOSE YOUR SHELL" : {},
+    "Classic" : {
+      "comment" : "Sound pack name"
+    },
+    "CLEAR" : {},
+    "Clear 40 lines fast. Time left is bonus." : {},
+    "Close" : {},
+    "COLLECTION %lld/%lld" : {},
+    "COLLECTOR PACK" : {
+      "shouldTranslate" : false
+    },
+    "COLOR" : {},
+    "Color %lld" : {},
+    "COLOR BLEED" : {},
+    "Color CRT" : {},
+    "CONSOLE SKINS" : {},
+    "CONTROLS" : {},
+    "CRASHED" : {
+      "comment" : "Lunar Hinge HUD"
+    },
+    "Cross the road and river" : {},
+    "CURVATURE" : {},
+    "Curved tube, soft glow" : {},
+    "Daily" : {},
+    "DAILY PLAYER" : {},
+    "Day" : {},
+    "Deep lines, big bloom" : {},
+    "Design Label" : {},
+    "Directional pad" : {},
+    "Dismiss error" : {},
+    "DMG Green" : {},
+    "Dodge traffic, grab coins." : {},
+    "Down" : {},
+    "DRAW" : {},
+    "DRAW YOUR OWN CARTRIDGE ART" : {},
+    "Drawing grid, 16 by 16 pixels" : {},
+    "Drop it right on top" : {},
+    "Earned" : {},
+    "EDIT" : {},
+    "EJECT" : {
+      "comment" : "Pause menu row"
+    },
+    "Ejects the cartridge." : {},
+    "Endless, faster every ten lines." : {},
+    "EQUIPPED" : {},
+    "Equipped" : {},
+    "Eraser" : {},
+    "EVERYTHING IN THE COLLECTOR PACK" : {},
+    "Everything in the Collector Pack, plus %@." : {},
+    "EXPLORER" : {},
+    "Failed to restore purchases: %@" : {},
+    "FILL" : {},
+    "Finish a daily round" : {},
+    "Finish a round in every mode" : {},
+    "Flag every mine" : {},
+    "Flat and sharp, RGB grille" : {},
+    "FOLD OR HOLD ▲ TO THRUST" : {
+      "comment" : "Lunar Hinge HUD hint"
+    },
+    "Fold to fire the thrusters" : {},
+    "Four shades of green" : {},
+    "FUEL" : {
+      "comment" : "Lunar Hinge HUD"
+    },
+    "GAME OVER" : {},
+    "Game over. Score %lld. Press A to play again." : {},
+    "Go through a wall, come out the other side." : {},
+    "Guide color" : {},
+    "Hazard color" : {},
+    "HI" : {
+      "comment" : "Bezel readout: high score"
+    },
+    "HI %lld" : {},
+    "HIGH SCORER" : {},
+    "HIGH SCORES AND ACHIEVEMENTS" : {},
+    "Highlight color" : {},
+    "HINGE" : {
+      "comment" : "Lunar Hinge HUD: the hinge angle"
+    },
+    "Hold the line" : {},
+    "HOW TO PLAY" : {},
+    "IN PRO" : {},
+    "In use" : {},
+    "IN USE" : {},
+    "Included with Lifetime Pro" : {},
+    "LABEL DESIGNER" : {},
+    "Labels" : {},
+    "LANDED ×%lld" : {},
+    "LANDER" : {},
+    "Left" : {},
+    "LET'S PLAY" : {},
+    "LEVEL %lld" : {},
+    "LIFETIME PRO" : {
+      "shouldTranslate" : false
+    },
+    "LINES" : {
+      "comment" : "Falling Blocks HUD"
+    },
+    "Locked" : {},
+    "Locked, part of %@" : {},
+    "Locked, part of Lifetime Pro" : {},
+    "LV" : {
+      "comment" : "Bezel readout: level"
+    },
+    "MAKE IT YOURS" : {},
+    "Marathon" : {},
+    "Match" : {},
+    "MAZE" : {},
+    "Maze" : {},
+    "Mellow" : {
+      "comment" : "Sound pack name"
+    },
+    "MIRROR" : {},
+    "Mirror drawing" : {},
+    "MUSIC" : {
+      "comment" : "Pause menu row"
+    },
+    "SOUND" : {
+      "comment" : "Pause menu row: sound effects"
+    },
+    "Neon grid serpent" : {},
+    "Neon Night" : {},
+    "NEW HIGH SCORE!" : {},
+    "NEXT" : {
+      "comment" : "Falling Blocks HUD: the next piece"
+    },
+    "Next cartridge" : {},
+    "Night" : {},
+    "NO PREVIOUS PURCHASES FOUND" : {},
+    "Not earned" : {},
+    "Off" : {},
+    "OFF" : {},
+    "off" : {},
+    "OFF THE MARK" : {},
+    "On" : {},
+    "on" : {},
+    "ON" : {},
+    "ONE-TIME PURCHASE" : {},
+    "One-time purchases, billed through the App Store." : {},
+    "Only your headlights to see by." : {},
+    "Open the device and the cartridge goes in, with the screen on one side of the fold and the controls on the other. Fold it again to pause." : {},
+    "ORIGINAL" : {},
+    "Original" : {},
+    "ORIGINAL LABEL" : {},
+    "OWNED" : {},
+    "Page %lld of %lld" : {},
+    "PALETTE" : {
+      "comment" : "Pause menu row"
+    },
+    "PAUSED" : {},
+    "Paused. %@ selected. Screen %@, palette %@, music %@, sound %@." : {},
+    "Paused. %@ selected. Screen: %@. Palette: %@. Music %@, sound %@." : {},
+    "Pauses or resumes the game." : {},
+    "Pellets, ghosts, tunnels" : {},
+    "Pickup color" : {},
+    "PIXEL GRID" : {},
+    "PIXEL SHADOW" : {},
+    "Play with the D-Pad and A / B. A starts a round, left and right on the title screen switch modes, and Start pauses. The pause menu changes the screen and the palette, and turns the music and the sound on or off." : {},
+    "Player color" : {},
+    "Playing. Score %lld, level %lld." : {},
+    "Pocket" : {
+      "comment" : "Sound pack name"
+    },
+    "Pocket Grey" : {},
+    "Pocket LCD" : {},
+    "POWER" : {
+      "shouldTranslate" : false
+    },
+    "PRESS A TO RETRY" : {},
+    "PRESS A TO START" : {},
+    "Press Select to eject the cartridge. The screen powers off and the shelf comes back." : {},
+    "Previous cartridge" : {},
+    "Purchase failed: %@" : {},
+    "Purchase pending approval. It will unlock once approved." : {},
+    "Purchased" : {},
+    "PURCHASES RESTORED" : {},
+    "Purchasing" : {},
+    "PUZZLE" : {},
+    "RACING" : {},
+    "Reach level %lld" : {},
+    "Records" : {},
+    "RECORDS" : {},
+    "RESET" : {},
+    "RESTORE PURCHASES" : {},
+    "RESUME" : {
+      "comment" : "Pause menu row"
+    },
+    "RETRO" : {
+      "shouldTranslate" : false
+    },
+    "Retro Cartridge" : {
+      "shouldTranslate" : false
+    },
+    "RETRO CARTRIDGE" : {
+      "shouldTranslate" : false
+    },
+    "Retro Cartridge turns iPhone Duo into a handheld console. Pick a cartridge: swipe through them on the cover, or tap one on the shelf." : {},
+    "RETRY" : {},
+    "Right" : {},
+    "Rocks, a ship and a lot of space" : {},
+    "SCANLINES" : {},
+    "SCORE" : {
+      "comment" : "Bezel readout"
+    },
+    "SCORE %lld" : {},
+    "Score %lld in one round" : {},
+    "Score %lld, level %lld, high score %lld" : {},
+    "Score all you can in two minutes." : {},
+    "Score your first points" : {},
+    "SCREEN" : {
+      "comment" : "Pause menu row"
+    },
+    "Screen" : {},
+    "SCREEN MODES" : {},
+    "Second hazard color" : {},
+    "Select" : {
+      "shouldTranslate" : false
+    },
+    "SHOOTER" : {},
+    "Showing standard prices. Check your connection and try again." : {},
+    "SKINS" : {},
+    "Skins" : {},
+    "Skins, Screen and Labels in the toolbar restyle the console, the display and your cartridge art. Records keeps your scores and achievements." : {},
+    "SOMETHING WENT WRONG" : {},
+    "SOUND PACK" : {},
+    "SOUND PACKS" : {},
+    "SPORTS" : {},
+    "Sprint" : {},
+    "Squash" : {},
+    "Standard" : {},
+    "Start" : {
+      "shouldTranslate" : false
+    },
+    "START RESUMES" : {},
+    "STORE" : {},
+    "Store" : {},
+    "Table tennis against the machine" : {},
+    "TAP TO EQUIP" : {},
+    "TAP TO USE" : {},
+    "the %@ skin" : {},
+    "The App Store didn't return any products." : {},
+    "The classic rules." : {},
+    "The purchase couldn't be verified." : {},
+    "The walls are deadly." : {},
+    "TIME" : {
+      "comment" : "Falling Blocks HUD"
+    },
+    "TIMING" : {},
+    "Title screen, %@ mode. Press A to start." : {},
+    "TODAY" : {},
+    "Today's round, same for everyone." : {},
+    "TOOL" : {},
+    "Touch and drag to steer, or use the actions for a single step." : {},
+    "Touch to draw with the selected color." : {},
+    "Trinitron" : {
+      "shouldTranslate" : false
+    },
+    "TUNING" : {},
+    "Twelve walls, four power-ups" : {},
+    "Ultra" : {},
+    "UNDO" : {},
+    "UNFOLD TO PLAY" : {},
+    "UNLOCK %lld SKINS WITH THE COLLECTOR PACK" : {},
+    "Unlocked" : {},
+    "UNLOCKS WHAT YOU TAPPED" : {},
+    "Up" : {},
+    "Virtual Red" : {},
+    "Walls inside the field." : {},
+    "WELCOME" : {},
+    "White" : {},
+    "Wrap" : {},
+    "YOUR LABEL" : {}
+  },
+  "version" : "1.0"
+}

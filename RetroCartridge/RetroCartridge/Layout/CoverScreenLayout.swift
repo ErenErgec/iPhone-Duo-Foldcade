@@ -4,14 +4,17 @@
 //
 // 5.4" outer display: a swipeable cartridge case. The display is locked to the
 // landscape orientation that puts the hinge on top (ConsoleHostingController).
-// The app name and the Skins / Store buttons live in the system toolbar.
-// The chosen cartridge is inserted automatically when the device is unfolded.
+// The app name and the Skins / Screen / Store buttons live in the system
+// toolbar. Behind the details, the selected cartridge plays itself faintly
+// (attract mode). The chosen cartridge is inserted automatically when the
+// device is unfolded.
 //
 
 import SwiftUI
 
 public struct CoverScreenLayout: View {
     @Environment(AppState.self) private var appState
+    @Environment(StoreManager.self) private var storeManager
     @State private var blink: Bool = false
 
     public init() {}
@@ -36,6 +39,31 @@ public struct CoverScreenLayout: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
+        .background { attractMode }
+    }
+
+    /// The selected game playing itself behind the details. It spans the
+    /// display edge to edge like a background, faded toward the cartridge
+    /// and toward the toolbar column so neither loses contrast.
+    private var attractMode: some View {
+        AttractScreen(gameType: appState.selectedGameType)
+            .aspectRatio(10 / 9, contentMode: .fill)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .clipped()
+            .opacity(0.2)
+            .mask(
+                LinearGradient(
+                    stops: [
+                        .init(color: .clear, location: 0),
+                        .init(color: .black, location: 0.45),
+                        .init(color: .black, location: 0.8),
+                        .init(color: .clear, location: 1)
+                    ],
+                    startPoint: .leading,
+                    endPoint: .trailing
+                )
+            )
+            .ignoresSafeArea()
     }
     
     // MARK: - Pieces
@@ -48,7 +76,9 @@ public struct CoverScreenLayout: View {
                 CartridgeView(
                     game: game,
                     highScore: appState.highScore(for: game),
-                    isSelected: game == appState.selectedGameType
+                    isSelected: game == appState.selectedGameType,
+                    isLocked: !storeManager.isUnlocked(game),
+                    achievements: AchievementTracker.tally(for: game, progress: appState.progress)
                 )
                 .frame(width: cartridgeWidth)
                 .padding(.vertical, 20)
@@ -63,18 +93,18 @@ public struct CoverScreenLayout: View {
 
         return VStack(alignment: alignment, spacing: 8) {
             Text(selected.rawValue.uppercased())
-                .font(.system(size: 24, weight: .black, design: .monospaced))
+                .retroFont(24, weight: .black, maxScale: 1.35, wraps: false)
                 .foregroundStyle(.white)
                 .lineLimit(1)
                 .minimumScaleFactor(0.6)
             Text(selected.subtitle)
-                .font(.system(size: 14, weight: .medium, design: .monospaced))
+                .retroFont(14, weight: .medium, maxScale: 1.35, wraps: false)
                 .foregroundStyle(.white.opacity(0.5))
 
             let best = appState.highScore(for: selected)
             if best > 0 {
                 Text("HI \(best)")
-                    .font(.system(size: 13, weight: .bold, design: .monospaced))
+                    .retroFont(13, weight: .bold, maxScale: 1.35, wraps: false)
                     .foregroundStyle(Color(hex: selected.cartridgeColorHex))
                     .padding(.top, 2)
             }
@@ -97,11 +127,13 @@ public struct CoverScreenLayout: View {
     }
 
     private var unfoldPrompt: some View {
-        HStack(spacing: 10) {
-            Image(systemName: "arrow.up.and.down")
+        let isLocked = !storeManager.isUnlocked(appState.selectedGameType)
+
+        return HStack(spacing: 10) {
+            Image(systemName: isLocked ? "lock.fill" : "arrow.up.and.down")
                 .font(.system(size: 14, weight: .bold))
-            Text("UNFOLD TO PLAY")
-                .font(.system(size: 15, weight: .heavy, design: .monospaced))
+            Text(isLocked ? ProductIdentifiers.shortName(for: appState.selectedGameType.info.requiredProductID ?? "") : String(localized: "UNFOLD TO PLAY"))
+                .retroFont(15, weight: .heavy, maxScale: 1.35, wraps: false)
                 .tracking(3)
         }
         .foregroundStyle(.white)

@@ -31,12 +31,20 @@ final class StoreManager {
     /// Whether `loadProducts()` has finished at least once.
     var hasAttemptedProductLoad: Bool = false
 
+    /// Listens for purchases, refunds and revocations made outside the app.
+    @ObservationIgnored private var transactionUpdates: Task<Void, Never>?
+
     init() {
-        Task { [weak self] in
+        transactionUpdates = Task { [weak self] in
             for await result in StoreKit.Transaction.updates {
-                await self?.handle(transactionResult: result)
+                guard let self else { return }
+                await self.handle(transactionResult: result)
             }
         }
+    }
+
+    isolated deinit {
+        transactionUpdates?.cancel()
     }
 
     var hasLifetimePro: Bool {
@@ -68,7 +76,7 @@ final class StoreManager {
                     < (ProductIdentifiers.displayOrder.firstIndex(of: $1.id) ?? .max)
             }
             if loaded.isEmpty {
-                productLoadError = "The App Store didn't return any products."
+                productLoadError = String(localized: "The App Store didn't return any products.")
             }
         } catch {
             productLoadError = error.localizedDescription
@@ -89,18 +97,18 @@ final class StoreManager {
             switch result {
             case .success(let verificationResult):
                 if case .unverified = verificationResult {
-                    errorMessage = "The purchase couldn't be verified."
+                    errorMessage = String(localized: "The purchase couldn't be verified.")
                 }
                 await handle(transactionResult: verificationResult)
             case .pending:
-                errorMessage = "Purchase pending approval. It will unlock once approved."
+                errorMessage = String(localized: "Purchase pending approval. It will unlock once approved.")
             case .userCancelled:
                 break
             @unknown default:
                 break
             }
         } catch {
-            errorMessage = "Purchase failed: \(error.localizedDescription)"
+            errorMessage = String(localized: "Purchase failed: \(error.localizedDescription)")
         }
     }
 
@@ -114,7 +122,7 @@ final class StoreManager {
             try await AppStore.sync()
             await updatePurchasedProducts()
         } catch {
-            errorMessage = "Failed to restore purchases: \(error.localizedDescription)"
+            errorMessage = String(localized: "Failed to restore purchases: \(error.localizedDescription)")
         }
     }
 
@@ -123,12 +131,47 @@ final class StoreManager {
     }
 
     func isUnlocked(_ skinType: ConsoleSkinType) -> Bool {
-        switch skinType {
-        case .classicGrey:
-            return true // Free default skin
-        case .atomicPurple, .cyberpunkNeon, .arcadeCabinet:
-            return hasLifetimePro || isPurchased(ProductIdentifiers.retroCollectorPack)
+        guard let productID = skinType.requiredProductID else { return true }
+        return hasLifetimePro || isPurchased(productID)
+    }
+
+    /// The skin to draw: a locked choice (e.g. after a refund) falls back
+    /// to Classic Grey, as the sound pack and the screen fall back too.
+    func effectiveSkin(_ skin: ConsoleSkinType) -> ConsoleSkinType {
+        isUnlocked(skin) ? skin : .classicGrey
+    }
+
+    func isUnlocked(_ soundPack: SoundPack) -> Bool {
+        guard let productID = soundPack.requiredProductID else { return true }
+        return hasLifetimePro || isPurchased(productID)
+    }
+
+    /// The sound pack to play: a locked choice falls back to Classic.
+    func effectiveSoundPack(_ pack: SoundPack) -> SoundPack {
+        isUnlocked(pack) ? pack : .classic
+    }
+
+    func isUnlocked(_ gameType: GameType) -> Bool {
+        guard let productID = gameType.info.requiredProductID else { return true }
+        return hasLifetimePro || isPurchased(productID)
+    }
+
+    func isUnlocked(_ screenMode: ScreenMode) -> Bool {
+        guard let productID = screenMode.requiredProductID else { return true }
+        return hasLifetimePro || isPurchased(productID)
+    }
+
+    /// Whether the screen tuning controls are available (Lifetime Pro).
+    var canTuneScreen: Bool { hasLifetimePro }
+
+    /// The screen to actually draw: locked modes fall back to Color CRT and
+    /// locked tuning to the designed look, e.g. after a refund.
+    func effectiveScreenSettings(_ settings: ScreenSettings) -> ScreenSettings {
+        var effective = canTuneScreen ? settings : ScreenSettings(mode: settings.mode)
+        if !isUnlocked(effective.mode) {
+            effective.mode = .crt
         }
+        return effective
     }
 
     /// Rebuilds the owned set from current entitlements, so refunds and

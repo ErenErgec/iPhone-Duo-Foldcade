@@ -13,6 +13,9 @@ extension SkinTheme {
         textColor: .white,
         screenBorderColor: Color(red: 42/255, green: 8/255, blue: 69/255), // #2A0845
         actionButtonColor: Color(hex: "#E040FB"), // bright orchid
-        isTranslucent: true
+        finish: .translucent,
+        bezelTopColor: Color(hex: "#2A1540"), // smoky purple bezel, green LED
+        bezelBottomColor: Color(hex: "#150A22"),
+        ledColor: Color(hex: "#7CFF6B")
     )
 }

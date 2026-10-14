@@ -112,12 +112,22 @@ struct RootView: View {
             .onAppear {
                 setupOnLaunch()
             }
+            // Play the chosen sound pack once it's unlocked
+            .onChange(of: storeManager.effectiveSoundPack(appState.soundPack), initial: true) { _, pack in
+                audioManager.soundPack = pack
+            }
+            .onChange(of: appState.isSoundOn) { _, isOn in
+                audioManager.areSoundEffectsOn = isOn
+            }
     }
 
     // MARK: - Setup
 
     /// One-time initialization on app launch.
     private func setupOnLaunch() {
+        // Before any sound, so a muted launch skips the startup chime
+        audioManager.areSoundEffectsOn = appState.isSoundOn
+
         // Start haptic engine
         hapticManager.prepareEngine()
 

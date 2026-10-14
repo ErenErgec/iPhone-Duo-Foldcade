@@ -23,7 +23,7 @@ struct StoreView: View {
     var body: some View {
         OverlayPanel(
             title: "CARTRIDGE SHOP",
-            subtitle: "SKINS & UPGRADES",
+            subtitle: "CARTRIDGES, SKINS AND UPGRADES",
             onClose: close
         ) {
             VStack(spacing: 16) {
@@ -57,6 +57,7 @@ struct StoreView: View {
     private func close() {
         withAnimation(.spring(response: 0.38, dampingFraction: 0.86)) {
             appState.isStoreVisible = false
+            appState.storeHighlight = nil
         }
     }
 
@@ -66,8 +67,8 @@ struct StoreView: View {
         banner(
             icon: "wifi.exclamationmark",
             tint: RetroPalette.amber,
-            title: "APP STORE UNAVAILABLE",
-            message: "Showing standard prices. Check your connection and try again."
+            title: String(localized: "APP STORE UNAVAILABLE"),
+            message: String(localized: "Showing standard prices. Check your connection and try again.")
         ) {
             Button {
                 Task { await storeManager.loadProducts() }
@@ -77,7 +78,7 @@ struct StoreView: View {
                         .tint(RetroPalette.amber)
                         .frame(width: 76, height: 34)
                 } else {
-                    RetroCapsuleLabel(title: "RETRY", systemImage: "arrow.clockwise", tint: RetroPalette.amber)
+                    RetroCapsuleLabel(title: String(localized: "RETRY"), systemImage: "arrow.clockwise", tint: RetroPalette.amber)
                 }
             }
             .buttonStyle(CartridgePressStyle())
@@ -89,7 +90,7 @@ struct StoreView: View {
         banner(
             icon: "exclamationmark.triangle.fill",
             tint: RetroPalette.alert,
-            title: "SOMETHING WENT WRONG",
+            title: String(localized: "SOMETHING WENT WRONG"),
             message: message
         ) {
             Button {
@@ -122,11 +123,11 @@ struct StoreView: View {
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
-                    .font(.system(size: 12, weight: .heavy, design: .monospaced))
+                    .retroFont(12, weight: .heavy)
                     .tracking(1.5)
                     .foregroundStyle(tint)
                 Text(message)
-                    .font(.system(size: 12, weight: .medium, design: .monospaced))
+                    .retroFont(12, weight: .medium)
                     .foregroundStyle(.white.opacity(0.65))
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -146,6 +147,7 @@ struct StoreView: View {
         let product = storeManager.product(for: productID)
         let isPro = productID == ProductIdentifiers.lifetimePro
         let tint = isPro ? Color(hex: "#FFD54F") : Color(hex: "#B266FF")
+        let isHighlighted = appState.storeHighlight == productID
 
         return VStack(alignment: .leading, spacing: 14) {
             HStack(alignment: .top, spacing: 16) {
@@ -157,16 +159,22 @@ struct StoreView: View {
 
                 VStack(alignment: .leading, spacing: 6) {
                     Text((product?.displayName ?? ProductIdentifiers.fallbackDisplayName(for: productID)).uppercased())
-                        .font(.system(size: 16, weight: .black, design: .monospaced))
+                        .retroFont(16, weight: .black)
                         .tracking(1.5)
                         .foregroundStyle(.white)
                         .lineLimit(1)
                         .minimumScaleFactor(0.7)
 
-                    Text(isPro
-                         ? "Every skin today, plus all future skins, cartridges and upgrades."
-                         : "Three premium console shells for your handheld.")
-                        .font(.system(size: 12, weight: .medium, design: .monospaced))
+                    if isHighlighted {
+                        Label("UNLOCKS WHAT YOU TAPPED", systemImage: "arrow.down.circle.fill")
+                            .retroFont(10, weight: .heavy)
+                            .tracking(1)
+                            .foregroundStyle(tint)
+                            .labelStyle(.titleAndIcon)
+                    }
+
+                    Text(ProductIdentifiers.summary(for: productID))
+                        .retroFont(12, weight: .medium)
                         .foregroundStyle(.white.opacity(0.55))
                         .fixedSize(horizontal: false, vertical: true)
                 }
@@ -191,49 +199,109 @@ struct StoreView: View {
         )
         .overlay(
             RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .stroke(tint.opacity(0.28), lineWidth: 1)
+                .stroke(tint.opacity(isHighlighted ? 0.9 : 0.28), lineWidth: isHighlighted ? 2 : 1)
         )
+        .shadow(color: isHighlighted ? tint.opacity(0.3) : .clear, radius: 14)
     }
 
+    /// What a product unlocks, listed from the items' own gating. Pro lists
+    /// only what it adds to the Collector Pack.
     private func unlocks(productID: String, isPro: Bool, tint: Color) -> some View {
+        let collector = ProductIdentifiers.retroCollectorPack
+        let cartridges = ProductIdentifiers.cartridges(unlockedBy: productID)
+            .filter { !isPro || !ProductIdentifiers.unlocks(collector, itemRequiring: $0.info.requiredProductID) }
         let skins = ProductIdentifiers.skins(unlockedBy: productID)
+            .filter { !isPro || !ProductIdentifiers.unlocks(collector, itemRequiring: $0.requiredProductID) }
+        let soundPacks = isPro ? [] : ProductIdentifiers.soundPacks(unlockedBy: productID)
+        let screenModes = ProductIdentifiers.screenModes(unlockedBy: productID)
 
-        return VStack(alignment: .leading, spacing: 10) {
-            Text("UNLOCKS")
-                .font(.system(size: 10, weight: .heavy, design: .monospaced))
-                .tracking(2.5)
-                .foregroundStyle(tint.opacity(0.85))
+        return VStack(alignment: .leading, spacing: 12) {
+            if isPro {
+                perk("EVERYTHING IN THE COLLECTOR PACK")
+            }
 
-            HStack(alignment: .top, spacing: 12) {
-                ForEach(skins) { skin in
-                    VStack(spacing: 6) {
-                        ConsoleSkinPreview(theme: SkinManager.theme(for: skin))
-                            .frame(height: 64)
-                        Text(skin.rawValue.uppercased())
-                            .font(.system(size: 9, weight: .bold, design: .monospaced))
-                            .foregroundStyle(.white.opacity(0.6))
-                            .lineLimit(2)
-                            .multilineTextAlignment(.center)
-                            .fixedSize(horizontal: false, vertical: true)
+            if !cartridges.isEmpty {
+                section("CARTRIDGES", tint: tint) {
+                    ForEach(cartridges) { game in
+                        VStack(spacing: 6) {
+                            CartridgeView(game: game)
+                                .frame(width: 52)
+                            itemName(game.rawValue)
+                        }
+                        .frame(width: 84)
                     }
-                    .frame(width: 84)
                 }
+            }
 
-                if isPro {
-                    VStack(alignment: .leading, spacing: 6) {
-                        perk("ALL FUTURE SKINS")
-                        perk("ALL FUTURE CARTRIDGES")
-                        perk("ONE-TIME PURCHASE")
+            if !skins.isEmpty {
+                section("SKINS", tint: tint) {
+                    ForEach(skins) { skin in
+                        VStack(spacing: 6) {
+                            ConsoleSkinPreview(theme: SkinManager.theme(for: skin))
+                                .frame(height: 64)
+                            itemName(skin.rawValue)
+                        }
+                        .frame(width: 84)
                     }
-                    .padding(.leading, 4)
+                }
+            }
+
+            if !soundPacks.isEmpty {
+                section("SOUND PACKS", tint: tint) {
+                    ForEach(soundPacks) { pack in
+                        RetroCapsuleLabel(title: pack.title.uppercased(), systemImage: "speaker.wave.2.fill", tint: tint)
+                    }
+                }
+            }
+
+            if !screenModes.isEmpty {
+                section("SCREEN MODES", tint: tint) {
+                    ForEach(screenModes) { mode in
+                        RetroCapsuleLabel(title: mode.uppercasedTitle, systemImage: "tv", tint: tint)
+                    }
+                    if ProductIdentifiers.unlocksScreenTuning(productID) {
+                        RetroCapsuleLabel(title: String(localized: "TUNING"), systemImage: "slider.horizontal.3", tint: tint)
+                    }
+                }
+            }
+
+            if isPro {
+                VStack(alignment: .leading, spacing: 6) {
+                    perk("ALL FUTURE SKINS AND CARTRIDGES")
+                    perk("ONE-TIME PURCHASE")
                 }
             }
         }
     }
 
-    private func perk(_ text: String) -> some View {
+    /// A titled row of unlocked items that scrolls when it doesn't fit.
+    private func section<Items: View>(_ title: LocalizedStringKey, tint: Color, @ViewBuilder items: () -> Items) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(title)
+                .retroFont(10, weight: .heavy)
+                .tracking(2.5)
+                .foregroundStyle(tint.opacity(0.85))
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(alignment: .top, spacing: 10) {
+                    items()
+                }
+            }
+        }
+    }
+
+    private func itemName(_ name: String) -> some View {
+        Text(name.uppercased())
+            .retroFont(9, weight: .bold)
+            .foregroundStyle(.white.opacity(0.6))
+            .lineLimit(2)
+            .multilineTextAlignment(.center)
+            .fixedSize(horizontal: false, vertical: true)
+    }
+
+    private func perk(_ text: LocalizedStringKey) -> some View {
         Label(text, systemImage: "plus")
-            .font(.system(size: 10, weight: .bold, design: .monospaced))
+            .retroFont(10, weight: .bold)
             .foregroundStyle(.white.opacity(0.7))
             .lineLimit(1)
             .minimumScaleFactor(0.7)
@@ -247,10 +315,10 @@ struct StoreView: View {
         let price = product?.displayPrice ?? ProductIdentifiers.fallbackDisplayPrice(for: productID)
 
         if isOwned {
-            RetroCapsuleLabel(title: "OWNED", systemImage: "checkmark", tint: RetroPalette.phosphor)
+            RetroCapsuleLabel(title: String(localized: "OWNED"), systemImage: "checkmark", tint: RetroPalette.phosphor)
                 .accessibilityLabel("Purchased")
         } else if isIncluded {
-            RetroCapsuleLabel(title: "IN PRO", systemImage: "checkmark", tint: RetroPalette.phosphor)
+            RetroCapsuleLabel(title: String(localized: "IN PRO"), systemImage: "checkmark", tint: RetroPalette.phosphor)
                 .accessibilityLabel("Included with Lifetime Pro")
         } else if isPurchasing {
             ProgressView()
@@ -263,7 +331,7 @@ struct StoreView: View {
                 hapticManager.playHaptic(.buttonPress)
                 Task { await storeManager.purchase(product) }
             } label: {
-                RetroCapsuleLabel(title: "BUY \(price)", tint: RetroPalette.phosphor, filled: true)
+                RetroCapsuleLabel(title: String(localized: "BUY \(price)"), tint: RetroPalette.phosphor, filled: true)
                     .frame(minWidth: 96)
             }
             .buttonStyle(CartridgePressStyle())
@@ -277,7 +345,7 @@ struct StoreView: View {
                     .controlSize(.small)
                     .tint(.white)
                 Text(price)
-                    .font(.system(size: 12, weight: .heavy, design: .monospaced))
+                    .retroFont(12, weight: .heavy)
                     .foregroundStyle(.white.opacity(0.5))
             }
             .frame(minWidth: 96, minHeight: 36)
@@ -306,7 +374,7 @@ struct StoreView: View {
                             .font(.system(size: 12, weight: .heavy))
                     }
                     Text("RESTORE PURCHASES")
-                        .font(.system(size: 12, weight: .heavy, design: .monospaced))
+                        .retroFont(12, weight: .heavy)
                         .tracking(2)
                 }
                 .foregroundStyle(.white.opacity(0.8))
@@ -318,8 +386,8 @@ struct StoreView: View {
             .buttonStyle(CartridgePressStyle())
             .disabled(storeManager.isRestoring)
 
-            Text(restoreNote ?? "One-time purchases, billed through the App Store.")
-                .font(.system(size: 10, weight: .medium, design: .monospaced))
+            Text(restoreNote ?? String(localized: "One-time purchases, billed through the App Store."))
+                .retroFont(10, weight: .medium)
                 .tracking(0.5)
                 .foregroundStyle(restoreNote == nil ? .white.opacity(0.35) : RetroPalette.phosphor.opacity(0.9))
                 .multilineTextAlignment(.center)
@@ -334,8 +402,8 @@ struct StoreView: View {
         guard storeManager.errorMessage == nil else { return }
         withAnimation(.easeInOut(duration: 0.2)) {
             restoreNote = storeManager.purchasedProductIDs.isEmpty
-                ? "NO PREVIOUS PURCHASES FOUND"
-                : "PURCHASES RESTORED"
+                ? String(localized: "NO PREVIOUS PURCHASES FOUND")
+                : String(localized: "PURCHASES RESTORED")
         }
     }
 }

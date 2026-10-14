@@ -30,6 +30,16 @@ protocol PixelGameProtocol: AnyObject {
     /// High score for this game (persisted).
     var highScore: Int { get set }
 
+    /// The rule set being played, one of `gameType.modes`. Set by
+    /// `PixelGameEngine` before the first round; games read it on `reset()`.
+    var mode: GameMode { get set }
+
+    // MARK: - Appearance
+
+    /// The colors `render` draws with. Starts as the game's native palette
+    /// and can be swapped at any time, even mid-round.
+    var palette: GamePalette { get set }
+
     // MARK: - Sound
 
     /// Sound effects raised since the last frame. Games add to it with
@@ -83,6 +93,14 @@ extension PixelGameProtocol {
         }
     }
 
+    /// A random generator for a new round: seeded from the day for a daily
+    /// round, unpredictable otherwise. Games call it from `reset()` and draw
+    /// every random choice from it.
+    func makeRNG() -> GameRNG {
+        guard mode.isDaily else { return GameRNG() }
+        return GameRNG(seed: DailySeed.seed(for: gameType, day: DailySeed.dayKey()))
+    }
+
     /// Queues a sound effect for the next frame. Duplicates within a frame
     /// are dropped (e.g. several bricks breaking at once play one sound).
     func emit(_ sound: GameSound) {
@@ -97,4 +115,15 @@ extension PixelGameProtocol {
         pendingSounds = []
         return sounds
     }
+}
+
+// MARK: - Hinge input
+
+/// A game that can also be played by folding the device. Apple describes
+/// live hinge data as "ideal for driving interactions or effects", so a game
+/// may use it as input, but never as the only way to play: every hinge
+/// action has a button equivalent, so it works in every pose.
+protocol HingeControllable: AnyObject {
+    /// Called every frame with the hinge angle in degrees (180 = flat).
+    func hingeDidChange(angle: Double)
 }
