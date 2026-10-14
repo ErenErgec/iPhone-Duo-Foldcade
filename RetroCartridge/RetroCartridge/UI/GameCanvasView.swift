@@ -213,7 +213,8 @@ struct GameCanvasView: View {
                     screenMode: screenSettings.mode,
                     canChangeScreen: PauseMenu.availableScreenModes(store: storeManager).count > 1,
                     paletteTitle: appState.paletteChoice.title,
-                    isMusicOn: appState.isMusicOn
+                    isMusicOn: appState.isMusicOn,
+                    isSoundOn: appState.isSoundOn
                 )
             }
             .screenEffect(
@@ -254,7 +255,8 @@ struct GameCanvasView: View {
             let screen = screenSettings.mode.title
             let palette = appState.paletteChoice.title
             let music = appState.isMusicOn ? String(localized: "on") : String(localized: "off")
-            return String(localized: "Paused. \(selection) selected. Screen \(screen), palette \(palette), music \(music).")
+            let sound = appState.isSoundOn ? String(localized: "on") : String(localized: "off")
+            return String(localized: "Paused. \(selection) selected. Screen \(screen), palette \(palette), music \(music), sound \(sound).")
         case .gameOver(let score):
             return String(localized: "Game over. Score \(score). Press A to play again.")
         }
@@ -338,6 +340,7 @@ private struct GameStatePanel: View {
     let canChangeScreen: Bool
     let paletteTitle: String
     let isMusicOn: Bool
+    let isSoundOn: Bool
 
     private let phosphor = Color(hex: "#9CFFB8")
 
@@ -362,6 +365,7 @@ private struct GameStatePanel: View {
                         canChangeScreen: canChangeScreen,
                         paletteTitle: paletteTitle,
                         isMusicOn: isMusicOn,
+                        isSoundOn: isSoundOn,
                         blinkOn: blinkOn,
                         u: u
                     )

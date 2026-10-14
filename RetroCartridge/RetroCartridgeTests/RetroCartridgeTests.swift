@@ -1018,6 +1018,19 @@ final class RetroCartridgeTests: XCTestCase {
         XCTAssertEqual(appState.isMusicOn, !original)
     }
 
+    func testPauseMenuTogglesSoundEffectsApartFromMusic() {
+        let appState = makePausedAppState()
+        let original = (music: appState.isMusicOn, sound: appState.isSoundOn)
+        defer { appState.isMusicOn = original.music; appState.isSoundOn = original.sound }
+
+        appState.pauseMenuSelection = .sound
+        PauseMenu.handle(.dpadRightPressed, appState: appState, screenModes: [.crt], currentScreen: .crt)
+        XCTAssertEqual(appState.isSoundOn, !original.sound)
+        XCTAssertEqual(appState.isMusicOn, original.music)
+        // Persisted for the next launch
+        XCTAssertEqual(UserDefaults.standard.bool(forKey: "soundOn"), !original.sound)
+    }
+
     // MARK: - Paddle Duel, Astro Drift, Tower Stack
 
     func testPaddleReturnScoresAndSpeedsUp() {

@@ -72,7 +72,7 @@ Every game also has a **Daily** mode: the same round for everyone that day (seed
 - **Records:** the Records toolbar item shows every cartridge's best score per mode (today's for Daily) and its achievements.
 - **Palettes:** Original, DMG Green, Pocket Grey, Virtual Red and Neon Night recolor any game (PALETTE in the pause menu).
 - **Sound:** every game plays chiptune effects from `AudioManager`, a sequenced synth (pulse/triangle/noise) that renders on the audio thread. Big events also trigger a haptic. Sound packs (Classic, Pocket, Arcade, Mellow) re-voice every sound; pick one in the skin picker.
-- **Music:** each cartridge has its own looping eight-bar theme (lead, triangle bass, noise drums) on three music channels of its own, so effects never cut it. It plays on the title screen and in game, in the current sound pack, and stops on pause and game over. MUSIC in the pause menu turns it off.
+- **Music:** each cartridge has its own looping eight-bar theme (lead, triangle bass, noise drums) on three music channels of its own, so effects never cut it. It plays on the title screen and in game, in the current sound pack, and stops on pause and game over. MUSIC in the pause menu turns it off, and SOUND turns off the sound effects (games and console) on their own. Both are remembered, and the ring/silent switch silences everything.
 
 ---
 

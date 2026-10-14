@@ -163,6 +163,9 @@
     "MUSIC" : {
       "comment" : "Pause menu row"
     },
+    "SOUND" : {
+      "comment" : "Pause menu row: sound effects"
+    },
     "Neon grid serpent" : {},
     "Neon Night" : {},
     "NEW HIGH SCORE!" : {},
@@ -193,14 +196,14 @@
       "comment" : "Pause menu row"
     },
     "PAUSED" : {},
-    "Paused. %@ selected. Screen %@, palette %@, music %@." : {},
-    "Paused. %@ selected. Screen: %@. Palette: %@." : {},
+    "Paused. %@ selected. Screen %@, palette %@, music %@, sound %@." : {},
+    "Paused. %@ selected. Screen: %@. Palette: %@. Music %@, sound %@." : {},
     "Pauses or resumes the game." : {},
     "Pellets, ghosts, tunnels" : {},
     "Pickup color" : {},
     "PIXEL GRID" : {},
     "PIXEL SHADOW" : {},
-    "Play with the D-Pad and A / B. A starts a round, left and right on the title screen switch modes, and Start pauses. The pause menu changes the screen, the palette and the music." : {},
+    "Play with the D-Pad and A / B. A starts a round, left and right on the title screen switch modes, and Start pauses. The pause menu changes the screen and the palette, and turns the music and the sound on or off." : {},
     "Player color" : {},
     "Playing. Score %lld, level %lld." : {},
     "Pocket" : {

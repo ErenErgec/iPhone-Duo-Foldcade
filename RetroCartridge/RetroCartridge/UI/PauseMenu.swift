@@ -18,6 +18,7 @@ enum PauseMenuItem: Int, CaseIterable, Sendable {
     case screen
     case palette
     case music
+    case sound
     case eject
 
     var title: String {
@@ -26,6 +27,7 @@ enum PauseMenuItem: Int, CaseIterable, Sendable {
         case .screen: return String(localized: "SCREEN", comment: "Pause menu row")
         case .palette: return String(localized: "PALETTE", comment: "Pause menu row")
         case .music: return String(localized: "MUSIC", comment: "Pause menu row")
+        case .sound: return String(localized: "SOUND", comment: "Pause menu row: sound effects")
         case .eject: return String(localized: "EJECT", comment: "Pause menu row")
         }
     }
@@ -80,6 +82,9 @@ enum PauseMenu {
             case .music:
                 appState.isMusicOn.toggle()
                 return .changed
+            case .sound:
+                appState.isSoundOn.toggle()
+                return .changed
             case .resume, .eject:
                 return .ignored
             }
@@ -95,6 +100,9 @@ enum PauseMenu {
                 return cyclePalette(by: 1, appState: appState)
             case .music:
                 appState.isMusicOn.toggle()
+                return .changed
+            case .sound:
+                appState.isSoundOn.toggle()
                 return .changed
             case .eject:
                 appState.ejectCartridge()
@@ -140,6 +148,7 @@ struct PauseMenuPanel: View {
     let canChangeScreen: Bool
     let paletteTitle: String
     let isMusicOn: Bool
+    let isSoundOn: Bool
     let blinkOn: Bool
     /// Base unit, 1/20 of the tube's shorter side.
     let u: CGFloat
@@ -176,7 +185,7 @@ struct PauseMenuPanel: View {
         )
         .padding(u)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Paused. \(selection.title.capitalized) selected. Screen: \(screenMode.title). Palette: \(paletteTitle).")
+        .accessibilityLabel("Paused. \(selection.title.capitalized) selected. Screen: \(screenMode.title). Palette: \(paletteTitle). Music \(onOff(isMusicOn)), sound \(onOff(isSoundOn)).")
     }
 
     /// The setting shown at the end of a row, with arrows when it can change.
@@ -188,9 +197,15 @@ struct PauseMenuPanel: View {
             return "< \(paletteTitle.uppercased()) >"
         case .music:
             return "< \(isMusicOn ? String(localized: "ON") : String(localized: "OFF")) >"
+        case .sound:
+            return "< \(isSoundOn ? String(localized: "ON") : String(localized: "OFF")) >"
         case .resume, .eject:
             return nil
         }
+    }
+
+    private func onOff(_ isOn: Bool) -> String {
+        isOn ? String(localized: "on") : String(localized: "off")
     }
 
     private func row(_ item: PauseMenuItem) -> some View {

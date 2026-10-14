@@ -119,6 +119,22 @@ final class AppState {
         return UserDefaults.standard.bool(forKey: musicKey)
     }
 
+    /// Whether games and the console play sound effects (everything but the
+    /// music), persisted. On by default.
+    var isSoundOn: Bool = AppState.persistedSoundOn() {
+        didSet {
+            guard isSoundOn != oldValue else { return }
+            UserDefaults.standard.set(isSoundOn, forKey: Self.soundKey)
+        }
+    }
+
+    private static let soundKey = "soundOn"
+
+    private static func persistedSoundOn() -> Bool {
+        guard UserDefaults.standard.object(forKey: soundKey) != nil else { return true }
+        return UserDefaults.standard.bool(forKey: soundKey)
+    }
+
     private static func persistedSoundPack() -> SoundPack {
         UserDefaults.standard.string(forKey: soundPackKey)
             .flatMap(SoundPack.init(rawValue:)) ?? .classic

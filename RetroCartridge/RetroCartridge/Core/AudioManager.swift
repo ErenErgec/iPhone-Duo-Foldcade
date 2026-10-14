@@ -840,6 +840,10 @@ final class AudioManager: @unchecked Sendable {
         set { generator.isMuted = newValue }
     }
 
+    /// Whether sound effects play; the music has its own switch. Set from the
+    /// main thread (from `AppState.isSoundOn`), and only read there.
+    @ObservationIgnored var areSoundEffectsOn = true
+
     init() {
         setupAudio()
     }
@@ -891,7 +895,7 @@ final class AudioManager: @unchecked Sendable {
     /// Plays patches together in the current sound pack, starting on the
     /// next audio buffer.
     private func play(_ patches: SynthPatch...) {
-        guard !isMuted else { return }
+        guard !isMuted, areSoundEffectsOn else { return }
         for patch in patches {
             generator.trigger(patchIndex: packOffset + patch.rawValue)
         }
