@@ -109,9 +109,6 @@
       "comment" : "Lunar Hinge HUD hint"
     },
     "Fold to fire the thrusters" : {},
-    "Foldcade" : {
-      "shouldTranslate" : false
-    },
     "FOLDCADE" : {
       "shouldTranslate" : false
     },
