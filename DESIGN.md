@@ -242,7 +242,7 @@ The update rate and precision are system policy; prefer `status` when you only n
 | Area | Implementation |
 | :--- | :--- |
 | Toolchain | Deployment target and SDK iOS 27.1 (Xcode 27.1+) |
-| Toolbar | `NavigationStack` root, no `navigationTitle`. `Label` items in two `.topBarTrailing` groups: Skins/Screen/Labels (`.visibilityPriority(.high)`) and Store/Records, which go vertical in the side column. Hidden over a running console. The library's custom header buttons were removed. |
+| Toolbar | `NavigationStack` root, no `navigationTitle`; the app icon (`BrandIcon`) as a decorative `.topBarLeading` item. `Label` items in two `.topBarTrailing` groups: Skins/Screen/Labels (`.visibilityPriority(.high)`) and Store/Records, which go vertical in the side column. Hidden over a running console. The library's custom header buttons were removed. |
 | Hinge | `onHingeChange` → `HingeEngine.updateFromHardware(_:)` (real angle and status), with a fallback to the display posture. It drives the CRT curvature and the 90° chime. |
 | Appearance | The window forces the dark style so the title and glass bars read on the dark console |
 | Status bar | Visible, and part of the safe area. Each console half respects its own edge insets. |

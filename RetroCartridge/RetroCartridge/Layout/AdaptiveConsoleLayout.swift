@@ -93,6 +93,18 @@ public struct AdaptiveConsoleLayout: View {
     /// with Records, the least-used, at the bottom so it overflows first.
     @ToolbarContentBuilder
     private var toolbarItems: some ToolbarContent {
+        // The app icon in the top-leading corner, where the title used to
+        // be: decorative, so no glass capsule and hidden from VoiceOver.
+        ToolbarItem(placement: .topBarLeading) {
+            Image("BrandIcon")
+                .resizable()
+                .interpolation(.high)
+                .frame(width: 32, height: 32)
+                .clipShape(RoundedRectangle(cornerRadius: 7.5, style: .continuous))
+                .accessibilityHidden(true)
+        }
+        .sharedBackgroundVisibility(.hidden)
+
         ToolbarItemGroup(placement: .topBarTrailing) {
             Button {
                 open(\.isSkinSelectorVisible)
