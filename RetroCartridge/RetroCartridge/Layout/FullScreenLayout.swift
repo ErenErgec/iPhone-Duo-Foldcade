@@ -132,7 +132,7 @@ public struct FullScreenLayout: View {
     private func libraryContent(metrics: LibraryGridMetrics) -> some View {
         VStack(spacing: 36) {
             VStack(spacing: 10) {
-                Text("RETRO CARTRIDGE")
+                Text("FOLDCADE")
                     .retroFont(34, weight: .black, maxScale: 1.35, wraps: false)
                     .tracking(4)
                     .foregroundStyle(.white)

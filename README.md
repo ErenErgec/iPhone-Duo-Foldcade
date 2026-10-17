@@ -1,4 +1,4 @@
-# 🕹️ Retro Cartridge & Unfold (iPhone Duo)
+# 🕹️ Foldcade (iPhone Duo)
 
 > **Turn Apple's folding iPhone Duo into a tactile 90s handheld console.**
 
@@ -13,7 +13,7 @@
 
 ## 🌟 Overview
 
-**Retro Cartridge & Unfold** is built exclusively for the **iPhone Duo**. It treats the fold as part of the experience instead of just a bigger canvas:
+**Foldcade** is built exclusively for the **iPhone Duo**. It treats the fold as part of the experience instead of just a bigger canvas:
 
 - **Closed** (held with the hinge on top): the 5.4" outer display is a cartridge case. Swipe through cartridges and pick one.
 - **Unfolded like a clamshell:** the 7.6" inner display becomes a Game Boy–style console, split exactly at the hinge. A curved CRT is above the hinge and a physical-feeling control deck is below. The cartridge chosen on the cover is inserted automatically, and folding again pauses the game.
@@ -124,8 +124,8 @@ Every game also has a **Daily** mode: the same round for everyone that day (seed
 
 | Product | ID | Price | Unlocks |
 | :--- | :--- | :--- | :--- |
-| Retro Collector Pack | `com.retrocartridge.collector_pack` | $6.99 | 6 skins (all but Gold Edition), the Maze Muncher, Frog Hop and Astro Drift cartridges, the Pocket, Arcade and Mellow sound packs |
-| Lifetime Pro | `com.retrocartridge.lifetime_pro` | $49.99 | Everything in the Collector Pack, plus the Lunar Hinge cartridge, the Gold Edition skin, every screen mode with tuning, and all future content |
+| Retro Collector Pack | `com.foldcade.collector_pack` | $6.99 | 6 skins (all but Gold Edition), the Maze Muncher, Frog Hop and Astro Drift cartridges, the Pocket, Arcade and Mellow sound packs |
+| Lifetime Pro | `com.foldcade.lifetime_pro` | $49.99 | Everything in the Collector Pack, plus the Lunar Hinge cartridge, the Gold Edition skin, every screen mode with tuning, and all future content |
 
 - **Free:** eight cartridges (Brick Breaker, Retro Racer, Snake, Falling Blocks, Pixel Invaders, Mine Sweep, Paddle Duel, Tower Stack), every mode, every palette, Classic Grey, Color CRT and the Classic sound pack.
 - **Derived contents:** each item names the product that unlocks it (`requiredProductID`), and the store builds its lists and descriptions from those (`ProductIdentifiers.summary(for:)`), so it always shows exactly what a purchase opens.
@@ -134,6 +134,8 @@ Every game also has a **Daily** mode: the same round for everyone that day (seed
 ---
 
 ## 🗂️ Project structure
+
+The app ships as **Foldcade** (bundle ID `com.foldcade.app`). The Xcode project, target, module and folders keep the original code name `RetroCartridge`.
 
 ```
 RetroCartridge/

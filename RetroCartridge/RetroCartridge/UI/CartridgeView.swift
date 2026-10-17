@@ -90,7 +90,7 @@ struct CartridgeView: View {
 
                     // Embossed footer
                     VStack(spacing: h * 0.012) {
-                        Text("RETRO CARTRIDGE")
+                        Text("FOLDCADE")
                             .font(.pixel(w * 0.05))
                             .tracking(w * 0.006)
                             .foregroundStyle(Color.black.opacity(0.45))

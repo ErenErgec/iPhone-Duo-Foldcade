@@ -38,7 +38,7 @@
     "Block stacking puzzle" : {},
     "BUY %@" : {},
     "Buy %@ for %@" : {},
-    "CARTRIDGE" : {
+    "CADE" : {
       "shouldTranslate" : false
     },
     "CARTRIDGE SHOP" : {},
@@ -102,10 +102,20 @@
     "Finish a round in every mode" : {},
     "Flag every mine" : {},
     "Flat and sharp, RGB grille" : {},
+    "FOLD" : {
+      "shouldTranslate" : false
+    },
     "FOLD OR HOLD ▲ TO THRUST" : {
       "comment" : "Lunar Hinge HUD hint"
     },
     "Fold to fire the thrusters" : {},
+    "Foldcade" : {
+      "shouldTranslate" : false
+    },
+    "FOLDCADE" : {
+      "shouldTranslate" : false
+    },
+    "Foldcade turns iPhone Duo into a handheld console. Pick a cartridge: swipe through them on the cover, or tap one on the shelf." : {},
     "Four shades of green" : {},
     "FUEL" : {
       "comment" : "Lunar Hinge HUD"
@@ -233,16 +243,6 @@
     "RESUME" : {
       "comment" : "Pause menu row"
     },
-    "RETRO" : {
-      "shouldTranslate" : false
-    },
-    "Retro Cartridge" : {
-      "shouldTranslate" : false
-    },
-    "RETRO CARTRIDGE" : {
-      "shouldTranslate" : false
-    },
-    "Retro Cartridge turns iPhone Duo into a handheld console. Pick a cartridge: swipe through them on the cover, or tap one on the shelf." : {},
     "RETRY" : {},
     "Right" : {},
     "Rocks, a ship and a lot of space" : {},

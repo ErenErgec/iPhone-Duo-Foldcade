@@ -15,7 +15,7 @@
           "locale" : "en_US"
         }
       ],
-      "productID" : "com.retrocartridge.collector_pack",
+      "productID" : "com.foldcade.collector_pack",
       "referenceName" : "Retro Collector Pack",
       "type" : "NonConsumable"
     },
@@ -30,7 +30,7 @@
           "locale" : "en_US"
         }
       ],
-      "productID" : "com.retrocartridge.lifetime_pro",
+      "productID" : "com.foldcade.lifetime_pro",
       "referenceName" : "Lifetime Pro",
       "type" : "NonConsumable"
     }

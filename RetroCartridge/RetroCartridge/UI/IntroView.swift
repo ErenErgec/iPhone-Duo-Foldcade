@@ -37,7 +37,7 @@ enum IntroPage: Int, CaseIterable, Identifiable {
     var text: String {
         switch self {
         case .welcome:
-            return String(localized: "Retro Cartridge turns iPhone Duo into a handheld console. Pick a cartridge: swipe through them on the cover, or tap one on the shelf.")
+            return String(localized: "Foldcade turns iPhone Duo into a handheld console. Pick a cartridge: swipe through them on the cover, or tap one on the shelf.")
         case .unfold:
             return String(localized: "Open the device and the cartridge goes in, with the screen on one side of the fold and the controls on the other. Fold it again to pause.")
         case .controls:
@@ -77,7 +77,7 @@ struct IntroView: View {
     var body: some View {
         OverlayPanel(
             title: "HOW TO PLAY",
-            subtitle: "RETRO CARTRIDGE",
+            subtitle: "FOLDCADE",
             onClose: finish
         ) {
             pageContent

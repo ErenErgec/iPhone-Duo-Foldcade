@@ -130,11 +130,14 @@ public struct ControllerView: View {
             Circle()
                 .fill(theme.actionButtonColor)
                 .frame(width: unit * 0.09, height: unit * 0.09)
-            Text("RETRO")
-                .font(.pixel(unit * 0.17, bold: true))
-            Text("CARTRIDGE")
-                .font(.pixel(unit * 0.17))
-                .tracking(unit * 0.02)
+            // One word in two weights, so no gap between the halves.
+            HStack(spacing: 0) {
+                Text("FOLD")
+                    .font(.pixel(unit * 0.17, bold: true))
+                Text("CADE")
+                    .font(.pixel(unit * 0.17))
+                    .tracking(unit * 0.02)
+            }
         }
         .foregroundStyle(theme.textColor.opacity(0.7))
         .shadow(color: .white.opacity(0.15), radius: 0, y: 1)

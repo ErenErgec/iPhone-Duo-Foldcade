@@ -46,7 +46,7 @@ public struct AdaptiveConsoleLayout: View {
             }
         }
         .animation(.easeInOut(duration: 0.3), value: postureManager.isCompactWidth)
-        .navigationTitle("Retro Cartridge")
+        .navigationTitle("Foldcade")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar { toolbarItems }
         .toolbarVisibility(showsConsole ? .hidden : .automatic, for: .navigationBar)

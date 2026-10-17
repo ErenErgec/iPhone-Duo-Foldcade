@@ -1,6 +1,6 @@
 # DESIGN.md — iPhone Duo platform reference
 
-A reference for designing and building Retro Cartridge on iPhone Duo. It collects Apple's official guidance together with what we measured ourselves on the simulator. Apple's statements are quoted or paraphrased with their source. Our own findings are marked **Measured**.
+A reference for designing and building Foldcade on iPhone Duo. It collects Apple's official guidance together with what we measured ourselves on the simulator. Apple's statements are quoted or paraphrased with their source. Our own findings are marked **Measured**.
 
 - **Research date:** 2026-09-23
 - **Toolchain:** Xcode 27.1 beta (27A9269), iOS 27.1 SDK, iPhone Duo simulator on the iOS 27.1 runtime
@@ -227,7 +227,7 @@ The update rate and precision are system policy; prefer `status` when you only n
 
 ---
 
-## 10. Decisions for Retro Cartridge
+## 10. Decisions for Foldcade
 
 **Decided on 2026-09-23 (the user chose option A):**
 - **Inner display follows the HIG.** The console adapts to the system orientation and always splits at the fold:
@@ -242,7 +242,7 @@ The update rate and precision are system policy; prefer `status` when you only n
 | Area | Implementation |
 | :--- | :--- |
 | Toolchain | Deployment target and SDK iOS 27.1 (Xcode 27.1+) |
-| Toolbar | `NavigationStack` root. `navigationTitle("Retro Cartridge")` plus `Label` items in two `.topBarTrailing` groups: Skins/Screen/Labels (`.visibilityPriority(.high)`) and Store/Records, which go vertical in the side column. Hidden over a running console. The library's custom header buttons were removed. |
+| Toolbar | `NavigationStack` root. `navigationTitle("Foldcade")` plus `Label` items in two `.topBarTrailing` groups: Skins/Screen/Labels (`.visibilityPriority(.high)`) and Store/Records, which go vertical in the side column. Hidden over a running console. The library's custom header buttons were removed. |
 | Hinge | `onHingeChange` → `HingeEngine.updateFromHardware(_:)` (real angle and status), with a fallback to the display posture. It drives the CRT curvature and the 90° chime. |
 | Appearance | The window forces the dark style so the title and glass bars read on the dark console |
 | Status bar | Visible, and part of the safe area. Each console half respects its own edge insets. |

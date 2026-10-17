@@ -12,13 +12,13 @@ enum ProductIdentifiers {
     /// Retro Collector Pack — $6.99
     /// Unlocks: six skins (every one but Gold Edition), the Maze Muncher and
     ///          Frog Hop cartridges, and the Pocket, Arcade and Mellow sound packs
-    static let retroCollectorPack = "com.retrocartridge.collector_pack"
+    static let retroCollectorPack = "com.foldcade.collector_pack"
 
     /// Lifetime Pro — $49.99
     /// Unlocks: everything in the Collector Pack, the Lunar Hinge cartridge,
     ///          the Gold Edition skin, every screen mode and screen tuning,
     ///          and all future content
-    static let lifetimePro = "com.retrocartridge.lifetime_pro"
+    static let lifetimePro = "com.foldcade.lifetime_pro"
 
     /// All purchasable product IDs.
     static let allProductIDs: Set<String> = [

@@ -1,7 +1,7 @@
 // RetroCartridgeApp.swift
 // RetroCartridge
 //
-// Main entry point for the Retro Cartridge & Unfold app.
+// Main entry point for the Foldcade app.
 //
 // The app uses a UIKit scene with a SwiftUI root instead of a SwiftUI `App`,
 // so the root view controller can pick the supported orientations per
