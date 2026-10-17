@@ -240,7 +240,7 @@ final class RetroCartridgeTests: XCTestCase {
     func testOnlyColorCRTIsFree() {
         XCTAssertNil(ScreenMode.crt.requiredProductID)
         for mode in ScreenMode.allCases where mode != .crt {
-            XCTAssertEqual(mode.requiredProductID, ProductIdentifiers.lifetimePro)
+            XCTAssertEqual(mode.requiredProductID, ProductIdentifiers.pro)
         }
     }
 
@@ -839,19 +839,24 @@ final class RetroCartridgeTests: XCTestCase {
         XCTAssertNil(SoundPack.classic.requiredProductID)
     }
 
-    func testGoldEditionIsALifetimeProExclusive() {
-        XCTAssertEqual(ConsoleSkinType.goldEdition.requiredProductID, ProductIdentifiers.lifetimePro)
-        XCTAssertFalse(ProductIdentifiers.skins(unlockedBy: ProductIdentifiers.retroCollectorPack).contains(.goldEdition))
-        XCTAssertTrue(ProductIdentifiers.skins(unlockedBy: ProductIdentifiers.lifetimePro).contains(.goldEdition))
+    func testEveryPaidSkinComesWithPro() {
+        XCTAssertNil(ConsoleSkinType.classicGrey.requiredProductID)
+        XCTAssertEqual(ProductIdentifiers.skins(unlockedBy: ProductIdentifiers.pro), ConsoleSkinType.allCases.filter { $0 != .classicGrey })
     }
 
     // MARK: - Store contents
 
-    func testCartridgesAreSplitAcrossTheProducts() {
+    func testCartridgesAreSplitBetweenFreeAndPro() {
         let free = GameType.allCases.filter(\.isFree)
         XCTAssertEqual(free, [.brickBreaker, .retroRacer, .snake, .fallingBlocks, .pixelInvaders, .mineSweep, .paddleDuel, .towerStack])
-        XCTAssertEqual(ProductIdentifiers.cartridges(unlockedBy: ProductIdentifiers.retroCollectorPack), [.mazeMuncher, .frogHop, .astroDrift])
-        XCTAssertEqual(ProductIdentifiers.cartridges(unlockedBy: ProductIdentifiers.lifetimePro), [.mazeMuncher, .frogHop, .lunarHinge, .astroDrift])
+        XCTAssertEqual(ProductIdentifiers.cartridges(unlockedBy: ProductIdentifiers.pro), [.mazeMuncher, .frogHop, .lunarHinge, .astroDrift])
+    }
+
+    func testProIsTheOnlyProduct() {
+        XCTAssertEqual(ProductIdentifiers.allProductIDs, [ProductIdentifiers.pro])
+        XCTAssertEqual(ProductIdentifiers.displayOrder, [ProductIdentifiers.pro])
+        XCTAssertTrue(ProductIdentifiers.unlocksScreenTuning(ProductIdentifiers.pro))
+        XCTAssertFalse(ProductIdentifiers.unlocks(ProductIdentifiers.pro, itemRequiring: nil))
     }
 
     func testEveryPaidItemBelongsToARealProduct() {
@@ -864,24 +869,10 @@ final class RetroCartridgeTests: XCTestCase {
         XCTAssertTrue(required.allSatisfy { products.contains($0) })
     }
 
-    func testLifetimeProIncludesTheCollectorPack() {
-        let collector = ProductIdentifiers.retroCollectorPack
-        let pro = ProductIdentifiers.lifetimePro
-        XCTAssertTrue(Set(ProductIdentifiers.skins(unlockedBy: collector)).isSubset(of: ProductIdentifiers.skins(unlockedBy: pro)))
-        XCTAssertTrue(Set(ProductIdentifiers.cartridges(unlockedBy: collector)).isSubset(of: ProductIdentifiers.cartridges(unlockedBy: pro)))
-        XCTAssertTrue(Set(ProductIdentifiers.soundPacks(unlockedBy: collector)).isSubset(of: ProductIdentifiers.soundPacks(unlockedBy: pro)))
-        XCTAssertTrue(ProductIdentifiers.screenModes(unlockedBy: collector).isEmpty)
-        XCTAssertTrue(ProductIdentifiers.unlocksScreenTuning(pro))
-    }
-
     func testStoreSummariesDescribeTheContents() {
         XCTAssertEqual(
-            ProductIdentifiers.summary(for: ProductIdentifiers.retroCollectorPack),
-            "6 skins, 3 cartridges and 3 sound packs."
-        )
-        XCTAssertEqual(
-            ProductIdentifiers.summary(for: ProductIdentifiers.lifetimePro),
-            "Everything in the Collector Pack, plus Lunar Hinge, the Gold Edition skin, 3 screen modes with tuning and all future content."
+            ProductIdentifiers.summary(for: ProductIdentifiers.pro),
+            "4 cartridges, 7 skins, 3 sound packs and 3 screen modes with tuning."
         )
     }
 
@@ -889,7 +880,7 @@ final class RetroCartridgeTests: XCTestCase {
         let appState = AppState(progress: ProgressStore(defaults: makeDefaults()))
         appState.openStore(highlighting: GameType.lunarHinge.info.requiredProductID)
         XCTAssertTrue(appState.isStoreVisible)
-        XCTAssertEqual(appState.storeHighlight, ProductIdentifiers.lifetimePro)
+        XCTAssertEqual(appState.storeHighlight, ProductIdentifiers.pro)
     }
 
     // MARK: - Occlusion
@@ -1312,7 +1303,7 @@ final class RetroCartridgeTests: XCTestCase {
     func testCapitalsFollowEnglishRules() {
         // Capitals never depend on the device's region (no Turkish İ)
         XCTAssertEqual(ScreenMode.trinitron.uppercasedTitle, "TRINITRON")
-        XCTAssertEqual(ProductIdentifiers.fallbackDisplayName(for: ProductIdentifiers.lifetimePro).uppercased(), "LIFETIME PRO")
+        XCTAssertEqual(ProductIdentifiers.fallbackDisplayName(for: ProductIdentifiers.pro).uppercased(), "FOLDCADE PRO")
         XCTAssertEqual(ProductIdentifiers.shortName(for: "com.example.unknown"), "COM.EXAMPLE.UNKNOWN")
     }
 }
@@ -1386,29 +1377,11 @@ final class StoreKitPurchaseTests: XCTestCase {
         XCTAssertFalse(store.canTuneScreen)
     }
 
-    func testCollectorPackUnlocksItsContents() async throws {
+    func testProUnlocksEverything() async throws {
         let store = try await makeStore()
-        try await buy(ProductIdentifiers.retroCollectorPack, in: store)
+        try await buy(ProductIdentifiers.pro, in: store)
 
-        // Six skins, all but Gold Edition
-        let skins = ConsoleSkinType.allCases.filter { !$0.isFree && store.isUnlocked($0) }
-        XCTAssertEqual(skins.count, 6)
-        XCTAssertFalse(store.isUnlocked(.goldEdition))
-        // Maze Muncher, Frog Hop and Astro Drift, not Lunar Hinge
-        XCTAssertEqual(GameType.allCases.filter { !$0.isFree && store.isUnlocked($0) }, [.mazeMuncher, .frogHop, .astroDrift])
-        XCTAssertFalse(store.isUnlocked(.lunarHinge))
-        // Three sound packs
-        XCTAssertEqual(SoundPack.allCases.filter(store.isUnlocked), [.classic, .pocket, .arcade, .mellow])
-        // No screen modes or tuning
-        XCTAssertEqual(ScreenMode.allCases.filter(store.isUnlocked), [.crt])
-        XCTAssertFalse(store.canTuneScreen)
-    }
-
-    func testLifetimeProUnlocksEverything() async throws {
-        let store = try await makeStore()
-        try await buy(ProductIdentifiers.lifetimePro, in: store)
-
-        XCTAssertTrue(store.hasLifetimePro)
+        XCTAssertTrue(store.hasPro)
         XCTAssertEqual(ConsoleSkinType.allCases.filter(store.isUnlocked), ConsoleSkinType.allCases)
         XCTAssertEqual(GameType.allCases.filter(store.isUnlocked), GameType.allCases)
         XCTAssertEqual(SoundPack.allCases.filter(store.isUnlocked), SoundPack.allCases)
@@ -1420,41 +1393,34 @@ final class StoreKitPurchaseTests: XCTestCase {
 
     func testRestoreBringsPurchasesBackToAFreshStore() async throws {
         let first = try await makeStore()
-        try await buy(ProductIdentifiers.retroCollectorPack, in: first)
+        try await buy(ProductIdentifiers.pro, in: first)
 
         // A new install knows nothing until it restores
         let reinstalled = StoreManager()
-        XCTAssertFalse(reinstalled.isPurchased(ProductIdentifiers.retroCollectorPack))
+        XCTAssertFalse(reinstalled.isPurchased(ProductIdentifiers.pro))
         await reinstalled.restorePurchases()
         XCTAssertNil(reinstalled.errorMessage)
-        XCTAssertTrue(reinstalled.isPurchased(ProductIdentifiers.retroCollectorPack))
-        XCTAssertFalse(reinstalled.isPurchased(ProductIdentifiers.lifetimePro))
+        XCTAssertTrue(reinstalled.isPurchased(ProductIdentifiers.pro))
         XCTAssertTrue(reinstalled.isUnlocked(.mazeMuncher))
+        XCTAssertTrue(reinstalled.canTuneScreen)
     }
 
     func testRefundsFallBackToTheFreeChoices() async throws {
         let store = try await makeStore()
-        try await buy(ProductIdentifiers.retroCollectorPack, in: store)
-        try await buy(ProductIdentifiers.lifetimePro, in: store)
+        try await buy(ProductIdentifiers.pro, in: store)
 
         let tuned = ScreenSettings(mode: .trinitron, curvature: 0.9, scanlines: 0.2, bleed: 0.8)
         XCTAssertEqual(store.effectiveSkin(.goldEdition), .goldEdition)
+        XCTAssertEqual(store.effectiveScreenSettings(tuned), tuned)
 
-        // Refunding Lifetime Pro takes its extras; the Collector Pack stays
-        try await refund(ProductIdentifiers.lifetimePro, in: store)
+        // Refunding Pro leaves only the free tier
+        try await refund(ProductIdentifiers.pro, in: store)
         XCTAssertFalse(store.isUnlocked(.lunarHinge))
+        XCTAssertFalse(store.isUnlocked(.mazeMuncher))
         XCTAssertEqual(store.effectiveScreenSettings(tuned), ScreenSettings.standard)
         XCTAssertEqual(store.effectiveSkin(.goldEdition), .classicGrey)
-        XCTAssertEqual(store.effectiveSkin(.atomicPurple), .atomicPurple)
-        XCTAssertEqual(store.effectiveSoundPack(.arcade), .arcade)
-        XCTAssertTrue(store.isUnlocked(.astroDrift))
-
-        // Refunding the Collector Pack leaves only the free tier
-        try await refund(ProductIdentifiers.retroCollectorPack, in: store)
         XCTAssertEqual(store.effectiveSkin(.atomicPurple), .classicGrey)
         XCTAssertEqual(store.effectiveSoundPack(.arcade), .classic)
-        XCTAssertFalse(store.isUnlocked(.astroDrift))
-        XCTAssertFalse(store.isUnlocked(.mazeMuncher))
 
         // A fresh launch agrees: refunded products aren't entitlements
         let relaunched = try await makeStore()

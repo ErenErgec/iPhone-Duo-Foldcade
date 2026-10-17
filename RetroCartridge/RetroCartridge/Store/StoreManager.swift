@@ -47,8 +47,9 @@ final class StoreManager {
         transactionUpdates?.cancel()
     }
 
-    var hasLifetimePro: Bool {
-        return purchasedProductIDs.contains(ProductIdentifiers.lifetimePro)
+    /// Whether Foldcade Pro, the one purchase, is owned.
+    var hasPro: Bool {
+        isPurchased(ProductIdentifiers.pro)
     }
 
     /// Products loaded, but none came back (offline, or IDs unknown to the store).
@@ -132,7 +133,7 @@ final class StoreManager {
 
     func isUnlocked(_ skinType: ConsoleSkinType) -> Bool {
         guard let productID = skinType.requiredProductID else { return true }
-        return hasLifetimePro || isPurchased(productID)
+        return isPurchased(productID)
     }
 
     /// The skin to draw: a locked choice (e.g. after a refund) falls back
@@ -143,7 +144,7 @@ final class StoreManager {
 
     func isUnlocked(_ soundPack: SoundPack) -> Bool {
         guard let productID = soundPack.requiredProductID else { return true }
-        return hasLifetimePro || isPurchased(productID)
+        return isPurchased(productID)
     }
 
     /// The sound pack to play: a locked choice falls back to Classic.
@@ -153,16 +154,16 @@ final class StoreManager {
 
     func isUnlocked(_ gameType: GameType) -> Bool {
         guard let productID = gameType.info.requiredProductID else { return true }
-        return hasLifetimePro || isPurchased(productID)
+        return isPurchased(productID)
     }
 
     func isUnlocked(_ screenMode: ScreenMode) -> Bool {
         guard let productID = screenMode.requiredProductID else { return true }
-        return hasLifetimePro || isPurchased(productID)
+        return isPurchased(productID)
     }
 
-    /// Whether the screen tuning controls are available (Lifetime Pro).
-    var canTuneScreen: Bool { hasLifetimePro }
+    /// Whether the screen tuning controls are available (Foldcade Pro).
+    var canTuneScreen: Bool { hasPro }
 
     /// The screen to actually draw: locked modes fall back to Color CRT and
     /// locked tuning to the designed look, e.g. after a refund.

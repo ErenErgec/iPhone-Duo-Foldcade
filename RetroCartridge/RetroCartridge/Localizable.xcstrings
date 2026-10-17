@@ -23,8 +23,6 @@
     "Achievement earned: %@. %@." : {},
     "ACHIEVEMENTS" : {},
     "ACTION" : {},
-    "all future content" : {},
-    "ALL FUTURE SKINS AND CARTRIDGES" : {},
     "Alone against the wall. Keep the rally going." : {},
     "APP STORE UNAVAILABLE" : {},
     "ARCADE" : {},
@@ -54,9 +52,6 @@
     "Clear 40 lines fast. Time left is bonus." : {},
     "Close" : {},
     "COLLECTION %lld/%lld" : {},
-    "COLLECTOR PACK" : {
-      "shouldTranslate" : false
-    },
     "COLOR" : {},
     "Color %lld" : {},
     "COLOR BLEED" : {},
@@ -93,8 +88,6 @@
     "EQUIPPED" : {},
     "Equipped" : {},
     "Eraser" : {},
-    "EVERYTHING IN THE COLLECTOR PACK" : {},
-    "Everything in the Collector Pack, plus %@." : {},
     "EXPLORER" : {},
     "Failed to restore purchases: %@" : {},
     "FILL" : {},
@@ -110,6 +103,9 @@
     },
     "Fold to fire the thrusters" : {},
     "FOLDCADE" : {
+      "shouldTranslate" : false
+    },
+    "FOLDCADE PRO" : {
       "shouldTranslate" : false
     },
     "Foldcade turns iPhone Duo into a handheld console. Pick a cartridge: swipe through them on the cover, or tap one on the shelf." : {},
@@ -134,10 +130,8 @@
     },
     "Hold the line" : {},
     "HOW TO PLAY" : {},
-    "IN PRO" : {},
     "In use" : {},
     "IN USE" : {},
-    "Included with Lifetime Pro" : {},
     "LABEL DESIGNER" : {},
     "Labels" : {},
     "LANDED ×%lld" : {},
@@ -145,15 +139,11 @@
     "Left" : {},
     "LET'S PLAY" : {},
     "LEVEL %lld" : {},
-    "LIFETIME PRO" : {
-      "shouldTranslate" : false
-    },
     "LINES" : {
       "comment" : "Falling Blocks HUD"
     },
     "Locked" : {},
     "Locked, part of %@" : {},
-    "Locked, part of Lifetime Pro" : {},
     "LV" : {
       "comment" : "Bezel readout: level"
     },
@@ -170,6 +160,7 @@
     "MUSIC" : {
       "comment" : "Pause menu row"
     },
+    "One-time purchase, billed through the App Store." : {},
     "SOUND" : {
       "comment" : "Pause menu row: sound effects"
     },
@@ -191,7 +182,6 @@
     "on" : {},
     "ON" : {},
     "ONE-TIME PURCHASE" : {},
-    "One-time purchases, billed through the App Store." : {},
     "Only your headlights to see by." : {},
     "Open the device and the cartridge goes in, with the screen on one side of the fold and the controls on the other. Fold it again to pause." : {},
     "ORIGINAL" : {},
@@ -282,7 +272,6 @@
     "Table tennis against the machine" : {},
     "TAP TO EQUIP" : {},
     "TAP TO USE" : {},
-    "the %@ skin" : {},
     "The App Store didn't return any products." : {},
     "The classic rules." : {},
     "The purchase couldn't be verified." : {},
@@ -305,7 +294,7 @@
     "Ultra" : {},
     "UNDO" : {},
     "UNFOLD TO PLAY" : {},
-    "UNLOCK %lld SKINS WITH THE COLLECTOR PACK" : {},
+    "UNLOCK %lld SKINS WITH FOLDCADE PRO" : {},
     "Unlocked" : {},
     "UNLOCKS WHAT YOU TAPPED" : {},
     "Up" : {},

@@ -83,15 +83,10 @@ enum ConsoleSkinType: String, CaseIterable, Identifiable, Codable {
         }
     }
     
-    /// The IAP product ID required to unlock this skin (nil if free). The
-    /// Gold Edition is a Lifetime Pro exclusive; the rest are in the
-    /// Collector Pack.
+    /// The IAP product ID required to unlock this skin (nil if free).
+    /// Every skin but Classic Grey comes with Foldcade Pro.
     var requiredProductID: String? {
-        switch self {
-        case .classicGrey: return nil
-        case .goldEdition: return ProductIdentifiers.lifetimePro
-        default: return ProductIdentifiers.retroCollectorPack
-        }
+        self == .classicGrey ? nil : ProductIdentifiers.pro
     }
 }
 
@@ -164,7 +159,7 @@ enum ScreenMode: String, CaseIterable, Identifiable, Codable, Sendable {
 
     /// The IAP product that unlocks the mode, nil when it is free.
     var requiredProductID: String? {
-        self == .crt ? nil : ProductIdentifiers.lifetimePro
+        self == .crt ? nil : ProductIdentifiers.pro
     }
 }
 
@@ -413,7 +408,7 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
                 labelColorHex: "#FFB703",
                 shell: .black,
                 modes: [.standard, .daily],
-                requiredProductID: ProductIdentifiers.retroCollectorPack,
+                requiredProductID: ProductIdentifiers.pro,
                 scoreGoal: 5000,
                 levelGoal: 3
             )
@@ -425,7 +420,7 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
                 labelColorHex: "#80ED99",
                 shell: .clearGreen,
                 modes: [.standard, .daily],
-                requiredProductID: ProductIdentifiers.retroCollectorPack,
+                requiredProductID: ProductIdentifiers.pro,
                 scoreGoal: 1000,
                 levelGoal: 3
             )
@@ -437,7 +432,7 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
                 labelColorHex: "#E0E1DD",
                 shell: .gold,
                 modes: [.standard, .daily],
-                requiredProductID: ProductIdentifiers.lifetimePro,
+                requiredProductID: ProductIdentifiers.pro,
                 scoreGoal: 1000,
                 levelGoal: 4
             )
@@ -460,7 +455,7 @@ enum GameType: String, CaseIterable, Identifiable, Codable {
                 labelColorHex: "#6D9DC5",
                 shell: .clearBlue,
                 modes: [.standard, .daily],
-                requiredProductID: ProductIdentifiers.retroCollectorPack,
+                requiredProductID: ProductIdentifiers.pro,
                 scoreGoal: 5000,
                 levelGoal: 4
             )

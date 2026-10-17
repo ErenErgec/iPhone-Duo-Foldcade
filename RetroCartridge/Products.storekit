@@ -5,33 +5,18 @@
   ],
   "products" : [
     {
-      "displayPrice" : "6.99",
+      "displayPrice" : "7.99",
       "familyShareable" : false,
-      "internalID" : "6740000001",
+      "internalID" : "6740000003",
       "localizations" : [
         {
-          "description" : "6 skins, the Maze Muncher, Frog Hop and Astro Drift cartridges, and 3 sound packs.",
-          "displayName" : "Retro Collector Pack",
+          "description" : "Every cartridge, skin, sound pack and screen mode.",
+          "displayName" : "Foldcade Pro",
           "locale" : "en_US"
         }
       ],
-      "productID" : "com.foldcade.collector_pack",
-      "referenceName" : "Retro Collector Pack",
-      "type" : "NonConsumable"
-    },
-    {
-      "displayPrice" : "49.99",
-      "familyShareable" : false,
-      "internalID" : "6740000002",
-      "localizations" : [
-        {
-          "description" : "Everything in the Collector Pack, plus Lunar Hinge, the Gold Edition skin, every screen mode with tuning, and all future content.",
-          "displayName" : "Lifetime Pro",
-          "locale" : "en_US"
-        }
-      ],
-      "productID" : "com.foldcade.lifetime_pro",
-      "referenceName" : "Lifetime Pro",
+      "productID" : "com.foldcade.pro",
+      "referenceName" : "Foldcade Pro",
       "type" : "NonConsumable"
     }
   ],

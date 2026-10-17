@@ -120,16 +120,17 @@ Every game also has a **Daily** mode: the same round for everyone that day (seed
 
 ## 💎 In-app purchases (StoreKit 2)
 
-**Store** in the system toolbar (on either display) sells two non-consumables:
+**Store** in the system toolbar (on either display) sells one non-consumable:
 
 | Product | ID | Price | Unlocks |
 | :--- | :--- | :--- | :--- |
-| Retro Collector Pack | `com.foldcade.collector_pack` | $6.99 | 6 skins (all but Gold Edition), the Maze Muncher, Frog Hop and Astro Drift cartridges, the Pocket, Arcade and Mellow sound packs |
-| Lifetime Pro | `com.foldcade.lifetime_pro` | $49.99 | Everything in the Collector Pack, plus the Lunar Hinge cartridge, the Gold Edition skin, every screen mode with tuning, and all future content |
+| Foldcade Pro | `com.foldcade.pro` | $7.99 | The Maze Muncher, Frog Hop, Astro Drift and Lunar Hinge cartridges, 7 skins (all but Classic Grey), the Pocket, Arcade and Mellow sound packs, and the LCD, Trinitron and Arcade screen modes with tuning |
+
+- **No promise of future content:** a later paid item joins Pro only if it names `ProductIdentifiers.pro` as its `requiredProductID`.
 
 - **Free:** eight cartridges (Brick Breaker, Retro Racer, Snake, Falling Blocks, Pixel Invaders, Mine Sweep, Paddle Duel, Tower Stack), every mode, every palette, Classic Grey, Color CRT and the Classic sound pack.
 - **Derived contents:** each item names the product that unlocks it (`requiredProductID`), and the store builds its lists and descriptions from those (`ProductIdentifiers.summary(for:)`), so it always shows exactly what a purchase opens.
-- **Locked items:** locked cartridges look dusty on the shelf and name their pack. Tapping anything locked opens the store with the product that unlocks it highlighted. Locked cartridges still play in the cover's attract mode. `Products.storekit` defines both products for local testing, and the shared scheme uses it when you run from Xcode.
+- **Locked items:** locked cartridges look dusty on the shelf and say FOLDCADE PRO. Tapping anything locked opens the store with the product that unlocks it highlighted. Locked cartridges still play in the cover's attract mode. `Products.storekit` defines the product for local testing, and the shared scheme uses it when you run from Xcode.
 
 ---
 

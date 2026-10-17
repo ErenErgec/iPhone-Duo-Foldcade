@@ -61,10 +61,10 @@ struct ScreenSettingsView: View {
         }
     }
 
-    /// Screen modes and tuning all come with Lifetime Pro.
+    /// Screen modes and tuning all come with Foldcade Pro.
     private func openStore() {
         withAnimation(LibraryOverlays.animation) {
-            appState.openStore(highlighting: ProductIdentifiers.lifetimePro)
+            appState.openStore(highlighting: ProductIdentifiers.pro)
         }
     }
 
@@ -132,7 +132,7 @@ struct ScreenSettingsView: View {
         }
         .buttonStyle(CartridgePressStyle())
         .accessibilityLabel(mode.title)
-        .accessibilityValue(isSelected ? String(localized: "In use") : (isUnlocked ? String(localized: "Unlocked") : String(localized: "Locked, part of Lifetime Pro")))
+        .accessibilityValue(isSelected ? String(localized: "In use") : (isUnlocked ? String(localized: "Unlocked") : String(localized: "Locked, part of \(ProductIdentifiers.fallbackDisplayName(for: ProductIdentifiers.pro))")))
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 
@@ -145,7 +145,7 @@ struct ScreenSettingsView: View {
                 Label("TAP TO USE", systemImage: "hand.tap.fill")
                     .foregroundStyle(.white.opacity(0.45))
             } else {
-                Label("LIFETIME PRO", systemImage: "lock.fill")
+                Label(ProductIdentifiers.shortName(for: ProductIdentifiers.pro), systemImage: "lock.fill")
                     .foregroundStyle(RetroPalette.amber)
             }
         }
@@ -181,7 +181,7 @@ struct ScreenSettingsView: View {
                     .opacity(appState.screenSettings.hasStandardTuning ? 0.4 : 1)
                 } else {
                     Button(action: openStore) {
-                        RetroCapsuleLabel(title: String(localized: "LIFETIME PRO"), systemImage: "lock.fill", tint: RetroPalette.amber)
+                        RetroCapsuleLabel(title: ProductIdentifiers.shortName(for: ProductIdentifiers.pro), systemImage: "lock.fill", tint: RetroPalette.amber)
                     }
                     .buttonStyle(CartridgePressStyle())
                 }

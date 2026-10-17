@@ -413,7 +413,7 @@ enum SoundPack: String, CaseIterable, Identifiable, Codable, Sendable {
 
     /// The IAP product that unlocks the pack, nil when it is free.
     var requiredProductID: String? {
-        self == .classic ? nil : ProductIdentifiers.retroCollectorPack
+        self == .classic ? nil : ProductIdentifiers.pro
     }
 
     /// A patch as this pack voices it. Looping patches (music) keep their

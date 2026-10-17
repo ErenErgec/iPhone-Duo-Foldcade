@@ -2,8 +2,8 @@
 // StoreView.swift
 // RetroCartridge
 //
-// In-hierarchy store overlay: both non-consumables with their App Store
-// prices, what each unlocks, Buy / Restore, and inline errors. When the App
+// In-hierarchy store overlay: Foldcade Pro, the one non-consumable, with
+// its App Store price, what it unlocks, Buy / Restore, and inline errors. When the App
 // Store can't be reached it falls back to the catalog prices in
 // `ProductIdentifiers` and offers a retry. Hosted by `FullScreenLayout`
 // (never as a sheet); only StoreKit's own confirmation sheet is system UI.
@@ -145,16 +145,12 @@ struct StoreView: View {
 
     private func productCard(_ productID: String) -> some View {
         let product = storeManager.product(for: productID)
-        let isPro = productID == ProductIdentifiers.lifetimePro
-        let tint = isPro ? Color(hex: "#FFD54F") : Color(hex: "#B266FF")
+        let tint = Color(hex: "#FFD54F")
         let isHighlighted = appState.storeHighlight == productID
 
         return VStack(alignment: .leading, spacing: 14) {
             HStack(alignment: .top, spacing: 16) {
-                ProductCartridgeBadge(
-                    tint: tint,
-                    symbol: isPro ? "crown.fill" : "paintpalette.fill"
-                )
+                ProductCartridgeBadge(tint: tint, symbol: "crown.fill")
                 .frame(width: 58)
 
                 VStack(alignment: .leading, spacing: 6) {
@@ -184,7 +180,7 @@ struct StoreView: View {
                 buyButton(productID: productID, product: product, tint: tint)
             }
 
-            unlocks(productID: productID, isPro: isPro, tint: tint)
+            unlocks(productID: productID, tint: tint)
         }
         .padding(16)
         .background(
@@ -204,22 +200,14 @@ struct StoreView: View {
         .shadow(color: isHighlighted ? tint.opacity(0.3) : .clear, radius: 14)
     }
 
-    /// What a product unlocks, listed from the items' own gating. Pro lists
-    /// only what it adds to the Collector Pack.
-    private func unlocks(productID: String, isPro: Bool, tint: Color) -> some View {
-        let collector = ProductIdentifiers.retroCollectorPack
+    /// What a product unlocks, listed from the items' own gating.
+    private func unlocks(productID: String, tint: Color) -> some View {
         let cartridges = ProductIdentifiers.cartridges(unlockedBy: productID)
-            .filter { !isPro || !ProductIdentifiers.unlocks(collector, itemRequiring: $0.info.requiredProductID) }
         let skins = ProductIdentifiers.skins(unlockedBy: productID)
-            .filter { !isPro || !ProductIdentifiers.unlocks(collector, itemRequiring: $0.requiredProductID) }
-        let soundPacks = isPro ? [] : ProductIdentifiers.soundPacks(unlockedBy: productID)
+        let soundPacks = ProductIdentifiers.soundPacks(unlockedBy: productID)
         let screenModes = ProductIdentifiers.screenModes(unlockedBy: productID)
 
         return VStack(alignment: .leading, spacing: 12) {
-            if isPro {
-                perk("EVERYTHING IN THE COLLECTOR PACK")
-            }
-
             if !cartridges.isEmpty {
                 section("CARTRIDGES", tint: tint) {
                     ForEach(cartridges) { game in
@@ -265,12 +253,7 @@ struct StoreView: View {
                 }
             }
 
-            if isPro {
-                VStack(alignment: .leading, spacing: 6) {
-                    perk("ALL FUTURE SKINS AND CARTRIDGES")
-                    perk("ONE-TIME PURCHASE")
-                }
-            }
+            perk("ONE-TIME PURCHASE")
         }
     }
 
@@ -310,16 +293,12 @@ struct StoreView: View {
     @ViewBuilder
     private func buyButton(productID: String, product: Product?, tint: Color) -> some View {
         let isOwned = storeManager.isPurchased(productID)
-        let isIncluded = !isOwned && productID == ProductIdentifiers.retroCollectorPack && storeManager.hasLifetimePro
         let isPurchasing = storeManager.purchasingProductID == productID
         let price = product?.displayPrice ?? ProductIdentifiers.fallbackDisplayPrice(for: productID)
 
         if isOwned {
             RetroCapsuleLabel(title: String(localized: "OWNED"), systemImage: "checkmark", tint: RetroPalette.phosphor)
                 .accessibilityLabel("Purchased")
-        } else if isIncluded {
-            RetroCapsuleLabel(title: String(localized: "IN PRO"), systemImage: "checkmark", tint: RetroPalette.phosphor)
-                .accessibilityLabel("Included with Lifetime Pro")
         } else if isPurchasing {
             ProgressView()
                 .tint(.black)
@@ -386,7 +365,7 @@ struct StoreView: View {
             .buttonStyle(CartridgePressStyle())
             .disabled(storeManager.isRestoring)
 
-            Text(restoreNote ?? String(localized: "One-time purchases, billed through the App Store."))
+            Text(restoreNote ?? String(localized: "One-time purchase, billed through the App Store."))
                 .retroFont(10, weight: .medium)
                 .tracking(0.5)
                 .foregroundStyle(restoreNote == nil ? .white.opacity(0.35) : RetroPalette.phosphor.opacity(0.9))

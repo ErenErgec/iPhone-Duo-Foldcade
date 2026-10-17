@@ -115,7 +115,7 @@ struct SkinPickerView: View {
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 
-    /// The product that unlocks a skin, e.g. "COLLECTOR PACK".
+    /// The product that unlocks a skin, e.g. "FOLDCADE PRO".
     private func productName(for skin: ConsoleSkinType) -> String {
         skin.requiredProductID.map(ProductIdentifiers.shortName(for:)) ?? ""
     }
@@ -195,14 +195,14 @@ struct SkinPickerView: View {
         Button {
             hapticManager.playHaptic(.buttonPress)
             withAnimation(LibraryOverlays.animation) {
-                appState.openStore(highlighting: ProductIdentifiers.retroCollectorPack)
+                appState.openStore(highlighting: ProductIdentifiers.pro)
             }
         } label: {
             HStack(spacing: 12) {
                 Image(systemName: "sparkles")
                     .font(.system(size: 16, weight: .bold))
                     .foregroundStyle(RetroPalette.amber)
-                Text("UNLOCK \(ProductIdentifiers.skins(unlockedBy: ProductIdentifiers.retroCollectorPack).count) SKINS WITH THE COLLECTOR PACK")
+                Text("UNLOCK \(ProductIdentifiers.skins(unlockedBy: ProductIdentifiers.pro).count) SKINS WITH FOLDCADE PRO")
                     .retroFont(12, weight: .bold)
                     .tracking(1)
                     .foregroundStyle(.white.opacity(0.75))
