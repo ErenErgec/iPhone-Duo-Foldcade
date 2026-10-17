@@ -18,7 +18,7 @@ public struct FullScreenLayout: View {
     @Environment(AudioManager.self) private var audioManager
     @Environment(StoreManager.self) private var storeManager
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Environment(\.menuTheme) private var menuTheme
+    @Environment(\.consoleTheme) private var consoleTheme
 
     /// The cartridge sliding into the slot, just before the console powers on.
     @State private var insertingGame: GameType?
@@ -133,14 +133,15 @@ public struct FullScreenLayout: View {
     private func libraryContent(metrics: LibraryGridMetrics) -> some View {
         VStack(spacing: 36) {
             VStack(spacing: 10) {
+                // Printed on the case, in the skin's own print color
                 Text("FOLDCADE")
                     .retroFont(34, weight: .black, maxScale: 1.35, wraps: false)
                     .tracking(4)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(consoleTheme.textColor)
                 Text("CHOOSE A CARTRIDGE")
                     .retroFont(13, weight: .semibold)
                     .tracking(4)
-                    .foregroundStyle(.white.opacity(0.45))
+                    .foregroundStyle(consoleTheme.textColor.opacity(0.9))
                 collectionCounter
                     .padding(.top, 6)
             }
@@ -165,7 +166,7 @@ public struct FullScreenLayout: View {
         return RetroCapsuleLabel(
             title: String(localized: "COLLECTION \(owned)/\(GameType.allCases.count)"),
             systemImage: "square.stack.fill",
-            tint: menuTheme.accent
+            tint: consoleTheme.textColor
         )
         .accessibilityLabel("\(owned) of \(GameType.allCases.count) cartridges in your collection")
     }
@@ -211,10 +212,10 @@ public struct FullScreenLayout: View {
             Group {
                 if isLocked, let productID = game.info.requiredProductID {
                     Label(ProductIdentifiers.shortName(for: productID), systemImage: "lock.fill")
-                        .foregroundStyle(RetroPalette.amber)
+                        .foregroundStyle(consoleTheme.textColor)
                 } else {
                     Text(game.subtitle)
-                        .foregroundStyle(.white.opacity(0.5))
+                        .foregroundStyle(consoleTheme.textColor.opacity(0.9))
                 }
             }
             .retroFont(12, weight: .medium)
@@ -272,14 +273,16 @@ public struct FullScreenLayout: View {
 /// darker front edge.
 private struct ShelfLedge: View {
     var body: some View {
+        // Shades over the case rather than fixed greys, so the ledge reads
+        // as molded into whichever case the skin has
         VStack(spacing: 0) {
             Rectangle()
-                .fill(LinearGradient(colors: [Color(white: 0.34), Color(white: 0.22)], startPoint: .top, endPoint: .bottom))
+                .fill(LinearGradient(colors: [.white.opacity(0.35), .white.opacity(0.12)], startPoint: .top, endPoint: .bottom))
                 .frame(height: 4)
             Rectangle()
-                .fill(LinearGradient(colors: [Color(white: 0.15), Color(white: 0.08)], startPoint: .top, endPoint: .bottom))
+                .fill(LinearGradient(colors: [.black.opacity(0.35), .black.opacity(0.5)], startPoint: .top, endPoint: .bottom))
         }
-        .shadow(color: .black.opacity(0.6), radius: 8, y: 6)
+        .shadow(color: .black.opacity(0.4), radius: 8, y: 6)
         .accessibilityHidden(true)
     }
 }

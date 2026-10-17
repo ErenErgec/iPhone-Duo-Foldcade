@@ -15,6 +15,6 @@ extension SkinTheme {
         actionButtonColor: Color(hex: "#1D3557"),
         finish: .matte,
         ledColor: Color(hex: "#E63946"),
-        menu: MenuTheme(accent: "#FFD60A", backdrop: ("#1C1A0C", "#0D0C05"), panel: ("#24220F", "#121107"))
+        menu: MenuTheme(accent: "#FFD60A", panel: ("#24220F", "#121107"))
     )
 }

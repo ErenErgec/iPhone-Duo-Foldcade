@@ -16,6 +16,6 @@ extension SkinTheme {
         finish: .matte,
         bezelTopColor: Color(hex: "#8E1B22"),
         bezelBottomColor: Color(hex: "#5C0F14"),
-        menu: MenuTheme(accent: "#FF5A64", backdrop: ("#1F1213", "#0E0809"), panel: ("#29191A", "#140C0D"))
+        menu: MenuTheme(accent: "#FF5A64", panel: ("#29191A", "#140C0D"))
     )
 }

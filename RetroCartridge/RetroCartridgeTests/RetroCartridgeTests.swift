@@ -867,8 +867,8 @@ final class RetroCartridgeTests: XCTestCase {
     func testEveryMenuAccentReadsOnItsSurfaces() {
         for skin in ConsoleSkinType.allCases {
             let menu = SkinManager.theme(for: skin).menu
-            // Text in the accent on the backdrop and the panels (WCAG AA)
-            for surface in [menu.backdropTop, menu.backdropBottom, menu.panelTop, menu.panelBottom] {
+            // Text in the accent on the panels (WCAG AA)
+            for surface in [menu.panelTop, menu.panelBottom] {
                 XCTAssertGreaterThanOrEqual(contrast(menu.accent, surface), 4.5, "\(skin.rawValue)")
             }
             // Dark text on a filled accent button

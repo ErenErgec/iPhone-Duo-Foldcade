@@ -15,6 +15,8 @@ import SwiftUI
 public struct CoverScreenLayout: View {
     @Environment(AppState.self) private var appState
     @Environment(StoreManager.self) private var storeManager
+    /// The cover is the case: its text is the skin's print color.
+    @Environment(\.consoleTheme) private var consoleTheme
     @State private var blink: Bool = false
 
     public init() {}
@@ -94,18 +96,18 @@ public struct CoverScreenLayout: View {
         return VStack(alignment: alignment, spacing: 8) {
             Text(selected.rawValue.uppercased())
                 .retroFont(24, weight: .black, maxScale: 1.35, wraps: false)
-                .foregroundStyle(.white)
+                .foregroundStyle(consoleTheme.textColor)
                 .lineLimit(1)
                 .minimumScaleFactor(0.6)
             Text(selected.subtitle)
                 .retroFont(14, weight: .medium, maxScale: 1.35, wraps: false)
-                .foregroundStyle(.white.opacity(0.5))
+                .foregroundStyle(consoleTheme.textColor.opacity(0.9))
 
             let best = appState.highScore(for: selected)
             if best > 0 {
                 Text("HI \(best)")
                     .retroFont(13, weight: .bold, maxScale: 1.35, wraps: false)
-                    .foregroundStyle(Color(hex: selected.cartridgeColorHex))
+                    .foregroundStyle(consoleTheme.textColor)
                     .padding(.top, 2)
             }
         }
@@ -119,7 +121,7 @@ public struct CoverScreenLayout: View {
         return HStack(spacing: 8) {
             ForEach(GameType.allCases) { game in
                 Capsule()
-                    .fill(game == selected ? Color(hex: game.cartridgeColorHex) : Color.white.opacity(0.2))
+                    .fill(game == selected ? Color(hex: game.cartridgeColorHex) : consoleTheme.textColor.opacity(0.25))
                     .frame(width: game == selected ? 22 : 7, height: 7)
             }
         }
@@ -136,12 +138,12 @@ public struct CoverScreenLayout: View {
                 .retroFont(15, weight: .heavy, maxScale: 1.35, wraps: false)
                 .tracking(3)
         }
-        .foregroundStyle(.white)
+        .foregroundStyle(consoleTheme.textColor)
         .padding(.horizontal, 22)
         .padding(.vertical, 12)
         .background(
             Capsule()
-                .fill(Color.white.opacity(0.06))
+                .fill(consoleTheme.textColor.opacity(0.08))
                 .overlay(Capsule().stroke(Color(hex: appState.selectedGameType.cartridgeColorHex).opacity(0.6), lineWidth: 1))
         )
         .opacity(blink ? 1.0 : 0.35)

@@ -46,9 +46,11 @@ public struct AdaptiveConsoleLayout: View {
             }
         }
         .animation(.easeInOut(duration: 0.3), value: postureManager.isCompactWidth)
-        // The library, cover and overlays follow the equipped skin; a locked
-        // skin (e.g. after a refund) gives the classic colors, like the console
-        .environment(\.menuTheme, SkinManager.theme(for: storeManager.effectiveSkin(appState.selectedSkin)).menu)
+        // The library and cover are the equipped skin's case and the overlays
+        // take its colors; a locked skin (e.g. after a refund) gives the
+        // default, like the console
+        .environment(\.consoleTheme, equippedTheme)
+        .environment(\.menuTheme, equippedTheme.menu)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar { toolbarItems }
         .toolbarVisibility(showsConsole ? .hidden : .automatic, for: .navigationBar)
@@ -79,6 +81,11 @@ public struct AdaptiveConsoleLayout: View {
                 appState.pauseActiveGame()
             }
         }
+    }
+
+    /// The skin the console shows, which the library and overlays follow.
+    private var equippedTheme: SkinTheme {
+        SkinManager.theme(for: storeManager.effectiveSkin(appState.selectedSkin))
     }
 
     /// A running console on the inner display is immersive: no bars.

@@ -22,16 +22,14 @@ enum RetroPalette {
 
 // MARK: - Menu theme
 
-/// The library, cover and overlay colors that follow the equipped skin: a
-/// dark backdrop and panel tone and an accent picked to stay readable on
-/// them (the skin's own colors are often too dark). Amber and alert red
-/// keep their meaning and never change.
+/// The overlay colors that follow the equipped skin: a dark panel tone and
+/// an accent picked to stay readable on it (the skin's own colors are often
+/// too dark). The library and cover around the panels are the skin's case
+/// itself (`consoleTheme`). Amber and alert red keep their meaning and
+/// never change.
 struct MenuTheme: Equatable, Sendable {
     /// Highlights, selections, capsules and filled buttons.
     var accent: Color
-    /// The library and cover backdrop's vertical gradient.
-    var backdropTop: Color
-    var backdropBottom: Color
     /// The overlay panels' vertical gradient.
     var panelTop: Color
     var panelBottom: Color
@@ -43,28 +41,16 @@ struct MenuTheme: Equatable, Sendable {
     /// (the same shades as the DMG Green game palette).
     /// Each panel sits in the grey case like the handheld's screen.
     static let classic: MenuTheme = {
-        var theme = MenuTheme(accent: "#9BBC0F", backdrop: ("#0F380F", "#071C07"), panel: ("#143C16", "#0A240C"))
+        var theme = MenuTheme(accent: "#9BBC0F", panel: ("#143C16", "#0A240C"))
         theme.shell = .greyCase
         return theme
     }()
 
-    /// A theme from hex values: backdrop and panel tones go top to bottom.
-    init(accent: String, backdrop: (String, String), panel: (String, String)) {
-        self.init(
-            accent: Color(hex: accent),
-            backdropTop: Color(hex: backdrop.0),
-            backdropBottom: Color(hex: backdrop.1),
-            panelTop: Color(hex: panel.0),
-            panelBottom: Color(hex: panel.1)
-        )
-    }
-
-    init(accent: Color, backdropTop: Color, backdropBottom: Color, panelTop: Color, panelBottom: Color) {
-        self.accent = accent
-        self.backdropTop = backdropTop
-        self.backdropBottom = backdropBottom
-        self.panelTop = panelTop
-        self.panelBottom = panelBottom
+    /// A theme from hex values: the panel tone goes top to bottom.
+    init(accent: String, panel: (String, String)) {
+        self.accent = Color(hex: accent)
+        self.panelTop = Color(hex: panel.0)
+        self.panelBottom = Color(hex: panel.1)
     }
 }
 
@@ -100,8 +86,11 @@ struct MenuShell: Equatable, Sendable {
 }
 
 extension EnvironmentValues {
-    /// The equipped skin's menu colors, set once by `AdaptiveConsoleLayout`.
+    /// The equipped skin's overlay colors, set once by `AdaptiveConsoleLayout`.
     @Entry var menuTheme: MenuTheme = .classic
+    /// The equipped skin itself: the library and cover are its case, and
+    /// their text is its printed `textColor`. Set with `menuTheme`.
+    @Entry var consoleTheme: SkinTheme = .classicGrey
 }
 
 extension AnyTransition {
