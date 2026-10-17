@@ -46,6 +46,9 @@ public struct AdaptiveConsoleLayout: View {
             }
         }
         .animation(.easeInOut(duration: 0.3), value: postureManager.isCompactWidth)
+        // The library, cover and overlays follow the equipped skin; a locked
+        // skin (e.g. after a refund) gives the classic colors, like the console
+        .environment(\.menuTheme, SkinManager.theme(for: storeManager.effectiveSkin(appState.selectedSkin)).menu)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar { toolbarItems }
         .toolbarVisibility(showsConsole ? .hidden : .automatic, for: .navigationBar)

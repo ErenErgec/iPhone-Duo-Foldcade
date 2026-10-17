@@ -18,6 +18,7 @@ public struct FullScreenLayout: View {
     @Environment(AudioManager.self) private var audioManager
     @Environment(StoreManager.self) private var storeManager
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.menuTheme) private var menuTheme
 
     /// The cartridge sliding into the slot, just before the console powers on.
     @State private var insertingGame: GameType?
@@ -164,7 +165,7 @@ public struct FullScreenLayout: View {
         return RetroCapsuleLabel(
             title: String(localized: "COLLECTION \(owned)/\(GameType.allCases.count)"),
             systemImage: "square.stack.fill",
-            tint: RetroPalette.phosphor
+            tint: menuTheme.accent
         )
         .accessibilityLabel("\(owned) of \(GameType.allCases.count) cartridges in your collection")
     }

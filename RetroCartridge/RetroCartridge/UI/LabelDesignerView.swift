@@ -17,6 +17,7 @@ struct LabelDesignerView: View {
     @Environment(StoreManager.self) private var storeManager
     @Environment(HapticManager.self) private var hapticManager
     @Environment(PostureManager.self) private var postureManager
+    @Environment(\.menuTheme) private var menuTheme
 
     /// How a touch on the grid paints.
     enum Tool: CaseIterable {
@@ -106,7 +107,7 @@ struct LabelDesignerView: View {
                 RetroCapsuleLabel(
                     title: hasCustomLabel ? String(localized: "YOUR LABEL") : String(localized: "ORIGINAL LABEL"),
                     systemImage: hasCustomLabel ? "pencil.and.scribble" : "seal.fill",
-                    tint: hasCustomLabel ? RetroPalette.phosphor : .white.opacity(0.6)
+                    tint: hasCustomLabel ? menuTheme.accent : .white.opacity(0.6)
                 )
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -187,7 +188,7 @@ struct LabelDesignerView: View {
                 var middle = Path()
                 middle.move(to: CGPoint(x: side / 2, y: 0))
                 middle.addLine(to: CGPoint(x: side / 2, y: side))
-                context.stroke(middle, with: .color(RetroPalette.phosphor.opacity(0.8)), style: StrokeStyle(lineWidth: 1.5, dash: [4, 4]))
+                context.stroke(middle, with: .color(menuTheme.accent.opacity(0.8)), style: StrokeStyle(lineWidth: 1.5, dash: [4, 4]))
             }
         }
         .frame(width: side, height: side)
@@ -272,7 +273,7 @@ struct LabelDesignerView: View {
                     RetroCapsuleLabel(
                         title: String(localized: "MIRROR"),
                         systemImage: "arrow.left.and.right.righttriangle.left.righttriangle.right",
-                        tint: RetroPalette.phosphor,
+                        tint: menuTheme.accent,
                         filled: isMirrored
                     )
                 }
@@ -297,7 +298,7 @@ struct LabelDesignerView: View {
             Text(title)
                 .retroFont(12, weight: .heavy)
                 .tracking(2.5)
-                .foregroundStyle(RetroPalette.phosphor.opacity(0.85))
+                .foregroundStyle(menuTheme.accent.opacity(0.85))
             content()
         }
     }
@@ -331,8 +332,8 @@ struct LabelDesignerView: View {
                 }
             }
             .frame(width: 34, height: 34)
-            .overlay(shape.stroke(isSelected ? RetroPalette.phosphor : Color.white.opacity(0.18), lineWidth: isSelected ? 3 : 1))
-            .shadow(color: isSelected ? RetroPalette.phosphor.opacity(0.5) : .clear, radius: 6)
+            .overlay(shape.stroke(isSelected ? menuTheme.accent : Color.white.opacity(0.18), lineWidth: isSelected ? 3 : 1))
+            .shadow(color: isSelected ? menuTheme.accent.opacity(0.5) : .clear, radius: 6)
             .contentShape(shape)
         }
         .buttonStyle(CartridgePressStyle())
@@ -360,7 +361,7 @@ struct LabelDesignerView: View {
             hapticManager.playHaptic(.buttonPress)
             tool = value
         } label: {
-            RetroCapsuleLabel(title: title, systemImage: symbol, tint: RetroPalette.phosphor, filled: tool == value)
+            RetroCapsuleLabel(title: title, systemImage: symbol, tint: menuTheme.accent, filled: tool == value)
         }
         .buttonStyle(CartridgePressStyle())
         .accessibilityAddTraits(tool == value ? .isSelected : [])

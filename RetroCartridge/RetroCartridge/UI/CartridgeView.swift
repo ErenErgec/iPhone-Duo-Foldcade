@@ -259,10 +259,13 @@ struct CartridgePressStyle: ButtonStyle {
 struct ConsoleBackdrop: View {
     var glowColor: Color
 
+    /// The equipped skin's tone under the cartridge glow.
+    @Environment(\.menuTheme) private var menuTheme
+
     var body: some View {
         ZStack {
             LinearGradient(
-                colors: [Color(hex: "#15181A"), Color(hex: "#0A0B0C")],
+                colors: [menuTheme.backdropTop, menuTheme.backdropBottom],
                 startPoint: .top,
                 endPoint: .bottom
             )

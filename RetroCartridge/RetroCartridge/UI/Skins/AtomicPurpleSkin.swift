@@ -16,6 +16,7 @@ extension SkinTheme {
         finish: .translucent,
         bezelTopColor: Color(hex: "#2A1540"), // smoky purple bezel, green LED
         bezelBottomColor: Color(hex: "#150A22"),
-        ledColor: Color(hex: "#7CFF6B")
+        ledColor: Color(hex: "#7CFF6B"),
+        menu: MenuTheme(accent: "#E040FB", backdrop: ("#1A1024", "#0C0712"), panel: ("#221630", "#120B1A"))
     )
 }

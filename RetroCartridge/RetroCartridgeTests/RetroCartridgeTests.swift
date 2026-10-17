@@ -844,6 +844,62 @@ final class RetroCartridgeTests: XCTestCase {
         XCTAssertEqual(ProductIdentifiers.skins(unlockedBy: ProductIdentifiers.pro), ConsoleSkinType.allCases.filter { $0 != .classicGrey })
     }
 
+    // MARK: - Menu themes
+
+    func testClassicGreyKeepsTheClassicMenu() {
+        XCTAssertEqual(SkinTheme.classicGrey.menu, .classic)
+    }
+
+    func testOnlyTheDefaultMenuSitsInTheGreyCase() {
+        XCTAssertEqual(MenuTheme.classic.shell, .greyCase)
+        for skin in ConsoleSkinType.allCases where skin != .classicGrey {
+            XCTAssertNil(SkinManager.theme(for: skin).menu.shell, skin.rawValue)
+        }
+    }
+
+    func testEveryPaidSkinHasItsOwnAccent() {
+        let paid = ConsoleSkinType.allCases.filter { $0 != .classicGrey }
+        let accents = paid.map { hex(SkinManager.theme(for: $0).menu.accent) }
+        XCTAssertEqual(Set(accents).count, paid.count)
+        XCTAssertFalse(accents.contains(hex(MenuTheme.classic.accent)))
+    }
+
+    func testEveryMenuAccentReadsOnItsSurfaces() {
+        for skin in ConsoleSkinType.allCases {
+            let menu = SkinManager.theme(for: skin).menu
+            // Text in the accent on the backdrop and the panels (WCAG AA)
+            for surface in [menu.backdropTop, menu.backdropBottom, menu.panelTop, menu.panelBottom] {
+                XCTAssertGreaterThanOrEqual(contrast(menu.accent, surface), 4.5, "\(skin.rawValue)")
+            }
+            // Dark text on a filled accent button
+            XCTAssertGreaterThanOrEqual(contrast(menu.accent, .black), 4.5, "\(skin.rawValue)")
+            // White text on the menu surfaces
+            XCTAssertGreaterThanOrEqual(contrast(.white, menu.panelTop), 12, "\(skin.rawValue)")
+        }
+    }
+
+    private func rgb(_ color: Color) -> (Double, Double, Double) {
+        var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
+        UIColor(color).getRed(&r, green: &g, blue: &b, alpha: &a)
+        return (Double(r), Double(g), Double(b))
+    }
+
+    private func hex(_ color: Color) -> String {
+        let (r, g, b) = rgb(color)
+        return String(format: "%02X%02X%02X", Int((r * 255).rounded()), Int((g * 255).rounded()), Int((b * 255).rounded()))
+    }
+
+    /// WCAG contrast ratio between two opaque colors.
+    private func contrast(_ a: Color, _ b: Color) -> Double {
+        func luminance(_ color: Color) -> Double {
+            let (r, g, b) = rgb(color)
+            func linear(_ c: Double) -> Double { c <= 0.03928 ? c / 12.92 : pow((c + 0.055) / 1.055, 2.4) }
+            return 0.2126 * linear(r) + 0.7152 * linear(g) + 0.0722 * linear(b)
+        }
+        let (high, low) = (max(luminance(a), luminance(b)), min(luminance(a), luminance(b)))
+        return (high + 0.05) / (low + 0.05)
+    }
+
     // MARK: - Store contents
 
     func testCartridgesAreSplitBetweenFreeAndPro() {
@@ -1357,11 +1413,16 @@ final class StoreKitPurchaseTests: XCTestCase {
     /// A running store also hears of refunds through `Transaction.updates`,
     /// but the test session sometimes drops that notification for a refund
     /// sent milliseconds after the purchase (about one run in three), so
-    /// the test doesn't depend on it.
+    /// the test doesn't depend on it. The session can also apply the refund
+    /// a moment late, so the refresh retries for up to two seconds.
     private func refund(_ productID: String, in store: StoreManager) async throws {
         let transaction = try XCTUnwrap(session.allTransactions().last { $0.productIdentifier == productID })
         try session.refundTransaction(identifier: transaction.identifier)
-        await store.loadProducts()
+        for _ in 0..<20 {
+            await store.loadProducts()
+            if !store.isPurchased(productID) { break }
+            try await Task.sleep(for: .milliseconds(100))
+        }
         XCTAssertFalse(store.isPurchased(productID), "\(productID) still owned after the refund")
     }
 

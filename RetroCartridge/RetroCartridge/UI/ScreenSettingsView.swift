@@ -16,6 +16,7 @@ struct ScreenSettingsView: View {
     @Environment(StoreManager.self) private var storeManager
     @Environment(HapticManager.self) private var hapticManager
     @Environment(AudioManager.self) private var audioManager
+    @Environment(\.menuTheme) private var menuTheme
 
     private let columns = 2
 
@@ -140,7 +141,7 @@ struct ScreenSettingsView: View {
         Group {
             if isSelected {
                 Label("IN USE", systemImage: "checkmark.circle.fill")
-                    .foregroundStyle(RetroPalette.phosphor)
+                    .foregroundStyle(menuTheme.accent)
             } else if isUnlocked {
                 Label("TAP TO USE", systemImage: "hand.tap.fill")
                     .foregroundStyle(.white.opacity(0.45))
@@ -168,13 +169,13 @@ struct ScreenSettingsView: View {
                 Text("TUNING")
                     .retroFont(12, weight: .heavy)
                     .tracking(2.5)
-                    .foregroundStyle(RetroPalette.phosphor.opacity(0.85))
+                    .foregroundStyle(menuTheme.accent.opacity(0.85))
 
                 Spacer(minLength: 8)
 
                 if canTune {
                     Button(action: resetTuning) {
-                        RetroCapsuleLabel(title: String(localized: "RESET"), systemImage: "arrow.counterclockwise", tint: RetroPalette.phosphor)
+                        RetroCapsuleLabel(title: String(localized: "RESET"), systemImage: "arrow.counterclockwise", tint: menuTheme.accent)
                     }
                     .buttonStyle(CartridgePressStyle())
                     .disabled(appState.screenSettings.hasStandardTuning)
@@ -216,13 +217,13 @@ struct ScreenSettingsView: View {
                 Spacer(minLength: 8)
                 // 0.5 is the designed look, shown as 1.0×
                 Text(String(format: "%.1f×", value.wrappedValue * 2))
-                    .foregroundStyle(RetroPalette.phosphor)
+                    .foregroundStyle(menuTheme.accent)
             }
             .retroFont(11, weight: .bold)
             .tracking(1)
 
             Slider(value: value, in: 0...1)
-                .tint(RetroPalette.phosphor)
+                .tint(menuTheme.accent)
                 .accessibilityLabel(title.capitalized)
                 .accessibilityValue(String(localized: "\(String(format: "%.1f", value.wrappedValue * 2)) times"))
         }

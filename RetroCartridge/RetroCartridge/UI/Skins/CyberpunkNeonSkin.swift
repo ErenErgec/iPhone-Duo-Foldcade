@@ -16,6 +16,7 @@ extension SkinTheme {
         finish: .glossy,
         bezelTopColor: Color(hex: "#0B0B14"), // black glass bezel, cyan LED
         bezelBottomColor: Color(hex: "#050508"),
-        ledColor: Color(hex: "#00FFFF")
+        ledColor: Color(hex: "#00FFFF"),
+        menu: MenuTheme(accent: "#00FFFF", backdrop: ("#0B1416", "#050809"), panel: ("#111D20", "#080D0F"))
     )
 }

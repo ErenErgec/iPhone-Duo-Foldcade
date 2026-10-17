@@ -36,6 +36,11 @@ struct SkinTheme: Equatable, Sendable {
     var bezelBottomColor: Color = Color(hex: "#17191D")
     /// The power LED while a game is running.
     var ledColor: Color = Color(hex: "#FF3B30")
+
+    // MARK: Menus
+
+    /// Colors for the library, cover and overlays while this skin is equipped.
+    var menu: MenuTheme = .classic
 }
 
 enum SkinManager {

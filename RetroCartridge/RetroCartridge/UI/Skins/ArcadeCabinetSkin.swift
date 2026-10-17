@@ -16,6 +16,7 @@ extension SkinTheme {
         finish: .woodGrain,
         bezelTopColor: Color(hex: "#1A1A1A"), // black lacquer bezel, amber LED
         bezelBottomColor: Color(hex: "#0A0A0A"),
-        ledColor: Color(hex: "#FFB300")
+        ledColor: Color(hex: "#FFB300"),
+        menu: MenuTheme(accent: "#FFD700", backdrop: ("#1E1510", "#0E0A07"), panel: ("#271C15", "#140E0A"))
     )
 }

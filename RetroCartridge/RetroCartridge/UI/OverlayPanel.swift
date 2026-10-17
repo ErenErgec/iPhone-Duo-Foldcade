@@ -11,17 +11,97 @@
 
 import SwiftUI
 
-/// Shared colors for the overlay screens.
+/// Fixed colors for the overlay screens: they keep their meaning whatever
+/// the skin. Everything else comes from `MenuTheme`.
 enum RetroPalette {
-    /// CRT phosphor green, as used by the game screen.
-    static let phosphor = Color(hex: "#9CFFB8")
-    /// Warning amber for connection problems.
+    /// Warning amber for locked items and connection problems.
     static let amber = Color(hex: "#FFC857")
     /// Error red, matching the Brick Breaker cartridge.
     static let alert = Color(hex: "#FF6B6B")
-    /// Panel surface.
-    static let panelTop = Color(hex: "#1C2023")
-    static let panelBottom = Color(hex: "#0F1113")
+}
+
+// MARK: - Menu theme
+
+/// The library, cover and overlay colors that follow the equipped skin: a
+/// dark backdrop and panel tone and an accent picked to stay readable on
+/// them (the skin's own colors are often too dark). Amber and alert red
+/// keep their meaning and never change.
+struct MenuTheme: Equatable, Sendable {
+    /// Highlights, selections, capsules and filled buttons.
+    var accent: Color
+    /// The library and cover backdrop's vertical gradient.
+    var backdropTop: Color
+    var backdropBottom: Color
+    /// The overlay panels' vertical gradient.
+    var panelTop: Color
+    var panelBottom: Color
+    /// A handheld case drawn around each panel, or none.
+    var shell: MenuShell? = nil
+
+    /// The default, for Classic Grey: the original handheld's green LCD.
+    /// The lightest of its four greens is the accent, on its darkest green
+    /// (the same shades as the DMG Green game palette).
+    /// Each panel sits in the grey case like the handheld's screen.
+    static let classic: MenuTheme = {
+        var theme = MenuTheme(accent: "#9BBC0F", backdrop: ("#0F380F", "#071C07"), panel: ("#143C16", "#0A240C"))
+        theme.shell = .greyCase
+        return theme
+    }()
+
+    /// A theme from hex values: backdrop and panel tones go top to bottom.
+    init(accent: String, backdrop: (String, String), panel: (String, String)) {
+        self.init(
+            accent: Color(hex: accent),
+            backdropTop: Color(hex: backdrop.0),
+            backdropBottom: Color(hex: backdrop.1),
+            panelTop: Color(hex: panel.0),
+            panelBottom: Color(hex: panel.1)
+        )
+    }
+
+    init(accent: Color, backdropTop: Color, backdropBottom: Color, panelTop: Color, panelBottom: Color) {
+        self.accent = accent
+        self.backdropTop = backdropTop
+        self.backdropBottom = backdropBottom
+        self.panelTop = panelTop
+        self.panelBottom = panelBottom
+    }
+}
+
+/// Case details around an overlay panel: the grey plastic with its big
+/// bottom-trailing corner, the two stripes over the screen and the power LED.
+struct MenuShell: Equatable, Sendable {
+    var caseTop: Color
+    var caseBottom: Color
+    var stripes: [Color]
+    var led: Color
+
+    /// The original handheld: warm grey plastic, magenta and navy stripes,
+    /// red LED.
+    static let greyCase = MenuShell(
+        caseTop: Color(hex: "#BDBCB6"),
+        caseBottom: Color(hex: "#9A9994"),
+        stripes: [Color(hex: "#A8325E"), Color(hex: "#2B2F7A")],
+        led: Color(hex: "#E0301E")
+    )
+
+    /// Gap between the case edge and the screen.
+    static let margin: CGFloat = 12
+    /// The case corners: the bottom-trailing one is the handheld's big curve.
+    static let caseShape = UnevenRoundedRectangle(
+        topLeadingRadius: 26, bottomLeadingRadius: 26, bottomTrailingRadius: 72, topTrailingRadius: 26,
+        style: .continuous
+    )
+    /// The screen inside the case follows the same curve, inset.
+    static let screenShape = UnevenRoundedRectangle(
+        topLeadingRadius: 16, bottomLeadingRadius: 16, bottomTrailingRadius: 60, topTrailingRadius: 16,
+        style: .continuous
+    )
+}
+
+extension EnvironmentValues {
+    /// The equipped skin's menu colors, set once by `AdaptiveConsoleLayout`.
+    @Entry var menuTheme: MenuTheme = .classic
 }
 
 extension AnyTransition {
@@ -60,6 +140,8 @@ struct OverlayPanel<Content: View, Footer: View>: View {
     @ViewBuilder let content: Content
     @ViewBuilder let footer: Footer
 
+    @Environment(\.menuTheme) private var menuTheme
+
     init(
         title: LocalizedStringKey,
         subtitle: LocalizedStringKey,
@@ -78,9 +160,7 @@ struct OverlayPanel<Content: View, Footer: View>: View {
         VStack(spacing: 0) {
             header
 
-            Rectangle()
-                .fill(Color.white.opacity(0.07))
-                .frame(height: 1)
+            divider
 
             ViewThatFits(in: .vertical) {
                 content
@@ -98,29 +178,28 @@ struct OverlayPanel<Content: View, Footer: View>: View {
                     .padding(.bottom, 18)
             }
         }
-        .frame(maxWidth: 580)
         .background(
-            RoundedRectangle(cornerRadius: 28, style: .continuous)
-                .fill(
-                    LinearGradient(
-                        colors: [RetroPalette.panelTop, RetroPalette.panelBottom],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
+            screenShape.fill(
+                LinearGradient(
+                    colors: [menuTheme.panelTop, menuTheme.panelBottom],
+                    startPoint: .top,
+                    endPoint: .bottom
                 )
+            )
         )
-        .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
+        .clipShape(screenShape)
         .overlay(
-            RoundedRectangle(cornerRadius: 28, style: .continuous)
-                .stroke(
-                    LinearGradient(
-                        colors: [.white.opacity(0.16), .white.opacity(0.03)],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    ),
-                    lineWidth: 1
-                )
+            screenShape.stroke(
+                LinearGradient(
+                    colors: [.white.opacity(0.16), .white.opacity(0.03)],
+                    startPoint: .top,
+                    endPoint: .bottom
+                ),
+                lineWidth: 1
+            )
         )
+        .modifier(ShellCase(shell: menuTheme.shell))
+        .frame(maxWidth: 580)
         .shadow(color: .black.opacity(0.6), radius: 30, y: 16)
         .padding(.horizontal, 24)
         .padding(.vertical, 28)
@@ -130,14 +209,45 @@ struct OverlayPanel<Content: View, Footer: View>: View {
         .accessibilityAction(.escape, onClose)
     }
 
+    /// The panel's own outline: a plain rounded rectangle, or the screen
+    /// shape when it sits in a case.
+    private var screenShape: AnyShape {
+        menuTheme.shell == nil
+            ? AnyShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
+            : AnyShape(MenuShell.screenShape)
+    }
+
+    /// The line under the header, or the case's two stripes.
+    @ViewBuilder
+    private var divider: some View {
+        if let shell = menuTheme.shell {
+            VStack(spacing: 3) {
+                ForEach(shell.stripes.indices, id: \.self) { index in
+                    Rectangle()
+                        .fill(shell.stripes[index])
+                        .frame(height: 2)
+                }
+            }
+            .padding(.horizontal, 22)
+            .accessibilityHidden(true)
+        } else {
+            Rectangle()
+                .fill(Color.white.opacity(0.07))
+                .frame(height: 1)
+        }
+    }
+
     private var header: some View {
-        HStack(alignment: .center, spacing: 14) {
+        // The case's power LED, or a dot in the accent
+        let led = menuTheme.shell?.led ?? menuTheme.accent
+
+        return HStack(alignment: .center, spacing: 14) {
             VStack(alignment: .leading, spacing: 6) {
                 HStack(spacing: 8) {
                     Circle()
-                        .fill(RetroPalette.phosphor)
+                        .fill(led)
                         .frame(width: 7, height: 7)
-                        .shadow(color: RetroPalette.phosphor.opacity(0.8), radius: 4)
+                        .shadow(color: led.opacity(0.8), radius: 4)
                     Text(title)
                         .retroFont(20, weight: .black, maxScale: 1.5, wraps: false)
                         .tracking(3)
@@ -169,6 +279,32 @@ struct OverlayPanel<Content: View, Footer: View>: View {
         }
         .padding(.horizontal, 22)
         .padding(.vertical, 18)
+    }
+}
+
+/// Puts a panel in its handheld case when the theme has one.
+private struct ShellCase: ViewModifier {
+    let shell: MenuShell?
+
+    func body(content: Content) -> some View {
+        if let shell {
+            content
+                .padding(MenuShell.margin)
+                .background(
+                    MenuShell.caseShape.fill(
+                        LinearGradient(colors: [shell.caseTop, shell.caseBottom], startPoint: .top, endPoint: .bottom)
+                    )
+                )
+                .overlay(
+                    // Moulded edge: light on top, dark below
+                    MenuShell.caseShape.stroke(
+                        LinearGradient(colors: [.white.opacity(0.45), .black.opacity(0.25)], startPoint: .top, endPoint: .bottom),
+                        lineWidth: 1.5
+                    )
+                )
+        } else {
+            content
+        }
     }
 }
 
@@ -220,19 +356,31 @@ struct RetroCapsuleLabel: View {
 extension View {
     /// Chrome for a selectable card in an overlay grid (skins, screens).
     func overlayCard(isSelected: Bool) -> some View {
+        modifier(OverlayCard(isSelected: isSelected))
+    }
+}
+
+/// The card chrome behind `overlayCard(isSelected:)`, outlined in the menu
+/// accent when selected.
+private struct OverlayCard: ViewModifier {
+    let isSelected: Bool
+
+    @Environment(\.menuTheme) private var menuTheme
+
+    func body(content: Content) -> some View {
         let shape = RoundedRectangle(cornerRadius: 20, style: .continuous)
 
-        return self
+        return content
             .padding(14)
             .frame(maxWidth: .infinity)
             .background(shape.fill(Color.white.opacity(isSelected ? 0.07 : 0.035)))
             .overlay(
                 shape.stroke(
-                    isSelected ? RetroPalette.phosphor : Color.white.opacity(0.08),
+                    isSelected ? menuTheme.accent : Color.white.opacity(0.08),
                     lineWidth: isSelected ? 2 : 1
                 )
             )
-            .shadow(color: isSelected ? RetroPalette.phosphor.opacity(0.25) : .clear, radius: 14)
+            .shadow(color: isSelected ? menuTheme.accent.opacity(0.25) : .clear, radius: 14)
             .contentShape(shape)
     }
 }

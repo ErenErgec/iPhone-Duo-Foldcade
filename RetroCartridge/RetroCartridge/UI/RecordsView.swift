@@ -15,6 +15,7 @@ struct RecordsView: View {
     @Environment(AppState.self) private var appState
     @Environment(StoreManager.self) private var storeManager
     @Environment(HapticManager.self) private var hapticManager
+    @Environment(\.menuTheme) private var menuTheme
 
     /// Narrowest column of mode scores. It grows with the text, so at large
     /// sizes the modes stack instead of breaking "STANDARD" mid-word.
@@ -39,7 +40,7 @@ struct RecordsView: View {
                         appState.showIntro()
                     }
                 } label: {
-                    RetroCapsuleLabel(title: String(localized: "HOW TO PLAY"), systemImage: "questionmark.circle.fill", tint: RetroPalette.phosphor)
+                    RetroCapsuleLabel(title: String(localized: "HOW TO PLAY"), systemImage: "questionmark.circle.fill", tint: menuTheme.accent)
                 }
                 .buttonStyle(CartridgePressStyle())
                 .padding(.top, 4)
@@ -65,7 +66,7 @@ struct RecordsView: View {
                 Text("ACHIEVEMENTS")
                     .retroFont(12, weight: .heavy)
                     .tracking(2.5)
-                    .foregroundStyle(RetroPalette.phosphor.opacity(0.85))
+                    .foregroundStyle(menuTheme.accent.opacity(0.85))
                 Spacer(minLength: 8)
                 Text("\(earned)/\(total)")
                     .retroFont(14, weight: .black)
@@ -157,7 +158,7 @@ struct RecordsView: View {
                     Text((mode.isDaily ? String(localized: "TODAY") : mode.title).uppercased())
                         .foregroundStyle(.white.opacity(0.45))
                     Text(best > 0 ? "\(best)" : "—")
-                        .foregroundStyle(best > 0 ? RetroPalette.phosphor : Color.white.opacity(0.3))
+                        .foregroundStyle(best > 0 ? menuTheme.accent : Color.white.opacity(0.3))
                 }
                 .retroFont(11, weight: .bold)
                 .lineLimit(1)

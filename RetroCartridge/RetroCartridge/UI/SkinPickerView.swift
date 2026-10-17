@@ -14,6 +14,8 @@ struct SkinPickerView: View {
     @Environment(StoreManager.self) private var storeManager
     @Environment(HapticManager.self) private var hapticManager
     @Environment(AudioManager.self) private var audioManager
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.menuTheme) private var menuTheme
 
     private let columns = 2
 
@@ -70,7 +72,8 @@ struct SkinPickerView: View {
 
         guard skin != appState.selectedSkin else { return }
         audioManager.playCartridgeClick()
-        withAnimation(.easeInOut(duration: 0.25)) {
+        // The console and the menu colors cross-fade, unless Reduce Motion is on
+        withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.25)) {
             appState.selectedSkin = skin
         }
     }
@@ -125,7 +128,7 @@ struct SkinPickerView: View {
         Group {
             if isSelected {
                 Label("EQUIPPED", systemImage: "checkmark.circle.fill")
-                    .foregroundStyle(RetroPalette.phosphor)
+                    .foregroundStyle(menuTheme.accent)
             } else if isUnlocked {
                 Label("TAP TO EQUIP", systemImage: "hand.tap.fill")
                     .foregroundStyle(.white.opacity(0.45))
@@ -149,7 +152,7 @@ struct SkinPickerView: View {
             Text("SOUND PACK")
                 .retroFont(12, weight: .heavy)
                 .tracking(2.5)
-                .foregroundStyle(RetroPalette.phosphor.opacity(0.85))
+                .foregroundStyle(menuTheme.accent.opacity(0.85))
 
             HStack(spacing: 8) {
                 ForEach(SoundPack.allCases) { pack in
@@ -180,7 +183,7 @@ struct SkinPickerView: View {
             RetroCapsuleLabel(
                 title: pack.title.uppercased(),
                 systemImage: isUnlocked ? (isSelected ? "checkmark" : "speaker.wave.2.fill") : "lock.fill",
-                tint: isUnlocked ? RetroPalette.phosphor : RetroPalette.amber,
+                tint: isUnlocked ? menuTheme.accent : RetroPalette.amber,
                 filled: isSelected
             )
         }
@@ -210,7 +213,7 @@ struct SkinPickerView: View {
                     .multilineTextAlignment(.leading)
                     .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 8)
-                RetroCapsuleLabel(title: String(localized: "STORE"), systemImage: "bag.fill", tint: RetroPalette.phosphor, filled: true)
+                RetroCapsuleLabel(title: String(localized: "STORE"), systemImage: "bag.fill", tint: menuTheme.accent, filled: true)
             }
             .padding(14)
             .background(

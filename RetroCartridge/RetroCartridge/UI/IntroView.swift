@@ -69,6 +69,7 @@ struct IntroView: View {
     @Environment(HapticManager.self) private var hapticManager
     @Environment(PostureManager.self) private var postureManager
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.menuTheme) private var menuTheme
 
     @State private var page: IntroPage = .welcome
     /// Whether the last page change went forward, for the slide's direction.
@@ -122,7 +123,7 @@ struct IntroView: View {
             Text(page.title)
                 .retroFont(18, weight: .black)
                 .tracking(2.5)
-                .foregroundStyle(RetroPalette.phosphor)
+                .foregroundStyle(menuTheme.accent)
                 .multilineTextAlignment(textAlignment)
             Text(page.text)
                 .retroFont(13, weight: .medium)
@@ -180,7 +181,7 @@ struct IntroView: View {
         HStack(spacing: 8) {
             ForEach(IntroPage.allCases) { dot in
                 Capsule()
-                    .fill(dot == page ? RetroPalette.phosphor : Color.white.opacity(0.2))
+                    .fill(dot == page ? menuTheme.accent : Color.white.opacity(0.2))
                     .frame(width: dot == page ? 18 : 7, height: 7)
             }
         }
@@ -217,7 +218,7 @@ struct IntroView: View {
                 RetroCapsuleLabel(
                     title: isLastPage ? String(localized: "LET'S PLAY") : String(localized: "NEXT"),
                     systemImage: isLastPage ? "play.fill" : "chevron.right",
-                    tint: RetroPalette.phosphor,
+                    tint: menuTheme.accent,
                     filled: true
                 )
             }

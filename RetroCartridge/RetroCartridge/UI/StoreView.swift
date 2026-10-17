@@ -16,6 +16,7 @@ struct StoreView: View {
     @Environment(AppState.self) private var appState
     @Environment(StoreManager.self) private var storeManager
     @Environment(HapticManager.self) private var hapticManager
+    @Environment(\.menuTheme) private var menuTheme
 
     /// Feedback shown under Restore Purchases after it completes.
     @State private var restoreNote: String?
@@ -297,20 +298,20 @@ struct StoreView: View {
         let price = product?.displayPrice ?? ProductIdentifiers.fallbackDisplayPrice(for: productID)
 
         if isOwned {
-            RetroCapsuleLabel(title: String(localized: "OWNED"), systemImage: "checkmark", tint: RetroPalette.phosphor)
+            RetroCapsuleLabel(title: String(localized: "OWNED"), systemImage: "checkmark", tint: menuTheme.accent)
                 .accessibilityLabel("Purchased")
         } else if isPurchasing {
             ProgressView()
                 .tint(.black)
                 .frame(width: 96, height: 36)
-                .background(Capsule().fill(RetroPalette.phosphor))
+                .background(Capsule().fill(menuTheme.accent))
                 .accessibilityLabel("Purchasing")
         } else if let product {
             Button {
                 hapticManager.playHaptic(.buttonPress)
                 Task { await storeManager.purchase(product) }
             } label: {
-                RetroCapsuleLabel(title: String(localized: "BUY \(price)"), tint: RetroPalette.phosphor, filled: true)
+                RetroCapsuleLabel(title: String(localized: "BUY \(price)"), tint: menuTheme.accent, filled: true)
                     .frame(minWidth: 96)
             }
             .buttonStyle(CartridgePressStyle())
@@ -368,7 +369,7 @@ struct StoreView: View {
             Text(restoreNote ?? String(localized: "One-time purchase, billed through the App Store."))
                 .retroFont(10, weight: .medium)
                 .tracking(0.5)
-                .foregroundStyle(restoreNote == nil ? .white.opacity(0.35) : RetroPalette.phosphor.opacity(0.9))
+                .foregroundStyle(restoreNote == nil ? .white.opacity(0.35) : menuTheme.accent.opacity(0.9))
                 .multilineTextAlignment(.center)
                 .contentTransition(.opacity)
         }
