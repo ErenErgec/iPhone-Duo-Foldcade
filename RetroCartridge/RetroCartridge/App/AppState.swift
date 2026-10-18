@@ -226,6 +226,22 @@ final class AppState {
         startGame(PixelGameEngine.createGame(type: type, mode: mode))
     }
     
+    /// Unfolding inserts the cartridge picked on the cover. A paused round
+    /// of that same cartridge stays as it was; if the player picked another
+    /// one while folded, the paused round ends (its score still counts) and
+    /// the new cartridge goes in. A locked pick leaves the library showing
+    /// it on the shelf, and the intro, while open, inserts nothing (its last
+    /// page does).
+    func insertCartridgeOnUnfold(isUnlocked: Bool) {
+        guard !isIntroVisible else { return }
+        if let game = activeGame {
+            guard game.gameType != selectedGameType else { return }
+            endGame()
+        }
+        guard isUnlocked else { return }
+        startGame(type: selectedGameType)
+    }
+
     /// Start a new game session with the selected game type.
     func startGame(_ game: any PixelGameProtocol) {
         game.palette = paletteChoice.palette(for: game.gameType)

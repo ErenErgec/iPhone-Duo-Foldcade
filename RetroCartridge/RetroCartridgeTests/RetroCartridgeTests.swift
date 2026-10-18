@@ -844,6 +844,56 @@ final class RetroCartridgeTests: XCTestCase {
         XCTAssertEqual(ProductIdentifiers.skins(unlockedBy: ProductIdentifiers.pro), ConsoleSkinType.allCases.filter { $0 != .classicGrey })
     }
 
+    // MARK: - Unfolding
+
+    func testUnfoldingInsertsTheCartridgePickedOnTheCover() {
+        let appState = AppState(progress: ProgressStore(defaults: makeDefaults()))
+        appState.isIntroVisible = false
+        appState.selectedGameType = .snake
+        appState.insertCartridgeOnUnfold(isUnlocked: true)
+        XCTAssertEqual(appState.activeGame?.gameType, .snake)
+    }
+
+    func testUnfoldingResumesThePausedCartridgeWhenThePickIsUnchanged() throws {
+        let appState = AppState(progress: ProgressStore(defaults: makeDefaults()))
+        appState.isIntroVisible = false
+        appState.startGame(type: .snake)
+        let paused = try XCTUnwrap(appState.activeGame)
+        appState.pauseActiveGame()
+
+        appState.insertCartridgeOnUnfold(isUnlocked: true)
+        XCTAssertTrue(appState.activeGame === paused)
+    }
+
+    func testUnfoldingSwapsInANewPickAndKeepsTheOldScore() throws {
+        let progress = ProgressStore(defaults: makeDefaults())
+        let appState = AppState(progress: progress)
+        appState.isIntroVisible = false
+        appState.startGame(type: .snake)
+        let paused = try XCTUnwrap(appState.activeGame as? SnakeGame)
+        paused.score = 120
+        appState.pauseActiveGame()
+
+        // Folded, the player swipes to another cartridge on the cover
+        appState.selectedGameType = .brickBreaker
+        appState.insertCartridgeOnUnfold(isUnlocked: true)
+        XCTAssertEqual(appState.activeGame?.gameType, .brickBreaker)
+        XCTAssertFalse(appState.activeGame === paused)
+        XCTAssertEqual(appState.highScore(for: .snake), 120)
+    }
+
+    func testUnfoldingOnALockedPickEndsThePausedRoundAndShowsTheShelf() {
+        let appState = AppState(progress: ProgressStore(defaults: makeDefaults()))
+        appState.isIntroVisible = false
+        appState.startGame(type: .snake)
+        appState.pauseActiveGame()
+
+        appState.selectedGameType = .lunarHinge
+        appState.insertCartridgeOnUnfold(isUnlocked: false)
+        XCTAssertNil(appState.activeGame)
+        XCTAssertEqual(appState.selectedGameType, .lunarHinge)
+    }
+
     // MARK: - Menu themes
 
     func testClassicGreyKeepsTheClassicMenu() {

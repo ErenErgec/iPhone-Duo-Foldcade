@@ -16,7 +16,7 @@
 **Foldcade** is built exclusively for the **iPhone Duo**. It treats the fold as part of the experience instead of just a bigger canvas:
 
 - **Closed** (held with the hinge on top): the 5.4" outer display is a cartridge case. Swipe through cartridges and pick one.
-- **Unfolded like a clamshell:** the 7.6" inner display becomes a Game Boy–style console, split exactly at the hinge. A curved CRT is above the hinge and a physical-feeling control deck is below. The cartridge chosen on the cover is inserted automatically, and folding again pauses the game.
+- **Unfolded like a clamshell:** the 7.6" inner display becomes a Game Boy–style console, split exactly at the hinge. A curved CRT is above the hinge and a physical-feeling control deck is below. The cartridge chosen on the cover is inserted automatically, and folding again pauses the game. Unfolding resumes it, unless you picked another cartridge on the cover meanwhile: then the paused round ends (its score counts) and the new one goes in.
 
 ```
 ┌──────────────────────────────┬──────────────────────────────┐

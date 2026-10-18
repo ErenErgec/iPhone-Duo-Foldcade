@@ -69,13 +69,10 @@ public struct AdaptiveConsoleLayout: View {
             hingeEngine.updateFromHardware(context.hinge)
         }
         .onChange(of: postureManager.isCompactWidth) { wasCompact, isCompact in
-            if wasCompact && !isCompact && !appState.isGameActive {
+            if wasCompact && !isCompact {
                 // Unfolded: insert the cartridge chosen on the cover screen,
-                // unless it's locked (the library then shows it on the shelf)
-                // or the intro is still explaining things (its last page
-                // inserts the cartridge)
-                guard storeManager.isUnlocked(appState.selectedGameType), !appState.isIntroVisible else { return }
-                appState.startGame(type: appState.selectedGameType)
+                // swapping out a paused one if the player picked another
+                appState.insertCartridgeOnUnfold(isUnlocked: storeManager.isUnlocked(appState.selectedGameType))
             } else if isCompact {
                 // Folded: keep the session but pause it (app continuity)
                 appState.pauseActiveGame()
