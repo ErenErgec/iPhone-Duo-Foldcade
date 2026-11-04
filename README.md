@@ -189,7 +189,6 @@ RetroCartridge/
 │   └── Store/                         # StoreManager + product identifiers
 └── RetroCartridgeTests/               # Unit tests
 DESIGN.md                              # iPhone Duo platform reference: Apple guidance + measurements
-docs/                                  # Original planning documents (historical, not kept up to date)
 ```
 
 ---
@@ -203,8 +202,8 @@ docs/                                  # Original planning documents (historical
 
 ### Run
 ```bash
-git clone https://github.com/ErenErgec/iPhone-Duo-RetroCartridge.git
-open iPhone-Duo-RetroCartridge/RetroCartridge/RetroCartridge.xcodeproj
+git clone https://github.com/ErenErgec/iPhone-Duo-Foldcade.git
+open iPhone-Duo-Foldcade/RetroCartridge/RetroCartridge.xcodeproj
 ```
 1. Select the **iPhone Duo** simulator and press **⌘R**.
 2. In **Device Hub**, fold and unfold the device and turn it, to check the cover and inner layouts and the unfold chime.

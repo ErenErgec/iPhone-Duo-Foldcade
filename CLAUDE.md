@@ -80,7 +80,9 @@ xcodebuild -project RetroCartridge/RetroCartridge.xcodeproj -scheme RetroCartrid
 
 ## Project status (2026-10-14)
 
-- **Git:** `main` is the only branch. PR #1 (`gameplay-fixes`) was merged on 2026-09-28 and PR #2 (design and variety plan, App Store prep, pixel font) on 2026-10-14. The GitHub repo is private.
+- **Git:** `main` is the only branch. PR #1 (`gameplay-fixes`) was merged on 2026-09-28 and PR #2 (design and variety plan, App Store prep, pixel font) on 2026-10-14, both in the old private repo.
+  - **Public since 2026-11-04:** the repo is `ErenErgec/iPhone-Duo-Foldcade` (public). Its history was rewritten from the old private `iPhone-Duo-RetroCartridge`, which still exists and has the PRs: every commit is authored by Eren with the GitHub noreply email, the Claude trailers are gone, and `docs/` (the original planning documents) was removed from all history. It stays local only, ignored through `.git/info/exclude`.
+  - Keep Claude out of the contributors: no Claude author, `Co-Authored-By` or `Claude-Session` lines in commits (see Conventions), and don't commit with the personal Gmail address.
   - Commit and push only when the user asks; they usually test in Device Hub first.
   - The user merges PRs themselves: `gh pr merge` from Claude Code is blocked as a merge without review.
 - **Done and verified by the user on the simulator (before the plan):**
